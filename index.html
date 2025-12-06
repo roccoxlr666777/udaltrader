@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UDAL TRADER - Simulador de Mercados</title>
+    <title>UDAL TRADER - Plataforma Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Montserrat:wght@400;600;800&family=Merriweather:ital,wght@0,300;0,700;1,300&family=Playfair+Display:wght@700;900&family=Press+Start+2P&display=swap');
         
-        /* COLORES INSTITUCIONALES UDAL */
-        :root {
-            --udal-blue: #002855; 
-            --udal-red: #a51c30;  
-            --paper-bg: #fdfbf7;
-        }
+        :root { --udal-blue: #002855; --udal-red: #a51c30; --paper-bg: #fdfbf7; }
 
         body { font-family: 'Montserrat', sans-serif; background-color: #f1f5f9; color: #1e293b; overflow-x: hidden; }
         .retro-font { font-family: 'Roboto Mono', monospace; }
@@ -32,53 +27,25 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         /* Efecto Periódico */
-        .newspaper {
-            background-color: var(--paper-bg);
-            border: 1px solid #d1d5db;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-            position: relative;
-        }
-        .newspaper::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 4px;
-            background: linear-gradient(90deg, var(--udal-blue) 0%, var(--udal-red) 100%);
-        }
+        .newspaper { background-color: var(--paper-bg); border: 1px solid #d1d5db; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); position: relative; }
+        .newspaper::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--udal-blue) 0%, var(--udal-red) 100%); }
 
-        /* Tooltips Día 1 */
+        /* Tooltips */
         .help-icon { cursor: help; color: var(--udal-blue); margin-left: 5px; opacity: 0.7; }
         .help-icon:hover::after {
-            content: attr(data-tip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-family: sans-serif;
-            width: 200px;
-            text-align: center;
-            z-index: 100;
-            pointer-events: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            content: attr(data-tip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            background: #333; color: white; padding: 8px; border-radius: 4px; font-size: 10px; width: 200px; text-align: center; z-index: 100; pointer-events: none;
         }
         .relative-tip { position: relative; display: inline-block; }
 
-        /* Scroll Personalizado para Tabla */
+        /* Scroll */
         .custom-scroll::-webkit-scrollbar { width: 8px; }
         .custom-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* Animación Oportunidad */
-        @keyframes pulse-gold {
-            0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
-        }
+        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
         .btn-opportunity { animation: pulse-gold 2s infinite; }
     </style>
 </head>
@@ -103,7 +70,7 @@
         
         <!-- INTRO / LOGIN -->
         <section id="loginSection" class="w-full max-w-lg card p-8 mb-4 fade-in mt-8 relative">
-            <div class="absolute -top-3 -right-3 bg-red-700 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v2.0 FINAL</div>
+            <div class="absolute -top-3 -right-3 bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v2.1 FINAL REPAIRED</div>
             
             <h2 class="text-xl font-bold mb-2 text-center text-blue-900">Plataforma de Trading</h2>
             <p class="text-xs text-center text-gray-500 mb-6 px-4">Entorno financiero profesional. Universidad de América Latina.</p>
@@ -130,9 +97,8 @@
             <!-- Cargar Juego -->
             <div id="loadGameForm" class="hidden">
                 <label class="block text-xs font-bold mb-1 text-gray-500 uppercase">Token de Acceso</label>
-                <textarea id="saveCodeInput" class="w-full bg-gray-50 border border-gray-300 rounded p-3 mb-2 text-blue-900 retro-font text-xs h-24 focus:outline-none focus:border-blue-900" placeholder="Ingresa tu clave cifrada..."></textarea>
+                <textarea id="saveCodeInput" class="w-full bg-gray-50 border border-gray-300 rounded p-3 mb-2 text-blue-900 retro-font text-xs h-24 focus:outline-none focus:border-blue-900" placeholder="Pega aquí tu token guardado..."></textarea>
                 <button onclick="loadGame()" class="w-full btn-danger font-bold py-3 rounded shadow-lg">RESTAURAR SESIÓN</button>
-                <div id="loadMsg" class="mt-3 text-center text-xs font-bold text-red-600 hidden"></div>
             </div>
         </section>
 
@@ -151,21 +117,21 @@
                 <div class="bg-white p-4 rounded shadow border-l-4 border-green-600 relative-tip">
                     <div class="flex justify-between">
                         <p class="text-[10px] text-gray-500 uppercase font-bold">Liquidez (MXN)</p>
-                        <i class="fas fa-question-circle help-icon hidden" id="tipCash" data-tip="Dinero en efectivo disponible para comprar o pagar servicios."></i>
+                        <i class="fas fa-question-circle help-icon hidden" id="tipCash" data-tip="Dinero en efectivo disponible."></i>
                     </div>
                     <p class="text-xl font-bold retro-font text-green-700" id="displayCash">$1,000,000</p>
                 </div>
                 <div class="bg-white p-4 rounded shadow border-l-4 border-purple-600 relative-tip">
                     <div class="flex justify-between">
                         <p class="text-[10px] text-gray-500 uppercase font-bold">Valor Mercado</p>
-                        <i class="fas fa-question-circle help-icon hidden" id="tipVal" data-tip="Cuánto valdrían tus activos si los vendieras hoy."></i>
+                        <i class="fas fa-question-circle help-icon hidden" id="tipVal" data-tip="Valor actual de tus activos."></i>
                     </div>
                     <p class="text-xl font-bold retro-font text-purple-700" id="displayPortfolioVal">$0</p>
                 </div>
                 <div class="bg-white p-4 rounded shadow border-l-4 border-gray-800 relative-tip">
                     <div class="flex justify-between">
                         <p class="text-[10px] text-gray-500 uppercase font-bold">Patrimonio Neto</p>
-                        <i class="fas fa-question-circle help-icon hidden" id="tipNet" data-tip="Tu valor total real (Efectivo + Activos - Deudas). Este es tu puntaje."></i>
+                        <i class="fas fa-question-circle help-icon hidden" id="tipNet" data-tip="Tu valor total real (Efectivo + Activos - Deudas)."></i>
                     </div>
                     <p class="text-xl font-bold retro-font text-gray-800" id="displayNetWorth">$1,000,000</p>
                 </div>
@@ -185,17 +151,16 @@
                             </div>
                             <button onclick="toggleNewsSource()" class="text-[10px] border border-gray-400 px-2 py-1 rounded text-gray-600 hover:bg-white transition-colors relative-tip">
                                 Fuente <i class="fas fa-sync-alt"></i>
-                                <i class="fas fa-question-circle help-icon hidden" id="tipNews" data-tip="Alterna entre diarios para ver diferentes perspectivas."></i>
+                                <i class="fas fa-question-circle help-icon hidden" id="tipNews" data-tip="Cambia de fuente de noticias."></i>
                             </button>
                         </div>
                         <div id="newsFeed" class="space-y-4"></div>
                     </div>
 
-                    <!-- Panel Servicios Financieros (Unificado) -->
+                    <!-- Panel Servicios Financieros -->
                     <div class="bg-white border-t-4 border-gray-800 p-4 rounded shadow relative-tip">
-                        <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fas fa-briefcase"></i> Servicios Financieros</h3>
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm"><i class="fas fa-briefcase"></i> Servicios Financieros</h3>
                         
-                        <!-- Botón Experto -->
                         <div class="mb-3">
                             <button onclick="consultExpert()" id="btnExpert" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-between items-center px-3 bg-gray-100 text-gray-700 hover:bg-gray-200">
                                 <span><i class="fas fa-chart-pie"></i> Consultar Experto</span>
@@ -204,7 +169,6 @@
                             <p id="expertResult" class="mt-1 text-[10px] hidden bg-yellow-100 p-2 rounded text-yellow-800 border-l-2 border-yellow-500 italic"></p>
                         </div>
 
-                        <!-- Botón Crédito -->
                         <div class="mb-3">
                             <button onclick="openLoanModal()" id="btnLoan" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-between items-center px-3 bg-gray-100 text-gray-700 hover:bg-gray-200">
                                 <span><i class="fas fa-landmark"></i> Solicitar Crédito</span>
@@ -215,7 +179,6 @@
                             </div>
                         </div>
 
-                        <!-- Botón Side Hustle -->
                         <div>
                             <button onclick="openHustleModal()" id="btnHustle" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-between items-center px-3 bg-yellow-500 text-white hover:bg-yellow-600 btn-opportunity">
                                 <span><i class="fas fa-bolt"></i> Oportunidad Flash</span>
@@ -229,7 +192,7 @@
 
                     <!-- Botón Finalizar -->
                     <div class="bg-blue-900 p-5 rounded shadow text-white relative-tip">
-                        <h3 class="font-bold mb-1 flex justify-between">Cierre de Libros <i class="fas fa-question-circle help-icon text-white hidden" id="tipEnd" data-tip="Termina el día actual, cobra intereses y guarda tu progreso."></i></h3>
+                        <h3 class="font-bold mb-1 flex justify-between">Cierre de Libros <i class="fas fa-question-circle help-icon text-white hidden" id="tipEnd" data-tip="Cierra el día y guarda el progreso."></i></h3>
                         <p class="text-[10px] text-blue-200 mb-3">Consolida posiciones y avanza al siguiente periodo.</p>
                         <button onclick="endDay()" class="w-full py-3 bg-red-700 hover:bg-red-600 rounded font-bold shadow text-sm transition-colors border border-red-500">
                             EJECUTAR CIERRE DIARIO
@@ -238,7 +201,7 @@
                 </div>
 
                 <!-- Tabla de Mercado -->
-                <div class="lg:col-span-2 bg-white rounded shadow overflow-hidden flex flex-col h-[550px]">
+                <div class="lg:col-span-2 bg-white rounded shadow overflow-hidden flex flex-col h-[600px]">
                     <div class="p-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center shrink-0">
                         <h3 class="font-bold text-blue-900 text-sm flex items-center gap-2">
                             <i class="fas fa-balance-scale"></i> Pizarra de Cotizaciones
@@ -251,6 +214,7 @@
                             <thead class="text-xs text-gray-500 uppercase bg-gray-100 sticky top-0 z-10">
                                 <tr>
                                     <th class="px-3 py-3 bg-gray-100">Instrumento</th>
+                                    <th class="px-3 py-3 text-center bg-gray-100">Info</th>
                                     <th class="px-3 py-3 text-center bg-gray-100">Tendencia</th>
                                     <th class="px-3 py-3 text-right bg-gray-100">Precio</th>
                                     <th class="px-3 py-3 text-center bg-gray-100">Posición</th>
@@ -299,53 +263,54 @@
             </div>
         </section>
 
+        <!-- MODAL INFO FICHA TÉCNICA -->
+        <div id="infoModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm">
+            <div class="bg-white rounded-lg w-full max-w-sm p-6 shadow-2xl border-t-4 border-blue-900">
+                <h3 class="text-lg font-bold text-blue-900 mb-2" id="infoTitle">Nombre Activo</h3>
+                <p class="text-xs text-gray-600 mb-4 italic" id="infoDesc">Descripción...</p>
+                
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <div class="bg-gray-100 p-2 rounded text-center">
+                        <p class="text-[10px] text-gray-500 uppercase">Tipo</p>
+                        <p class="text-xs font-bold text-gray-800" id="infoType">Acción</p>
+                    </div>
+                    <div class="bg-gray-100 p-2 rounded text-center">
+                        <p class="text-[10px] text-gray-500 uppercase">Riesgo</p>
+                        <p class="text-xs font-bold text-gray-800" id="infoRisk">Alto</p>
+                    </div>
+                </div>
+                <button onclick="document.getElementById('infoModal').classList.add('hidden')" class="w-full py-2 text-xs font-bold bg-blue-900 text-white rounded hover:bg-blue-800">Cerrar Ficha</button>
+            </div>
+        </div>
+
         <!-- MODAL CRÉDITO -->
         <div id="loanModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm">
             <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl">
                 <h3 class="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2"><i class="fas fa-university"></i> Mercado de Crédito</h3>
                 <p class="text-xs text-gray-500 mb-4">Elige una institución para apalancarte. El interés se cobra diariamente. Solo puedes elegir uno.</p>
-                
                 <div class="space-y-3">
                     <div onclick="selectLoan('azteca')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group">
-                        <div>
-                            <p class="font-bold text-green-700">Banco Azteca (UDAL)</p>
-                            <p class="text-xs text-gray-500">Monto: $500,000 | Tasa Diaria: 5%</p>
-                        </div>
-                        <span class="text-xs bg-gray-200 px-2 py-1 rounded group-hover:bg-green-200">Elegir</span>
+                        <div><p class="font-bold text-green-700">Banco Azteca (UDAL)</p><p class="text-xs text-gray-500">Monto: $500,000 | Tasa Diaria: 5%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded group-hover:bg-green-200">Elegir</span>
                     </div>
                     <div onclick="selectLoan('santander')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group">
-                        <div>
-                            <p class="font-bold text-red-700">Santander</p>
-                            <p class="text-xs text-gray-500">Monto: $1,000,000 | Tasa Diaria: 3%</p>
-                        </div>
-                        <span class="text-xs bg-gray-200 px-2 py-1 rounded group-hover:bg-red-200">Elegir</span>
+                        <div><p class="font-bold text-red-700">Santander</p><p class="text-xs text-gray-500">Monto: $1,000,000 | Tasa Diaria: 3%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded group-hover:bg-red-200">Elegir</span>
                     </div>
                     <div onclick="selectLoan('bbva')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group">
-                        <div>
-                            <p class="font-bold text-blue-700">BBVA</p>
-                            <p class="text-xs text-gray-500">Monto: $2,000,000 | Tasa Diaria: 1.5%</p>
-                            <p class="text-[9px] text-red-500">* Requiere $1.2M Patrimonio</p>
-                        </div>
-                        <span class="text-xs bg-gray-200 px-2 py-1 rounded group-hover:bg-blue-200">Elegir</span>
+                        <div><p class="font-bold text-blue-700">BBVA</p><p class="text-xs text-gray-500">Monto: $2,000,000 | Tasa Diaria: 1.5%</p><p class="text-[9px] text-red-500">* Requiere $1.2M Patrimonio</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded group-hover:bg-blue-200">Elegir</span>
                     </div>
                 </div>
                 <button onclick="document.getElementById('loanModal').classList.add('hidden')" class="mt-4 w-full py-2 text-gray-500 text-xs font-bold border rounded hover:bg-gray-100">Cancelar</button>
             </div>
         </div>
 
-        <!-- MODAL OPORTUNIDAD (SIDE HUSTLE) -->
+        <!-- MODAL OPORTUNIDAD -->
         <div id="hustleModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur">
             <div class="bg-yellow-50 rounded-lg w-full max-w-sm p-6 shadow-[0_0_30px_rgba(234,179,8,0.5)] border-2 border-yellow-400 text-center">
                 <div class="text-4xl mb-2">⚡</div>
                 <h3 class="text-xl font-black text-yellow-800 mb-2 uppercase">Oportunidad Flash</h3>
                 <p class="text-sm font-bold text-gray-800 mb-1" id="hustleTitle">...</p>
                 <p class="text-xs text-gray-600 mb-4" id="hustleDesc">...</p>
-                
-                <div class="bg-white p-3 rounded border border-yellow-200 mb-4">
-                    <p class="text-xs font-bold text-gray-500 uppercase">Inversión Requerida</p>
-                    <p class="text-xl font-mono font-bold text-gray-800" id="hustleCost">$0</p>
-                </div>
-
+                <div class="bg-white p-3 rounded border border-yellow-200 mb-4"><p class="text-xs font-bold text-gray-500 uppercase">Inversión Requerida</p><p class="text-xl font-mono font-bold text-gray-800" id="hustleCost">$0</p></div>
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="document.getElementById('hustleModal').classList.add('hidden')" class="py-2 bg-gray-200 rounded text-xs font-bold text-gray-600">Ignorar</button>
                     <button onclick="executeHustle()" class="py-2 bg-yellow-500 text-white rounded text-xs font-bold hover:bg-yellow-600 shadow-lg">¡Arriesgar!</button>
@@ -363,37 +328,21 @@
                     <button onclick="setTradeMode('buy')" id="btnModeBuy" class="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white">COMPRAR</button>
                     <button onclick="setTradeMode('sell')" id="btnModeSell" class="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500">VENDER</button>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold">Volumen (MXN)</label>
-                    <input type="number" id="tradeAmount" class="w-full bg-gray-50 border border-gray-300 rounded p-2 text-gray-900 font-mono focus:border-blue-900 outline-none" placeholder="0.00">
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="closeTradeModal()" class="flex-1 py-2 rounded border border-gray-300 text-gray-500 text-xs font-bold hover:bg-gray-100">CANCELAR</button>
-                    <button onclick="executeTrade()" id="btnConfirmTrade" class="flex-1 py-2 rounded bg-blue-900 text-white font-bold text-xs hover:bg-blue-800 shadow">EJECUTAR</button>
-                </div>
+                <div class="mb-4"><label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold">Volumen (MXN)</label><input type="number" id="tradeAmount" class="w-full bg-gray-50 border border-gray-300 rounded p-2 text-gray-900 font-mono focus:border-blue-900 outline-none" placeholder="0.00"></div>
+                <div class="flex gap-2"><button onclick="closeTradeModal()" class="flex-1 py-2 rounded border border-gray-300 text-gray-500 text-xs font-bold hover:bg-gray-100">CANCELAR</button><button onclick="executeTrade()" id="btnConfirmTrade" class="flex-1 py-2 rounded bg-blue-900 text-white font-bold text-xs hover:bg-blue-800 shadow">EJECUTAR</button></div>
             </div>
         </div>
 
-        <!-- MODAL CIERRE DEL DÍA (TOKEN) -->
+        <!-- MODAL CIERRE (TOKEN) -->
         <div id="saveModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[70] p-4">
             <div class="bg-white p-6 rounded max-w-lg w-full text-center border-4 border-gray-800 shadow-[0_0_20px_rgba(255,255,255,0.5)]">
-                
                 <div id="pixelArtHeader" class="mb-4 flex justify-center text-4xl"></div>
-                
                 <h2 class="text-xl font-bold text-gray-800 mb-2 pixel-font text-xs leading-relaxed" id="endDayTitle">JORNADA FINALIZADA</h2>
                 <p class="text-gray-600 text-xs mb-2" id="endDayMsg">Resultados del día.</p>
                 <div id="daySummary" class="text-[10px] text-gray-500 mb-4 italic"></div>
-                
                 <p class="text-[10px] font-bold text-red-600 mb-1 uppercase">Importante:</p>
-                <p class="text-[10px] text-gray-500 mb-3 text-justify px-4">
-                    El sistema UDAL TRADER no guarda tu progreso en la nube por seguridad. 
-                    El siguiente código <strong>ES tu partida guardada</strong>. Si lo pierdes, pierdes tu dinero.
-                </p>
-
-                <div class="bg-gray-900 p-3 rounded mb-3 border-2 border-gray-600 text-left overflow-hidden">
-                    <code id="generatedCode" class="text-green-400 retro-font text-[10px] break-all block select-all cursor-text">...</code>
-                </div>
-                
+                <p class="text-[10px] text-gray-500 mb-3 text-justify px-4">El sistema no guarda en la nube. Copia este código para continuar mañana.</p>
+                <div class="bg-gray-900 p-3 rounded mb-3 border-2 border-gray-600 text-left overflow-hidden"><code id="generatedCode" class="text-green-400 retro-font text-[10px] break-all block select-all cursor-text">...</code></div>
                 <button onclick="copyCode()" class="text-xs text-blue-600 underline mb-4 hover:text-blue-800">Copiar Token</button>
                 <button onclick="location.reload()" class="block w-full px-4 py-3 bg-red-700 text-white rounded font-bold hover:bg-red-800 pixel-font text-[10px]">SALIR DEL SISTEMA</button>
             </div>
@@ -404,10 +353,7 @@
             <div class="bg-white p-6 rounded-lg max-w-sm w-full border-t-4 border-yellow-500">
                 <h3 class="text-blue-900 font-bold text-lg mb-4">Acceso Docente</h3>
                 <input type="password" id="teacherPwd" class="w-full border border-gray-300 p-2 rounded mb-4 text-black bg-gray-50" placeholder="Contraseña">
-                <div class="flex justify-end gap-2">
-                    <button onclick="document.getElementById('teacherLoginModal').classList.add('hidden')" class="px-4 py-2 text-gray-500 text-sm font-bold">Cancelar</button>
-                    <button onclick="checkTeacherLogin()" class="px-4 py-2 bg-blue-900 text-white rounded text-sm font-bold hover:bg-blue-800">Entrar</button>
-                </div>
+                <div class="flex justify-end gap-2"><button onclick="document.getElementById('teacherLoginModal').classList.add('hidden')" class="px-4 py-2 text-gray-500 text-sm font-bold">Cancelar</button><button onclick="checkTeacherLogin()" class="px-4 py-2 bg-blue-900 text-white rounded text-sm font-bold hover:bg-blue-800">Entrar</button></div>
             </div>
         </div>
 
@@ -435,39 +381,37 @@
     </footer>
 
 <script>
+/* --- UTILS: SAFE UTF-8 BASE64 --- */
+function utf8_to_b64(str) { return window.btoa(unescape(encodeURIComponent(str))); }
+function b64_to_utf8(str) { return decodeURIComponent(escape(window.atob(str))); }
+function fmtMoney(n) { return "$" + n.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
 /* --- CONFIGURACIÓN --- */
 const MAX_DAYS = 7;
 const INITIAL_CASH = 1000000;
 
 const assetsDB = [
-    // Indices y Divisas
-    { id: 'ipc', name: 'IPC México', type: 'Índice', base: 54000, hist: [1, 1.01, 1.005, 0.98, 0.95, 0.96, 0.99] },
-    { id: 'spx', name: 'S&P 500', type: 'Índice', base: 9500, hist: [1, 1.02, 1.03, 1.01, 0.90, 0.92, 0.95] },
-    { id: 'usd', name: 'Dólar (USD)', type: 'Divisa', base: 19.80, hist: [1, 1.01, 1.03, 1.05, 1.10, 1.08, 1.07] },
-    // Acciones
-    { id: 'nvda', name: 'NVIDIA', type: 'Acción', base: 2800, hist: [1, 1.05, 1.12, 1.15, 0.70, 0.80, 0.95] },
-    { id: 'amzn', name: 'Amazon', type: 'Acción', base: 3200, hist: [1, 0.98, 0.99, 1.02, 1.04, 1.06, 1.10] },
-    { id: 'googl', name: 'Google', type: 'Acción', base: 3400, hist: [1, 1.01, 1.01, 1.02, 0.99, 1.01, 1.03] },
-    { id: 'tsla', name: 'Tesla', type: 'Acción', base: 4100, hist: [1, 1.05, 1.02, 0.95, 0.90, 0.85, 1.15] },
-    // Commodities
-    { id: 'gold', name: 'Oro (Futuros)', type: 'Commodity', base: 35000, hist: [1, 1.01, 1.02, 1.04, 1.05, 1.06, 1.07] },
-    { id: 'oil', name: 'Petróleo WTI', type: 'Commodity', base: 1400, hist: [1, 1.05, 1.10, 1.15, 1.00, 0.90, 0.85] },
-    // Renta Fija
-    { id: 'pemex', name: 'Bonos PEMEX', type: 'Obligación', base: 100, hist: [1, 0.99, 0.98, 0.95, 0.90, 0.85, 0.88] },
-    { id: 'bimbo', name: 'Cert. BIMBO', type: 'Obligación', base: 105, hist: [1, 1.001, 1.002, 1.003, 1.004, 1.005, 1.006] },
-    { id: 'cetes', name: 'CETES 28', type: 'Bono Gov', base: 10, hist: [1, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012] },
-    // Cripto
-    { id: 'btc', name: 'Bitcoin', type: 'Cripto', base: 1300000, hist: [1, 1.10, 1.20, 0.90, 0.85, 1.25, 1.40] }
+    { id: 'ipc', name: 'IPC México', type: 'Índice', base: 54000, desc: "Índice de Precios y Cotizaciones. Refleja la economía mexicana.", risk: "Medio", hist: [1, 1.01, 1.005, 0.98, 0.95, 0.96, 0.99] },
+    { id: 'spx', name: 'S&P 500', type: 'Índice', base: 9500, desc: "Las 500 empresas más grandes de EE.UU.", risk: "Medio", hist: [1, 1.02, 1.03, 1.01, 0.90, 0.92, 0.95] },
+    { id: 'usd', name: 'Dólar (USD)', type: 'Divisa', base: 19.80, desc: "Moneda de reserva mundial. Activo de refugio.", risk: "Bajo", hist: [1, 1.01, 1.03, 1.05, 1.10, 1.08, 1.07] },
+    { id: 'nvda', name: 'NVIDIA', type: 'Acción', base: 2800, desc: "Líder en chips de IA. Alta volatilidad.", risk: "Alto", hist: [1, 1.05, 1.12, 1.15, 0.70, 0.80, 0.95] },
+    { id: 'amzn', name: 'Amazon', type: 'Acción', base: 3200, desc: "Gigante del e-commerce y servicios en la nube.", risk: "Medio", hist: [1, 0.98, 0.99, 1.02, 1.04, 1.06, 1.10] },
+    { id: 'googl', name: 'Google', type: 'Acción', base: 3400, desc: "Dominio en búsquedas y publicidad digital.", risk: "Medio", hist: [1, 1.01, 1.01, 1.02, 0.99, 1.01, 1.03] },
+    { id: 'tsla', name: 'Tesla', type: 'Acción', base: 4100, desc: "Vehículos eléctricos. Muy sensible a noticias.", risk: "Muy Alto", hist: [1, 1.05, 1.02, 0.95, 0.90, 0.85, 1.15] },
+    { id: 'gold', name: 'Oro', type: 'Commodity', base: 35000, desc: "Refugio clásico contra la inflación.", risk: "Bajo", hist: [1, 1.01, 1.02, 1.04, 1.05, 1.06, 1.07] },
+    { id: 'oil', name: 'Petróleo WTI', type: 'Commodity', base: 1400, desc: "Energía global. Sensible a geopolítica.", risk: "Alto", hist: [1, 1.05, 1.10, 1.15, 1.00, 0.90, 0.85] },
+    { id: 'pemex', name: 'Bonos PEMEX', type: 'Obligación', base: 100, desc: "Deuda de petrolera estatal. Riesgo país.", risk: "Alto", hist: [1, 0.99, 0.98, 0.95, 0.90, 0.85, 0.88] },
+    { id: 'bimbo', name: 'Cert. BIMBO', type: 'Obligación', base: 105, desc: "Deuda corporativa estable de consumo masivo.", risk: "Bajo", hist: [1, 1.001, 1.002, 1.003, 1.004, 1.005, 1.006] },
+    { id: 'cetes', name: 'CETES 28', type: 'Bono Gov', base: 10, desc: "Certificados de la Tesorería. La opción más segura.", risk: "Nulo", hist: [1, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012] },
+    { id: 'btc', name: 'Bitcoin', type: 'Cripto', base: 1300000, desc: "Oro digital. Potencial masivo y riesgo de pérdida total.", risk: "Extremo", hist: [1, 1.10, 1.20, 0.90, 0.85, 1.25, 1.40] }
 ];
 
-/* --- NARRATIVAS --- */
 const startScenarios = [
     { fin: ["Bolsa Mexicana toca máximos.", "Superpeso fuerte.", "NVIDIA lidera rally."], eco: ["Confianza consumidor alta.", "Inversión récord.", "Tech imparables."], hint: "Mercado eufórico. Tendencia alcista." },
     { fin: ["Miedo a recesión EE.UU.", "Petróleo cae.", "Refugio en bonos."], eco: ["PIB desacelera.", "Alerta construcción.", "Oro sube."], hint: "Incertidumbre. Busca seguridad." },
     { fin: ["Bitcoin rompe barreras.", "Fiebre IA.", "Startups ganan."], eco: ["¿Burbuja?", "Riesgo cripto.", "Volatilidad."], hint: "Alto riesgo, alta recompensa." }
 ];
-const fixedNews = [
-    null, null,
+const fixedNews = [ null, null,
     { fin: ["Regulación Tech Europa.", "Amazon invierte.", "PEMEX presionado."], eco: ["Multa a NVIDIA.", "Deuda PEMEX.", "Incertidumbre."], hint: "Cuidado con NVIDIA y PEMEX." },
     { fin: ["Inflación repunta.", "Tasas altas.", "IPC baja."], eco: ["Banxico firme.", "BIMBO sólido.", "CETES atractivos."], hint: "Deuda corporativa sólida es refugio." },
     { fin: ["¡ALERTA ROJA!", "NVIDIA fraude.", "S&P 500 cae."], eco: ["Pánico Wall St.", "Ventas masivas.", "BTC tambalea."], hint: "¡VENDE RIESGO! Busca liquidez." },
@@ -476,7 +420,6 @@ const fixedNews = [
     { fin: ["Cierre fiscal.", "Auditoría final.", "Mixto."], eco: ["Fin ciclo.", "Balances.", "Expectativa."], hint: "Asegura ganancias. Cierra libros." }
 ];
 
-/* --- SIDE HUSTLES --- */
 const hustles = [
     { title: "Lote de Vapes", desc: "Un contacto vende mercancía china 'gris' a precio de remate.", cost: 50000 },
     { title: "Puesto de Tacos", desc: "Traspaso de local frente a la universidad.", cost: 100000 },
@@ -484,24 +427,13 @@ const hustles = [
     { title: "NFTs de Monos", desc: "Colección de arte digital. Dicen que subirá.", cost: 10000 }
 ];
 
-// STATE
-let gameState = {
-    name: "", day: 1, cash: INITIAL_CASH, portfolio: {},
-    bypassed: 0, blackSwans: {}, narrativeId: 0,
-    expertConsulted: false, // flag diario
-    loan: { bank: null, amount: 0, rate: 0 },
-    hustleDone: false // Nuevo flag diario
-};
-
+let gameState = { name: "", day: 1, cash: INITIAL_CASH, portfolio: {}, bypassed: 0, blackSwans: {}, narrativeId: 0, expertConsulted: false, loan: { bank: null, amount: 0, rate: 0 }, hustleDone: false };
 assetsDB.forEach(a => gameState.portfolio[a.id] = 0);
 let currentNewsSource = 'fin'; 
 
 /* --- INTERFAZ --- */
 function toggleLoginMode(mode) {
-    const btnNew = document.getElementById('tabNew');
-    const btnLoad = document.getElementById('tabLoad');
-    const formNew = document.getElementById('newGameForm');
-    const formLoad = document.getElementById('loadGameForm');
+    const btnNew = document.getElementById('tabNew'), btnLoad = document.getElementById('tabLoad'), formNew = document.getElementById('newGameForm'), formLoad = document.getElementById('loadGameForm');
     if(mode === 'new') { formNew.classList.remove('hidden'); formLoad.classList.add('hidden'); btnNew.classList.replace('text-gray-400', 'text-blue-900'); btnNew.classList.add('border-blue-900'); btnLoad.classList.replace('text-blue-900', 'text-gray-400'); btnLoad.classList.remove('border-blue-900'); }
     else { formNew.classList.add('hidden'); formLoad.classList.remove('hidden'); btnLoad.classList.replace('text-gray-400', 'text-blue-900'); btnLoad.classList.add('border-blue-900'); btnNew.classList.replace('text-blue-900', 'text-gray-400'); btnNew.classList.remove('border-blue-900'); }
 }
@@ -511,101 +443,57 @@ function startSequence() {
     if(!name) return alert("Nombre requerido");
     gameState.name = name; gameState.day = 1; gameState.cash = INITIAL_CASH; gameState.portfolio = {};
     assetsDB.forEach(a => gameState.portfolio[a.id] = 0);
-    // Removed accessLog array initialization here
     gameState.narrativeId = Math.floor(Math.random() * 3);
-    
-    // Activar Guía si checkbox
-    if(document.getElementById('guideCheck').checked) activateGuide();
-    
+    if(document.getElementById('guideCheck').checked) document.querySelectorAll('.help-icon').forEach(el => el.classList.remove('hidden'));
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('gameSection').classList.remove('hidden');
     renderGame();
-}
-
-function activateGuide() {
-    document.querySelectorAll('.help-icon').forEach(el => el.classList.remove('hidden'));
 }
 
 /* --- GAME LOGIC --- */
 function renderGame() {
     document.getElementById('displayDay').innerText = `Día ${gameState.day} / ${MAX_DAYS}`;
     document.getElementById('displayCash').innerText = fmtMoney(gameState.cash);
-    
     let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0) * getPrice(a, gameState.day));
-    const netWorth = gameState.cash + portVal - gameState.loan.amount; // Restar deuda del patrimonio
-    
+    const netWorth = gameState.cash + portVal - gameState.loan.amount;
     document.getElementById('displayPortfolioVal').innerText = fmtMoney(portVal);
     document.getElementById('displayNetWorth').innerText = fmtMoney(netWorth);
 
-    // Expert Button State
     const btnExp = document.getElementById('btnExpert');
     const cost = netWorth < INITIAL_CASH ? 1000 : 5000;
     document.getElementById('expertCostBadge').innerText = fmtMoney(cost);
-    
-    if(gameState.expertConsulted) {
-        btnExp.classList.add('opacity-50', 'cursor-not-allowed');
-        btnExp.innerHTML = `<span><i class="fas fa-check"></i> Ya Consultado</span>`;
-    } else {
-        btnExp.classList.remove('opacity-50', 'cursor-not-allowed');
-        btnExp.innerHTML = `<span><i class="fas fa-chart-pie"></i> Consultar Experto</span><span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">${fmtMoney(cost)}</span>`;
-    }
+    if(gameState.expertConsulted) { btnExp.classList.add('opacity-50', 'cursor-not-allowed'); btnExp.innerHTML = `<span><i class="fas fa-check"></i> Ya Consultado</span>`; }
+    else { btnExp.classList.remove('opacity-50', 'cursor-not-allowed'); btnExp.innerHTML = `<span><i class="fas fa-chart-pie"></i> Consultar Experto</span><span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">${fmtMoney(cost)}</span>`; }
 
-    // Loan Status
-    const btnLoan = document.getElementById('btnLoan');
-    if(gameState.loan.amount > 0) {
-        btnLoan.classList.add('hidden');
-        document.getElementById('loanStatus').classList.remove('hidden');
-    } else {
-        btnLoan.classList.remove('hidden');
-        document.getElementById('loanStatus').classList.add('hidden');
-    }
+    if(gameState.loan.amount > 0) { document.getElementById('btnLoan').classList.add('hidden'); document.getElementById('loanStatus').classList.remove('hidden'); }
+    else { document.getElementById('btnLoan').classList.remove('hidden'); document.getElementById('loanStatus').classList.add('hidden'); }
 
-    // Hustle Button (Always visible but disabled if done today)
-    const btnHustle = document.getElementById('btnHustle');
-    if(gameState.hustleDone) {
-        btnHustle.classList.add('opacity-50', 'cursor-not-allowed');
-        document.getElementById('hustleStatus').classList.remove('hidden');
-    } else {
-        btnHustle.classList.remove('opacity-50', 'cursor-not-allowed');
-        document.getElementById('hustleStatus').classList.add('hidden');
-    }
+    if(gameState.hustleDone) { document.getElementById('btnHustle').classList.add('opacity-50', 'cursor-not-allowed'); document.getElementById('hustleStatus').classList.remove('hidden'); }
+    else { document.getElementById('btnHustle').classList.remove('opacity-50', 'cursor-not-allowed'); document.getElementById('hustleStatus').classList.add('hidden'); }
 
-    renderNews();
-    renderTable();
+    renderNews(); renderTable();
 }
 
 function renderTable() {
-    const tbody = document.getElementById('marketTableBody');
-    tbody.innerHTML = '';
+    const tbody = document.getElementById('marketTableBody'); tbody.innerHTML = '';
     assetsDB.forEach(a => {
         const price = getPrice(a, gameState.day);
         const qty = gameState.portfolio[a.id] || 0;
         let status = '<span class="text-gray-400">▬</span>';
         const swanMult = (gameState.blackSwans && gameState.blackSwans[a.id]) !== undefined ? gameState.blackSwans[a.id] : null;
-        
-        if (swanMult !== null) {
-            if(swanMult > 1.2) status = '🚀 MOON';
-            else if (swanMult < 0.1) status = '💀 CRASH';
-            else if (swanMult < 1) status = '🔻 DOWN';
-        } else if(gameState.day > 1) {
-            const prev = getPrice(a, gameState.day - 1);
-            const change = (price - prev) / prev;
-            if(change > 0.03) status = '<span class="text-green-600 font-bold">▲▲</span>';
-            else if(change > 0) status = '<span class="text-green-500">▲</span>';
-            else if(change < -0.03) status = '<span class="text-red-600 font-bold">▼▼</span>';
-            else if(change < 0) status = '<span class="text-red-500">▼</span>';
+        if (swanMult !== null) { if(swanMult > 1.2) status = '🚀 MOON'; else if (swanMult < 0.1) status = '💀 CRASH'; else if (swanMult < 1) status = '🔻 DOWN'; }
+        else if(gameState.day > 1) {
+            const prev = getPrice(a, gameState.day - 1); const change = (price - prev) / prev;
+            if(change > 0.03) status = '<span class="text-green-600 font-bold">▲▲</span>'; else if(change > 0) status = '<span class="text-green-500">▲</span>'; else if(change < -0.03) status = '<span class="text-red-600 font-bold">▼▼</span>'; else if(change < 0) status = '<span class="text-red-500">▼</span>';
         }
-
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-blue-50 transition-colors border-b border-gray-100";
+        const tr = document.createElement('tr'); tr.className = "hover:bg-blue-50 transition-colors border-b border-gray-100";
         tr.innerHTML = `
             <td class="px-3 py-3 font-bold text-blue-900 text-xs">${a.name}</td>
+            <td class="px-3 py-3 text-center"><button onclick="showInfo('${a.id}')" class="text-[9px] bg-gray-200 hover:bg-gray-300 text-gray-600 px-2 py-1 rounded">FICHA</button></td>
             <td class="px-3 py-3 text-center text-xs font-bold">${status}</td>
             <td class="px-3 py-3 text-right font-mono text-xs text-gray-700 font-bold">${fmtMoney(price)}</td>
             <td class="px-3 py-3 text-center text-xs text-gray-500">${qty.toFixed(2)}</td>
-            <td class="px-3 py-3 text-center">
-                <button onclick="openTrade('${a.id}')" class="bg-blue-900 hover:bg-blue-800 text-white text-[10px] px-3 py-1 rounded font-bold shadow" ${swanMult !== null && swanMult < 0.1 ? 'disabled class="opacity-50"' : ''}>OPERAR</button>
-            </td>
+            <td class="px-3 py-3 text-center"><button onclick="openTrade('${a.id}')" class="bg-blue-900 hover:bg-blue-800 text-white text-[10px] px-3 py-1 rounded font-bold shadow" ${swanMult !== null && swanMult < 0.1 ? 'disabled class="opacity-50"' : ''}>OPERAR</button></td>
         `;
         tbody.appendChild(tr);
     });
@@ -613,222 +501,108 @@ function renderTable() {
 
 function getPrice(asset, day) {
     if(day === 0) return asset.base;
-    let multiplier = 1;
-    if(gameState.blackSwans && gameState.blackSwans[asset.id] !== undefined) multiplier = gameState.blackSwans[asset.id];
-    let idx = day - 1;
-    if(idx >= asset.hist.length) idx = asset.hist.length - 1;
+    let multiplier = 1; if(gameState.blackSwans && gameState.blackSwans[asset.id] !== undefined) multiplier = gameState.blackSwans[asset.id];
+    let idx = day - 1; if(idx >= asset.hist.length) idx = asset.hist.length - 1;
     return asset.base * asset.hist[idx] * multiplier;
 }
 
 function renderNews() {
-    let data;
-    if(gameState.day === 1) data = startScenarios[gameState.narrativeId || 0];
-    else data = fixedNews[gameState.day] || { fin:[], eco:[], hint:"" };
-    
-    const items = currentNewsSource === 'fin' ? data.fin : data.eco;
-    const title = currentNewsSource === 'fin' ? 'EL FINANCIERO' : 'EL ECONOMISTA';
-    const color = currentNewsSource === 'fin' ? 'text-orange-700' : 'text-blue-900';
-    
-    document.getElementById('newsTitle').innerText = title;
-    document.getElementById('newsTitle').className = `headline-font font-black text-2xl leading-none ${color}`;
-    
-    const feed = document.getElementById('newsFeed');
-    feed.innerHTML = '';
-    items.forEach(txt => {
-        const borderCol = title.includes('FINANCIERO') ? 'border-orange-400' : 'border-blue-900';
-        feed.innerHTML += `<div class="border-l-4 ${borderCol} pl-3 py-1"><p class="font-serif font-bold text-gray-800 text-xs leading-tight">${txt}</p></div>`;
-    });
+    let data; if(gameState.day === 1) data = startScenarios[gameState.narrativeId || 0]; else data = fixedNews[gameState.day] || { fin:[], eco:[], hint:"" };
+    const items = currentNewsSource === 'fin' ? data.fin : data.eco; const title = currentNewsSource === 'fin' ? 'EL FINANCIERO' : 'EL ECONOMISTA'; const color = currentNewsSource === 'fin' ? 'text-orange-700' : 'text-blue-900';
+    document.getElementById('newsTitle').innerText = title; document.getElementById('newsTitle').className = `headline-font font-black text-2xl leading-none ${color}`;
+    const feed = document.getElementById('newsFeed'); feed.innerHTML = '';
+    items.forEach(txt => { const borderCol = title.includes('FINANCIERO') ? 'border-orange-400' : 'border-blue-900'; feed.innerHTML += `<div class="border-l-4 ${borderCol} pl-3 py-1"><p class="font-serif font-bold text-gray-800 text-xs leading-tight">${txt}</p></div>`; });
 }
 function toggleNewsSource() { currentNewsSource = currentNewsSource === 'fin' ? 'eco' : 'fin'; renderNews(); }
 
+/* --- INFO MODAL --- */
+function showInfo(id) {
+    const a = assetsDB.find(x => x.id === id);
+    document.getElementById('infoTitle').innerText = a.name; document.getElementById('infoDesc').innerText = a.desc; document.getElementById('infoType').innerText = a.type; document.getElementById('infoRisk').innerText = a.risk;
+    document.getElementById('infoModal').classList.remove('hidden'); document.getElementById('infoModal').classList.add('flex');
+}
+
 /* --- EXPERTO --- */
 function consultExpert() {
-    // Check if already paid
-    if(gameState.expertConsulted) {
-        showExpertHint();
-        return;
-    }
-
+    if(gameState.expertConsulted) { showExpertHint(); return; }
     let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0) * getPrice(a, gameState.day));
-    const net = gameState.cash + portVal;
-    const cost = net < INITIAL_CASH ? 1000 : 5000;
-
+    const net = gameState.cash + portVal; const cost = net < INITIAL_CASH ? 1000 : 5000;
     if(gameState.cash < cost) return alert("Saldo insuficiente.");
-    
-    if(!confirm(`⚠️ ATENCIÓN ⚠️\n\nEstás a punto de contratar un servicio de consultoría.\n\nCosto: ${fmtMoney(cost)}\nFiabilidad: 90%\n\n¿Autorizar cargo único por el día de hoy?`)) return;
-    
-    gameState.cash -= cost;
-    gameState.expertConsulted = true;
-    showExpertHint();
-    renderGame();
+    if(!confirm(`¿Autorizar cargo de ${fmtMoney(cost)}?`)) return;
+    gameState.cash -= cost; gameState.expertConsulted = true; showExpertHint(); renderGame();
 }
-
 function showExpertHint() {
-    let nextHint = "Mantén la cautela.";
-    if(gameState.day < MAX_DAYS) {
-        const nextData = fixedNews[gameState.day + 1];
-        if(nextData) nextHint = nextData.hint;
-    }
-    const resBox = document.getElementById('expertResult');
-    resBox.innerText = `ANALISTA: "${nextHint}"`;
-    resBox.classList.remove('hidden');
+    let nextHint = "Mantén la cautela."; if(gameState.day < MAX_DAYS) { const nextData = fixedNews[gameState.day + 1]; if(nextData) nextHint = nextData.hint; }
+    const resBox = document.getElementById('expertResult'); resBox.innerText = `ANALISTA: "${nextHint}"`; resBox.classList.remove('hidden');
 }
 
-/* --- CRÉDITO --- */
+/* --- CRÉDITO & HUSTLE --- */
 function openLoanModal() { document.getElementById('loanModal').classList.remove('hidden'); }
 function selectLoan(bank) {
-    let amount = 0, rate = 0, name = "";
-    
-    if(bank === 'azteca') { amount = 500000; rate = 0.05; name = "Banco Azteca"; }
-    else if(bank === 'santander') { amount = 1000000; rate = 0.03; name = "Santander"; }
-    else if(bank === 'bbva') {
-        let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0) * getPrice(a, gameState.day));
-        if((gameState.cash + portVal) < 1200000) return alert("BBVA rechaza tu solicitud: Patrimonio insuficiente.");
-        amount = 2000000; rate = 0.015; name = "BBVA";
-    }
-
-    if(confirm(`¿Contratar crédito con ${name}?\n\nRecibes: ${fmtMoney(amount)}\nInterés Diario: ${(rate*100)}%\n\nEl interés se cobrará automáticamente al cierre de cada día.`)) {
-        gameState.loan = { bank: bank, amount: amount, rate: rate };
-        gameState.cash += amount;
-        document.getElementById('loanModal').classList.add('hidden');
-        renderGame();
-    }
+    let amount=0, rate=0;
+    if(bank==='azteca'){amount=500000;rate=0.05;} else if(bank==='santander'){amount=1000000;rate=0.03;} else if(bank==='bbva'){let p=0;assetsDB.forEach(a=>p+=(gameState.portfolio[a.id]||0)*getPrice(a,gameState.day));if((gameState.cash+p)<1200000)return alert("Patrimonio insuficiente.");amount=2000000;rate=0.015;}
+    if(confirm(`¿Contratar crédito?\nRecibes: ${fmtMoney(amount)}\nInterés Diario: ${(rate*100)}%`)) { gameState.loan={bank,amount,rate}; gameState.cash+=amount; document.getElementById('loanModal').classList.add('hidden'); renderGame(); }
 }
-
-/* --- SIDE HUSTLES --- */
-function openHustleModal() {
-    if(gameState.hustleDone) return;
-    const hustle = hustles[Math.floor(Math.random() * hustles.length)];
-    gameState.activeHustle = hustle; // Store temp
-    
-    document.getElementById('hustleTitle').innerText = hustle.title;
-    document.getElementById('hustleDesc').innerText = hustle.desc;
-    document.getElementById('hustleCost').innerText = fmtMoney(hustle.cost);
-    document.getElementById('hustleModal').classList.remove('hidden');
-}
-
+function openHustleModal() { if(gameState.hustleDone) return; const hustle = hustles[Math.floor(Math.random() * hustles.length)]; gameState.activeHustle = hustle; document.getElementById('hustleTitle').innerText = hustle.title; document.getElementById('hustleDesc').innerText = hustle.desc; document.getElementById('hustleCost').innerText = fmtMoney(hustle.cost); document.getElementById('hustleModal').classList.remove('hidden'); }
 function executeHustle() {
-    const h = gameState.activeHustle;
-    if(!h) return;
-    if(gameState.cash < h.cost) return alert("No tienes liquidez suficiente.");
-    
-    gameState.cash -= h.cost;
-    document.getElementById('hustleModal').classList.add('hidden');
-    gameState.hustleDone = true;
-    
-    // 50/50 Chance
-    const success = Math.random() > 0.5;
-    let profit = 0;
-    
-    if(success) {
-        profit = h.cost * 2; // Double money
-        gameState.cash += profit;
-        alert(`🎉 ¡ÉXITO! 🎉\nEl negocio funcionó de maravilla. Recuperaste tu inversión y ganaste ${fmtMoney(h.cost)} extra.`);
-    } else {
-        alert(`📉 FRACASO 📉\nEl negocio salió mal. Perdiste toda la inversión de ${fmtMoney(h.cost)}.`);
-    }
-    
+    const h = gameState.activeHustle; if(!h || gameState.cash < h.cost) return alert("Sin fondos.");
+    gameState.cash -= h.cost; document.getElementById('hustleModal').classList.add('hidden'); gameState.hustleDone = true;
+    if(Math.random() > 0.5) { gameState.cash += h.cost * 2; alert(`🎉 ¡ÉXITO! Ganaste ${fmtMoney(h.cost)} extra.`); } else { alert(`📉 FRACASO. Perdiste la inversión.`); }
     renderGame();
 }
 
-/* --- EVENTOS (CISNES) --- */
+/* --- EVENTOS --- */
 function triggerBlackSwan() {
     if(gameState.day < 3) return;
     assetsDB.forEach(a => {
         if(Math.random() < 0.04 && gameState.blackSwans[a.id] === undefined) {
-            if(a.id === 'pemex') { alert(`🇲🇽 ¡MISS UNIVERSO! 🇲🇽\nLa representante de México ganó. Bonos PEMEX suben por puro orgullo nacional.`); gameState.blackSwans[a.id] = 1.5; }
-            else if (a.id === 'nvda') { alert(`📉 PELEA DE CEOS 📉\nEl CEO de NVIDIA perdió una pelea en jaula. Acciones caen.`); gameState.blackSwans[a.id] = 0.6; }
+            if(a.id === 'pemex') { alert(`🇲🇽 ¡MISS UNIVERSO! 🇲🇽\nLa representante de México ganó. Bonos PEMEX suben.`); gameState.blackSwans[a.id] = 1.5; }
+            else if (a.id === 'nvda') { alert(`📉 PELEA DE CEOS 📉\nEl CEO de NVIDIA perdió una pelea. Acciones caen.`); gameState.blackSwans[a.id] = 0.6; }
             else if (a.id === 'amzn') { alert(`📦 OXYGEN PRIME 📦\nAmazon patenta el aire. Acciones suben.`); gameState.blackSwans[a.id] = 1.3; }
-            else if (a.type === 'Cripto') { alert(`💀 RUG PULL 💀\nCEO 'desaparecido' con las claves. Valor cero.`); gameState.blackSwans[a.id] = 0.00; }
+            else if (a.type === 'Cripto') { alert(`💀 RUG PULL 💀\nCEO 'desaparecido'. Valor cero.`); gameState.blackSwans[a.id] = 0.00; }
             else if (a.type.includes('Obligación')) { alert(`💀 DEFAULT 💀\nPagos suspendidos.`); gameState.blackSwans[a.id] = 0.2; }
         }
     });
 }
 
-/* --- TRADE SYSTEM --- */
-let currTradeId = null; let tradeMode = 'buy';
-function openTrade(id) {
-    currTradeId = id; tradeMode = 'buy';
-    const asset = assetsDB.find(x => x.id === id);
-    const price = getPrice(asset, gameState.day);
-    const qty = gameState.portfolio[id] || 0;
-    document.getElementById('tradeModal').classList.remove('hidden'); document.getElementById('tradeModal').classList.add('flex');
-    document.getElementById('tradeAssetName').innerText = asset.name;
-    document.getElementById('tradeAssetPrice').innerText = fmtMoney(price);
-    document.getElementById('tradeAmount').value = '';
-    setTradeMode('buy');
-}
-function setTradeMode(m) { tradeMode = m; const bB = document.getElementById('btnModeBuy'); const bS = document.getElementById('btnModeSell'); if(m==='buy') { bB.className="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white"; bS.className="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500"; } else { bS.className="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white"; bB.className="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500"; } }
+/* --- TRADE --- */
+let currTradeId = null, tradeMode = 'buy';
+function openTrade(id) { currTradeId = id; tradeMode = 'buy'; const a = assetsDB.find(x => x.id === id); const p = getPrice(a, gameState.day); document.getElementById('tradeModal').classList.remove('hidden'); document.getElementById('tradeModal').classList.add('flex'); document.getElementById('tradeAssetName').innerText = a.name; document.getElementById('tradeAssetPrice').innerText = fmtMoney(p); document.getElementById('tradeAmount').value = ''; setTradeMode('buy'); }
+function setTradeMode(m) { tradeMode = m; const bB = document.getElementById('btnModeBuy'), bS = document.getElementById('btnModeSell'); if(m==='buy') { bB.className="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white"; bS.className="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500"; } else { bS.className="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white"; bB.className="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500"; } }
 function closeTradeModal() { document.getElementById('tradeModal').classList.add('hidden'); document.getElementById('tradeModal').classList.remove('flex'); }
 function executeTrade() {
-    const amt = parseFloat(document.getElementById('tradeAmount').value);
-    if(!amt || amt<=0) return;
-    const asset = assetsDB.find(x => x.id === currTradeId);
-    const price = getPrice(asset, gameState.day);
-    if(tradeMode === 'buy') {
-        if(amt > gameState.cash) return alert("Liquidez insuficiente.");
-        gameState.cash -= amt;
-        if(!gameState.portfolio[currTradeId]) gameState.portfolio[currTradeId] = 0;
-        gameState.portfolio[currTradeId] += amt/price;
-    } else {
-        const currVal = (gameState.portfolio[currTradeId]||0)*price;
-        if(amt > currVal+1) return alert("Posición insuficiente.");
-        if(Math.abs(amt-currVal)<10) { gameState.cash+=currVal; gameState.portfolio[currTradeId]=0; }
-        else { gameState.cash+=amt; gameState.portfolio[currTradeId]-=amt/price; }
-    }
+    const amt = parseFloat(document.getElementById('tradeAmount').value); if(!amt || amt<=0) return;
+    const a = assetsDB.find(x => x.id === currTradeId); const p = getPrice(a, gameState.day);
+    if(tradeMode === 'buy') { if(amt > gameState.cash) return alert("Liquidez insuficiente."); gameState.cash -= amt; if(!gameState.portfolio[currTradeId]) gameState.portfolio[currTradeId] = 0; gameState.portfolio[currTradeId] += amt/p; }
+    else { const val = (gameState.portfolio[currTradeId]||0)*p; if(amt > val+1) return alert("Posición insuficiente."); if(Math.abs(amt-val)<10) { gameState.cash+=val; gameState.portfolio[currTradeId]=0; } else { gameState.cash+=amt; gameState.portfolio[currTradeId]-=amt/p; } }
     closeTradeModal(); renderGame();
 }
 
 /* --- END DAY --- */
 function endDay() {
     if(!confirm("¿Cerrar libros del día?")) return;
-    
-    // Cobrar Interés Crédito
     let loanMsg = "";
-    if(gameState.loan.amount > 0) {
-        const interest = gameState.loan.amount * gameState.loan.rate;
-        gameState.cash -= interest;
-        loanMsg = `Intereses pagados: -${fmtMoney(interest)}`;
-        if(gameState.cash < 0) alert("⚠️ ALERTA DE LIQUIDEZ ⚠️\nLos intereses bancarios han dejado tu cuenta en negativo. Vende activos urgentemente.");
-    }
-
+    if(gameState.loan.amount > 0) { const int = gameState.loan.amount * gameState.loan.rate; gameState.cash -= int; loanMsg = `Intereses: -${fmtMoney(int)}`; if(gameState.cash < 0) alert("⚠️ ALERTA: Saldo negativo por intereses."); }
     let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0)*getPrice(a, gameState.day));
     const todayNet = gameState.cash + portVal - gameState.loan.amount;
-    
-    let art = "😐";
-    const roi = (todayNet - INITIAL_CASH);
-    if(roi > 50000) art = "🚀"; else if (roi > 0) art = "📈"; else if (roi < -50000) art = "💀"; else if (roi < 0) art = "📉";
-
+    let art = "😐"; const roi = (todayNet - INITIAL_CASH); if(roi > 50000) art = "🚀"; else if (roi > 0) art = "📈"; else if (roi < -50000) art = "💀"; else if (roi < 0) art = "📉";
     document.getElementById('pixelArtHeader').innerHTML = `<span class="transform scale-150 inline-block">${art}</span>`;
     document.getElementById('endDayMsg').innerText = roi >= 0 ? `Ganancia: +${fmtMoney(roi)}` : `Pérdida: ${fmtMoney(roi)}`;
     document.getElementById('daySummary').innerText = loanMsg;
-
     if(gameState.day >= MAX_DAYS) { showResults(); return; }
-
-    let nextState = JSON.parse(JSON.stringify(gameState));
-    nextState.day++;
-    nextState.expertConsulted = false; // Reset expert
-    nextState.hustleDone = false; // Reset hustle
-    // Removed accessLog update
-    
-    // SAFE ENCODING
+    let nextState = JSON.parse(JSON.stringify(gameState)); nextState.day++; nextState.expertConsulted = false; nextState.hustleDone = false;
     const jsonStr = JSON.stringify(nextState);
-    const code = "UDAL-" + btoa(unescape(encodeURIComponent(jsonStr))).split('').reverse().join('');
-    
-    document.getElementById('generatedCode').innerText = code;
-    document.getElementById('saveModal').classList.remove('hidden');
-    document.getElementById('saveModal').classList.add('flex');
+    const code = "UDAL-" + utf8_to_b64(jsonStr).split('').reverse().join('');
+    document.getElementById('generatedCode').innerText = code; document.getElementById('saveModal').classList.remove('hidden'); document.getElementById('saveModal').classList.add('flex');
 }
 
-/* --- LOAD & RESULTS --- */
+/* --- SAVE/LOAD --- */
 function showResults() {
     document.getElementById('gameSection').classList.add('hidden'); document.getElementById('resultsSection').classList.remove('hidden'); document.getElementById('resultsSection').classList.add('flex');
     let portVal=0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0)*getPrice(a, MAX_DAYS));
-    const finalVal = gameState.cash + portVal - gameState.loan.amount;
-    const roi = ((finalVal - INITIAL_CASH) / INITIAL_CASH) * 100;
-    document.getElementById('finalNetWorth').innerText = fmtMoney(finalVal);
-    document.getElementById('finalROI').innerText = roi.toFixed(2) + "%";
-    const icon = document.getElementById('badgeIcon'); const title = document.getElementById('rankTitle'); const desc = document.getElementById('rankDesc');
+    const finalVal = gameState.cash + portVal - gameState.loan.amount; const roi = ((finalVal - INITIAL_CASH) / INITIAL_CASH) * 100;
+    document.getElementById('finalNetWorth').innerText = fmtMoney(finalVal); document.getElementById('finalROI').innerText = roi.toFixed(2) + "%";
+    const icon = document.getElementById('badgeIcon'), title = document.getElementById('rankTitle'), desc = document.getElementById('rankDesc');
     if(finalVal > 1200000) { icon.innerHTML = '👑'; title.innerText = "MAGNATE"; desc.innerText = "Dominaste el mercado."; }
     else if (finalVal > 1050000) { icon.innerHTML = '💼'; title.innerText = "EJECUTIVO"; desc.innerText = "Buen rendimiento."; }
     else if (finalVal > 1000000) { icon.innerHTML = '😐'; title.innerText = "AHORRADOR"; desc.innerText = "No perdiste dinero."; }
@@ -836,17 +610,12 @@ function showResults() {
 }
 
 function loadGame() {
-    // Sanitization step: remove spaces and newlines
     let code = document.getElementById('saveCodeInput').value.trim().replace(/\s/g, '');
     let bypass = false; if(code.startsWith("4242UDAL")) { bypass = true; code = code.substring(4); }
     try {
-        // SAFE DECODING
         const encodedStr = code.replace("UDAL-","").split('').reverse().join('');
-        const jsonStr = decodeURIComponent(escape(atob(encodedStr)));
+        const jsonStr = b64_to_utf8(encodedStr);
         const data = JSON.parse(jsonStr);
-        
-        // Remove accessLog logic here as well
-        // Restore defaults if older version
         if(!data.loan) data.loan = {amount:0, rate:0};
         gameState = data;
         triggerBlackSwan();
@@ -855,22 +624,17 @@ function loadGame() {
 }
 
 function copyCode() { navigator.clipboard.writeText(document.getElementById('generatedCode').innerText); alert("Copiado"); }
-function fmtMoney(n) { return "$" + n.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}); }
 
-// DOCENTE
 function checkTeacherLogin() { if(document.getElementById('teacherPwd').value === "udalintrader") { document.getElementById('teacherLoginModal').classList.add('hidden'); document.getElementById('teacherSection').classList.remove('hidden'); } }
 function showTeacherLogin() { document.getElementById('teacherLoginModal').classList.remove('hidden'); document.getElementById('teacherLoginModal').classList.add('flex'); }
 function verifyStudentCode() {
-    // Sanitization step for teacher input as well
-    let code = document.getElementById('teacherInput').value.trim().replace(/\s/g, ''); 
-    if(code.startsWith("4242UDAL")) code = code.substring(4);
+    let code = document.getElementById('teacherInput').value.trim().replace(/\s/g, ''); if(code.startsWith("4242UDAL")) code = code.substring(4);
     try {
         const encodedStr = code.replace("UDAL-","").split('').reverse().join('');
-        const jsonStr = decodeURIComponent(escape(atob(encodedStr)));
+        const jsonStr = b64_to_utf8(encodedStr);
         const data = JSON.parse(jsonStr);
         let total = data.cash; assetsDB.forEach(a => { let idx = (data.day > 1) ? data.day - 2 : 0; total += (data.portfolio[a.id]||0) * (a.base * a.hist[idx]); });
         if(data.loan) total -= data.loan.amount;
-        // Removed logs display
         document.getElementById('teacherResult').classList.remove('hidden');
         document.getElementById('teacherResult').innerHTML = `<p class="font-bold text-blue-900">Alumno: ${data.name}</p><p>Día Actual: ${data.day}</p><p class="text-xl font-bold text-green-700">${fmtMoney(total)}</p>`;
     } catch(e){ alert("Error al leer token"); }
