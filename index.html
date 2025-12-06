@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UDAL TRADER - Acceso Estudiantes</title>
+    <title>UDAL TRADER - Plataforma Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
@@ -29,6 +29,14 @@
         /* Efecto Periódico */
         .newspaper { background-color: var(--paper-bg); border: 1px solid #d1d5db; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); position: relative; }
         .newspaper::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--udal-blue) 0%, var(--udal-red) 100%); }
+
+        /* Tooltips */
+        .help-icon { cursor: help; color: var(--udal-blue); margin-left: 5px; opacity: 0.7; }
+        .help-icon:hover::after {
+            content: attr(data-tip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            background: #333; color: white; padding: 8px; border-radius: 4px; font-size: 10px; width: 200px; text-align: center; z-index: 100; pointer-events: none;
+        }
+        .relative-tip { position: relative; display: inline-block; }
 
         /* Scroll */
         .custom-scroll::-webkit-scrollbar { width: 8px; }
@@ -62,7 +70,7 @@
         
         <!-- INTRO / LOGIN -->
         <section id="loginSection" class="w-full max-w-lg card p-8 mb-4 fade-in mt-8 relative">
-            <div class="absolute -top-3 -right-3 bg-blue-900 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v3.0 SECURE</div>
+            <div class="absolute -top-3 -right-3 bg-red-800 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v2.0 FINAL</div>
             
             <h2 class="text-xl font-bold mb-2 text-center text-blue-900">Acceso Estudiantes</h2>
             <p class="text-xs text-center text-gray-500 mb-6 px-4">Ingresa tu matrícula para validar tu identidad en el sistema.</p>
@@ -143,10 +151,10 @@
 
                     <!-- Panel Servicios -->
                     <div class="bg-white border-t-4 border-gray-800 p-4 rounded shadow">
-                        <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm"><i class="fas fa-briefcase"></i> Opciones</h3>
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm"><i class="fas fa-briefcase"></i> Servicios Financieros</h3>
                         
-                        <div class="mb-2"><button onclick="consultExpert()" id="btnExpert" class="w-full py-2 rounded font-bold text-xs shadow flex justify-between px-3 bg-gray-100 hover:bg-gray-200 text-gray-700"><span><i class="fas fa-chart-pie"></i> Experto</span><span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">$5k</span></button><p id="expertResult" class="mt-1 text-[10px] hidden bg-yellow-100 p-2 rounded italic"></p></div>
-                        <div class="mb-2"><button onclick="openLoanModal()" id="btnLoan" class="w-full py-2 rounded font-bold text-xs shadow flex justify-between px-3 bg-gray-100 hover:bg-gray-200 text-gray-700"><span><i class="fas fa-landmark"></i> Crédito</span><span class="text-[9px] bg-gray-300 px-1 rounded">Único</span></button><div id="loanStatus" class="hidden text-[10px] bg-red-50 text-red-800 p-2 rounded font-bold text-center">Crédito Activo</div></div>
+                        <div class="mb-2"><button onclick="openExpertModal()" id="btnExpert" class="w-full py-2 rounded font-bold text-xs shadow flex justify-between px-3 bg-gray-100 hover:bg-gray-200 text-gray-700"><span><i class="fas fa-chart-pie"></i> Experto</span><span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">$5k</span></button><p id="expertResult" class="mt-1 text-[10px] hidden bg-yellow-100 p-2 rounded italic border-l-4 border-yellow-500"></p></div>
+                        <div class="mb-2"><button onclick="openLoanModal()" id="btnLoan" class="w-full py-2 rounded font-bold text-xs shadow flex justify-between px-3 bg-gray-100 hover:bg-gray-200 text-gray-700"><span><i class="fas fa-landmark"></i> Crédito</span><span class="text-[9px] bg-gray-300 px-1 rounded">Único</span></button><div id="loanStatus" class="hidden flex justify-between items-center text-[10px] bg-red-50 text-red-800 p-2 rounded border border-red-100 mt-1 font-bold"><span><i class="fas fa-check-circle"></i> Deuda Activa</span><button onclick="payLoan()" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 text-[9px]">LIQUIDAR</button></div></div>
                         <div><button onclick="openHustleModal()" id="btnHustle" class="w-full py-2 rounded font-bold text-xs shadow flex justify-between px-3 bg-yellow-500 text-white hover:bg-yellow-600 btn-opportunity"><span><i class="fas fa-bolt"></i> Oportunidad</span><span class="text-[9px] bg-yellow-700 px-1 rounded">Flash</span></button><div id="hustleStatus" class="hidden text-[10px] text-gray-400 text-center mt-1 italic">Agotado hoy</div></div>
                     </div>
 
@@ -171,7 +179,7 @@
                                     <th class="px-3 py-3 text-center bg-gray-100">Info</th>
                                     <th class="px-3 py-3 text-center bg-gray-100">Estado</th>
                                     <th class="px-3 py-3 text-right bg-gray-100">Precio</th>
-                                    <th class="px-3 py-3 text-center bg-gray-100">Tenencia</th>
+                                    <th class="px-3 py-3 text-center bg-gray-100">Posición</th>
                                     <th class="px-3 py-3 text-center bg-gray-100">Acción</th>
                                 </tr>
                             </thead>
@@ -182,50 +190,95 @@
             </div>
         </section>
 
-        <!-- SECCIÓN RESULTADOS -->
-        <section id="resultsSection" class="w-full max-w-4xl hidden fade-in mt-8">
-            <div class="bg-white rounded-lg shadow-2xl overflow-hidden border-t-8 border-yellow-500">
-                <div class="p-8 text-center bg-gray-900 text-white">
-                    <h2 class="text-3xl font-bold mb-2 text-yellow-500">INFORME FINAL</h2>
-                    <p class="text-sm text-gray-400">Auditoría de Desempeño</p>
-                </div>
-                <div class="p-8">
-                    <div class="flex flex-col md:flex-row gap-8 items-center justify-center">
-                        <div class="text-center w-full md:w-1/3">
-                            <div id="badgeIcon" class="text-6xl mb-4 text-gray-300"></div>
-                            <h3 id="rankTitle" class="text-xl font-bold text-blue-900 mb-1">...</h3>
-                            <p class="text-xs text-gray-500" id="rankDesc">...</p>
-                        </div>
-                        <div class="w-full md:w-2/3 text-center md:text-left space-y-4">
-                            <div><p class="text-xs text-gray-500 uppercase">Capital Final</p><p class="text-4xl font-mono font-bold text-gray-800" id="finalNetWorth">$0.00</p></div>
-                            <div><p class="text-xs text-gray-500 uppercase">Retorno (ROI)</p><p class="text-xl font-bold" id="finalROI">0%</p></div>
-                        </div>
-                    </div>
-                    <div class="mt-8 text-center"><button onclick="location.reload()" class="bg-blue-900 text-white px-6 py-2 rounded text-sm font-bold hover:bg-blue-800">Cerrar Sistema</button></div>
-                </div>
+        <!-- SECCIÓN RESULTADOS OREGON TRAIL -->
+        <section id="resultsSection" class="w-full max-w-4xl hidden fade-in mt-8 bg-black border-4 border-green-500 p-8 font-mono text-green-500">
+            <h2 class="text-3xl font-bold mb-4 text-center pixel-font">GAME OVER</h2>
+            <div class="text-center mb-8">
+                <div id="finalArt" class="text-6xl mb-4">💀</div>
+                <h3 id="finalTitle" class="text-xl mb-2">QUIEBRA TOTAL</h3>
+                <p id="finalDesc" class="text-sm">...</p>
             </div>
+            
+            <div class="grid grid-cols-2 gap-8 text-sm mb-8 border-t border-green-500 pt-4">
+                <div><p>CAPITAL FINAL:</p><p class="text-xl font-bold" id="finalNetWorth">$0.00</p></div>
+                <div class="text-right"><p>RENDIMIENTO (ROI):</p><p class="text-xl font-bold" id="finalROI">0%</p></div>
+            </div>
+            
+            <div class="text-center"><button onclick="location.reload()" class="bg-green-700 text-black px-6 py-2 font-bold hover:bg-green-600 pixel-font text-xs">REINICIAR SISTEMA</button></div>
         </section>
 
-        <!-- MODALES (Info, Loan, Hustle, Trade, Save, Teacher) -->
-        <!-- Info -->
-        <div id="infoModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm"><div class="bg-white rounded-lg w-full max-w-sm p-6 shadow-2xl border-t-4 border-blue-900"><h3 class="text-lg font-bold text-blue-900 mb-2" id="infoTitle"></h3><p class="text-xs text-gray-600 mb-4 italic" id="infoDesc"></p><div class="grid grid-cols-2 gap-2 mb-4"><div class="bg-gray-100 p-2 rounded text-center"><p class="text-[10px] text-gray-500 uppercase">Tipo</p><p class="text-xs font-bold text-gray-800" id="infoType"></p></div><div class="bg-gray-100 p-2 rounded text-center"><p class="text-[10px] text-gray-500 uppercase">Riesgo</p><p class="text-xs font-bold text-gray-800" id="infoRisk"></p></div></div><button onclick="document.getElementById('infoModal').classList.add('hidden')" class="w-full py-2 text-xs font-bold bg-blue-900 text-white rounded hover:bg-blue-800">Cerrar</button></div></div>
+        <!-- MODALES -->
         
-        <!-- Loan -->
-        <div id="loanModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm"><div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl"><h3 class="text-xl font-bold text-blue-900 mb-4"><i class="fas fa-university"></i> Crédito</h3><div class="space-y-3"><div onclick="selectLoan('azteca')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group"><div><p class="font-bold text-green-700">Banco Azteca</p><p class="text-xs text-gray-500">500k | Tasa 5%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded">Elegir</span></div><div onclick="selectLoan('santander')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group"><div><p class="font-bold text-red-700">Santander</p><p class="text-xs text-gray-500">1M | Tasa 3%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded">Elegir</span></div><div onclick="selectLoan('bbva')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group"><div><p class="font-bold text-blue-700">BBVA</p><p class="text-xs text-gray-500">2M | Tasa 1.5%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded">Elegir</span></div></div><button onclick="document.getElementById('loanModal').classList.add('hidden')" class="mt-4 w-full py-2 text-gray-500 text-xs font-bold border rounded hover:bg-gray-100">Cancelar</button></div></div>
+        <!-- Info Modal Completo -->
+        <div id="infoModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm">
+            <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl border-t-4 border-blue-900">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-blue-900" id="infoTitle"></h3>
+                    <span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold uppercase" id="infoType"></span>
+                </div>
+                
+                <div class="mb-4 text-sm text-gray-700 leading-relaxed border-b pb-4" id="infoDesc"></div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Nivel de Riesgo</p>
+                        <p class="text-sm font-bold text-red-700" id="infoRisk"></p>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                        <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Volatilidad</p>
+                        <p class="text-sm font-bold text-orange-600" id="infoVol"></p>
+                    </div>
+                </div>
+                
+                <div class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-400 mb-4">
+                    <p class="text-[10px] text-yellow-800 uppercase font-bold">Consejo Rápido:</p>
+                    <p class="text-xs text-gray-600 italic" id="infoTip"></p>
+                </div>
+
+                <button onclick="document.getElementById('infoModal').classList.add('hidden')" class="w-full py-2 text-xs font-bold bg-blue-900 text-white rounded hover:bg-blue-800">Cerrar Ficha Técnica</button>
+            </div>
+        </div>
         
-        <!-- Hustle -->
+        <!-- Expert Modal -->
+        <div id="expertModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm">
+            <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl">
+                <h3 class="text-lg font-bold text-blue-900 mb-4">Selecciona un Analista</h3>
+                <div class="space-y-2">
+                    <button onclick="buyAdvice('junior')" class="w-full p-3 border rounded hover:bg-gray-50 text-left flex justify-between"><div><span class="font-bold text-sm">El Pasante</span><br><span class="text-[10px] text-gray-500">Poco fiable, pero barato.</span></div><span class="font-bold text-green-700">$500</span></button>
+                    <button onclick="buyAdvice('senior')" class="w-full p-3 border rounded hover:bg-gray-50 text-left flex justify-between"><div><span class="font-bold text-sm">Analista Senior</span><br><span class="text-[10px] text-gray-500">Estudios de mercado sólidos.</span></div><span class="font-bold text-blue-700">$3,000</span></button>
+                    <button onclick="buyAdvice('insider')" class="w-full p-3 border rounded hover:bg-gray-50 text-left flex justify-between"><div><span class="font-bold text-sm">El "Insider"</span><br><span class="text-[10px] text-gray-500">Información privilegiada (Ilegalmente buena).</span></div><span class="font-bold text-purple-700">$10,000</span></button>
+                </div>
+                <button onclick="document.getElementById('expertModal').classList.add('hidden')" class="mt-4 w-full py-2 text-xs text-gray-500">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- Loan Modal -->
+        <div id="loanModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm"><div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl"><h3 class="text-xl font-bold text-blue-900 mb-4"><i class="fas fa-university"></i> Mercado de Crédito</h3><p class="text-xs text-gray-500 mb-4">Tasa fija diaria. Plazo forzoso 7 días (o liquidación anticipada).</p><div class="space-y-3"><div onclick="selectLoan('azteca')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group"><div><p class="font-bold text-green-700">Banco Azteca</p><p class="text-xs text-gray-500">300k | Tasa 4%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded">Elegir</span></div><div onclick="selectLoan('santander')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group"><div><p class="font-bold text-red-700">Santander</p><p class="text-xs text-gray-500">500k | Tasa 2.5%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded">Elegir</span></div><div onclick="selectLoan('bbva')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group"><div><p class="font-bold text-blue-700">BBVA</p><p class="text-xs text-gray-500">1M | Tasa 1.2%</p><p class="text-[9px] text-red-500">* Req: $1.2M Patrimonio</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded">Elegir</span></div></div><button onclick="document.getElementById('loanModal').classList.add('hidden')" class="mt-4 w-full py-2 text-gray-500 text-xs font-bold border rounded hover:bg-gray-100">Cancelar</button></div></div>
+        
+        <!-- Hustle Modal -->
         <div id="hustleModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur"><div class="bg-yellow-50 rounded-lg w-full max-w-sm p-6 shadow-2xl border-2 border-yellow-400 text-center"><h3 class="text-xl font-black text-yellow-800 mb-2">OPORTUNIDAD</h3><p class="text-sm font-bold text-gray-800 mb-1" id="hustleTitle"></p><p class="text-xs text-gray-600 mb-4" id="hustleDesc"></p><div class="bg-white p-3 rounded border border-yellow-200 mb-4"><p class="text-xs font-bold text-gray-500 uppercase">Inversión</p><p class="text-xl font-mono font-bold text-gray-800" id="hustleCost"></p></div><div class="grid grid-cols-2 gap-3"><button onclick="document.getElementById('hustleModal').classList.add('hidden')" class="py-2 bg-gray-200 rounded text-xs font-bold text-gray-600">Ignorar</button><button onclick="executeHustle()" class="py-2 bg-yellow-500 text-white rounded text-xs font-bold hover:bg-yellow-600 shadow-lg">¡Arriesgar!</button></div></div></div>
         
-        <!-- Trade -->
-        <div id="tradeModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] backdrop-blur"><div class="bg-white p-6 rounded-lg w-80 shadow-2xl border-t-4 border-blue-900 relative"><h3 id="tradeAssetName" class="text-lg font-bold mb-1 text-blue-900">Orden</h3><p class="text-xs text-gray-500 mb-4">Precio: <span id="tradeAssetPrice" class="text-black font-mono font-bold"></span></p><div class="flex gap-2 mb-4"><button onclick="setTradeMode('buy')" id="btnModeBuy" class="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white">COMPRAR</button><button onclick="setTradeMode('sell')" id="btnModeSell" class="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500">VENDER</button></div><div class="mb-4"><label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold">Monto (MXN)</label><input type="number" id="tradeAmount" class="w-full bg-gray-50 border border-gray-300 rounded p-2 text-gray-900 font-mono focus:border-blue-900 outline-none" placeholder="0.00"></div><div class="flex gap-2"><button onclick="closeTradeModal()" class="flex-1 py-2 rounded border border-gray-300 text-gray-500 text-xs font-bold hover:bg-gray-100">CANCELAR</button><button onclick="executeTrade()" class="flex-1 py-2 rounded bg-blue-900 text-white font-bold text-xs hover:bg-blue-800 shadow">EJECUTAR</button></div></div></div>
+        <!-- Trade Modal -->
+        <div id="tradeModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] backdrop-blur"><div class="bg-white p-6 rounded-lg w-80 shadow-2xl border-t-4 border-blue-900 relative"><h3 id="tradeAssetName" class="text-lg font-bold mb-1 text-blue-900">Orden</h3><p class="text-xs text-gray-500 mb-2">Precio: <span id="tradeAssetPrice" class="text-black font-mono font-bold"></span></p><div class="bg-gray-100 p-2 rounded mb-4 text-[10px] text-gray-600 flex justify-between"><span>Tienes: <b id="tradeOwnedQty">0</b> u.</span><span>Valor: <b id="tradeOwnedVal">$0</b></span></div><div class="flex gap-2 mb-4"><button onclick="setTradeMode('buy')" id="btnModeBuy" class="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white">COMPRAR</button><button onclick="setTradeMode('sell')" id="btnModeSell" class="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500">VENDER</button></div><div class="mb-4"><label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold">Monto (MXN)</label><input type="number" id="tradeAmount" class="w-full bg-gray-50 border border-gray-300 rounded p-2 text-gray-900 font-mono focus:border-blue-900 outline-none" placeholder="0.00"></div><div class="flex gap-2"><button onclick="closeTradeModal()" class="flex-1 py-2 rounded border border-gray-300 text-gray-500 text-xs font-bold hover:bg-gray-100">CANCELAR</button><button onclick="executeTrade()" class="flex-1 py-2 rounded bg-blue-900 text-white font-bold text-xs hover:bg-blue-800 shadow">EJECUTAR</button></div></div></div>
         
-        <!-- Save/Token -->
-        <div id="saveModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[70] p-4"><div class="bg-white p-6 rounded max-w-lg w-full text-center border-4 border-gray-800 shadow-2xl"><div id="pixelArtHeader" class="mb-4 text-4xl"></div><h2 class="text-xl font-bold text-gray-800 mb-2 pixel-font text-xs">JORNADA FINALIZADA</h2><p class="text-gray-600 text-xs mb-2" id="endDayMsg"></p><div id="daySummary" class="text-[10px] text-gray-500 mb-4 italic"></div><p class="text-[10px] font-bold text-red-600 mb-1 uppercase">Importante:</p><p class="text-[10px] text-gray-500 mb-3 px-4">Copia este código. Es tu único respaldo.</p><div class="bg-gray-900 p-3 rounded mb-3 border-2 border-gray-600 text-left overflow-hidden"><code id="generatedCode" class="text-green-400 retro-font text-[10px] break-all block select-all cursor-text">...</code></div><button onclick="copyCode()" class="text-xs text-blue-600 underline mb-4">Copiar Token</button><button onclick="location.reload()" class="block w-full px-4 py-3 bg-red-700 text-white rounded font-bold hover:bg-red-800 pixel-font text-[10px]">SALIR</button></div></div>
+        <!-- End Day (Oregon) Modal -->
+        <div id="saveModal" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-[70] p-4 font-mono text-green-500">
+            <div class="w-full max-w-lg text-center border-4 border-green-500 p-6 bg-black">
+                <div id="pixelArtHeader" class="text-4xl mb-4"></div>
+                <h2 class="text-xl font-bold mb-4 pixel-font uppercase" id="endDayTitle">DÍA TERMINADO</h2>
+                <p class="text-xs mb-4" id="endDayMsg"></p>
+                <div class="border border-green-900 p-2 mb-4 text-xs text-left" id="daySummary"></div>
+                <p class="text-[10px] mb-2 uppercase blink">Copia tu Código de Seguridad:</p>
+                <div class="bg-green-900/20 p-3 rounded mb-4 border border-green-700 text-left overflow-hidden break-all">
+                    <code id="generatedCode" class="text-[10px] select-all cursor-text text-white">...</code>
+                </div>
+                <button onclick="copyCode()" class="oregon-btn w-full mb-2">COPIAR</button>
+                <button onclick="location.reload()" class="oregon-btn w-full text-red-500 border-red-500 hover:bg-red-900">SALIR</button>
+            </div>
+        </div>
         
-        <!-- Teacher Login -->
+        <!-- Teacher Login/Panel (Same) -->
         <div id="teacherLoginModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[80]"><div class="bg-white p-6 rounded-lg max-w-sm w-full border-t-4 border-yellow-500"><h3 class="text-blue-900 font-bold text-lg mb-4">Acceso Docente</h3><input type="password" id="teacherPwd" class="w-full border border-gray-300 p-2 rounded mb-4 text-black bg-gray-50" placeholder="Contraseña"><div class="flex justify-end gap-2"><button onclick="document.getElementById('teacherLoginModal').classList.add('hidden')" class="px-4 py-2 text-gray-500 text-sm font-bold">Cancelar</button><button onclick="checkTeacherLogin()" class="px-4 py-2 bg-blue-900 text-white rounded text-sm font-bold hover:bg-blue-800">Entrar</button></div></div></div>
-        
-        <!-- Teacher Panel -->
         <section id="teacherSection" class="w-full max-w-4xl card p-6 hidden mt-8 mb-12 border-yellow-500"><div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-4"><h2 class="text-xl font-bold text-blue-900">Auditoría Docente</h2><button onclick="location.reload()" class="text-xs bg-gray-200 px-3 py-1 rounded hover:bg-gray-300">Cerrar Sesión</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><p class="text-xs text-gray-500 mb-2 font-bold uppercase">Token del Alumno:</p><textarea id="teacherInput" class="w-full bg-gray-50 border border-gray-300 rounded p-3 text-blue-900 retro-font text-xs h-32 focus:border-blue-900 outline-none mb-2"></textarea><button onclick="verifyStudentCode()" class="w-full bg-blue-900 text-white font-bold py-2 rounded hover:bg-blue-800 text-sm shadow">Auditar</button></div><div id="teacherResult" class="bg-gray-50 p-4 rounded border border-gray-200 text-sm h-full overflow-y-auto hidden"></div></div></section>
 
     </main>
@@ -236,162 +289,11 @@
     </footer>
 
 <script>
-/* --- BASE DE DATOS DE ESTUDIANTES AUTORIZADOS --- */
-const STUDENT_DB = {
-    "100017415": "AVELINO MATEO XIMENA DANIELA",
-    "100017697": "BAEZ ROSALES ANGEL HERSAI",
-    "100017904": "CARRILLO CASTELAN FERNANDA HARET",
-    "100017657": "CATAL LUCAS SANDRA",
-    "100018025": "CRUZ LUCAS AIDE NATIVIDAD",
-    "100017729": "CUAYA FUENTES ALEX",
-    "100018128": "FERRER RODRIGUEZ XIMENA",
-    "100017907": "GAONA SORIA ISAAC MARIANO",
-    "100017651": "GARCIA ALVAREZ SANTIAGO",
-    "100017652": "GIL MARTINEZ BERENICE",
-    "100017370": "HERNANDEZ CORTES FATIMA",
-    "100018166": "HILARIO CASTAÑEDA ULISES",
-    "100017271": "MENA LORENZO OSCAR URIEL",
-    "100017869": "MERINO HERNANDEZ MARICRUZ",
-    "100018056": "MOCTEZUMA ORTEGA ARIEL",
-    "100017497": "MOLINA ENRIQUEZ RENE",
-    "100017665": "MORALES BELLO VANESSA",
-    "100017775": "MORALES GUTIEREZ ISAAC",
-    "100018096": "MORALES POBLANO EMILIO",
-    "100018164": "MUÑOZ CASTAÑEDA VALERIA",
-    "100017878": "NAVA FLORES SAUL EDUARDO",
-    "100017312": "NAVA MONTIEL CAMILA",
-    "100018099": "RAMIREZ CARREON EVA SOFIA",
-    "100018064": "RODRIGUEZ JIMENEZ MARIA ESTEFANIA",
-    "100017243": "SANCHEZ GONZALEZ CAMILA AMEYALTZIN",
-    "100017751": "VARGAS CASTILLO INES",
-    "100018135": "VARGAS TIRSO MARICARMEN",
-    "100016403": "AGUILA CADENA ADALIF ANGELLIQUE",
-    "100016666": "AGUILAR MIXCOATL ANDRES GABRIEL",
-    "100015977": "ANGEL FLORES MARIA TERESA",
-    "100016587": "ARIZA AGUILAR DANNA",
-    "100016046": "ARROYO GIL MELISSA",
-    "100016190": "AVALOS OLIVAS OLGA MABEL",
-    "100016786": "CONTRERAS APANGO VALERIA",
-    "100016972": "CORTES DOMINGUEZ SAYURI ALONDRA",
-    "100016254": "CORTEZ CALDERON KRIZIA NICOLE",
-    "100016271": "DEGANTE SILVERIO AXEL",
-    "100016352": "FERNANDEZ ITURRIAGA NICOLAS",
-    "100016393": "FLORES MANZANO MARYFER",
-    "100016664": "FLORES SALAZAR LUIS RICARDO",
-    "100016663": "JARQUIN FLORES ESMERALDA",
-    "100016570": "LUNA MARCOS JOSE MARIA",
-    "100016493": "MOO VASQUEZ CARLOS ARIEL",
-    "100016969": "PERALTA GONZALEZ ALEXANDRA",
-    "100016181": "ROMERO NUÑEZ DIEGO GAEL",
-    "100015510": "AGUILAR ARELLANO YARIMETH",
-    "100015705": "AGUILAR HIDALGO EDGAR MANUEL",
-    "100014782": "AGUILAR PEREZ DULCE ARANZA",
-    "100015254": "COYOTL SOTO JESUS EDUARDO",
-    "100015436": "GONZALEZ TOXTLE ADILENE",
-    "100015146": "LEAL GOMEZ KAREN JANINA",
-    "100015789": "LOPEZ ANDRADE IRVIN DANIEL",
-    "100015504": "MARTINEZ ROMERO GUADALUPE",
-    "100015161": "MORALES ROJAS XIMENA",
-    "100014091": "MUÑOZ CASTAÑEDA JOSE MANUEL",
-    "100015332": "OREA ZARATE MARIANA",
-    "100015612": "OSORIO GARCIA JESSICA EMILY",
-    "100015244": "PEREZ VAZQUEZ RICARDO",
-    "100015601": "SANCHEZ LEON ANIEFH MICHELLE",
-    "100015166": "TEHUITZIL RODRIGUEZ YAEL",
-    "100015112": "TELLEZ FLORES FRANCISCO JAVIER",
-    "100015093": "TORNEZ ROQUE MILKA GUADALUPE",
-    "100014418": "AGUILAR MORALES JUARYTH",
-    "100014714": "ANDRADE REYES ALEJANDRO",
-    "100015048": "ANDRADE VELAZQUEZ MELISA",
-    "100014785": "BRAVO RAMIREZ SUANY YARLETH",
-    "100014786": "CAMACHO HERNANDEZ JOSE LUIS",
-    "100014094": "CASTAÑEDA CRUZ ALBERTO",
-    "100014439": "COYOTL HUANETL DAVID",
-    "100014290": "FLORES FIGUEROA YARET CELIA",
-    "100014235": "LOPEZ GARCIA PEDRO ANDRES",
-    "100014275": "MARTINEZ MARTINEZ REGINA",
-    "100014715": "POTENCIANO ROMERO URIEL DE JESUS",
-    "100014115": "VELAZQUEZ MOYOTL ANA JOLETTE",
-    "100013212": "ALTAMIRA GUEVARA ALEX ALBERTO",
-    "100013240": "CUAZITL VELASCO MIRIAM ALONDRA",
-    "100015586": "ALVARO GONZALEZ REY DAVID",
-    "100015408": "CORTES CASTRO PATRICIA",
-    "100015247": "GARCIA MENESES KENIA",
-    "100015389": "GONZALEZ BAUTISTA MARIANNE",
-    "100015301": "JERONIMO GONZALEZ ALY ESTEPHANY",
-    "100015303": "LOPEZ MARTINEZ LORELEI JANETH",
-    "100015212": "MAGAÑA DE JESUS JAZMIN ARLETTE",
-    "100015383": "MARTINEZ HERNANDEZ ANA MONTSERRAT",
-    "100015809": "PAEZ DE LEON IAN CARLOS",
-    "100015419": "PEREZ HUACHINA YURIDIA",
-    "100015515": "PORRAS PROMOTOR ANA PAOLA",
-    "100015243": "SALAMA AGUILAR EMILIO",
-    "100015442": "VAZQUEZ RAMIREZ MILDRE AZUCENA",
-    "100014672": "AGUILAR JUAREZ DANIEL",
-    "100014724": "ARCE FLORES ALDO",
-    "100014053": "BORJA SANCHEZ RICARDO SAID",
-    "100014127": "CAMACHO MACIN ARACELI",
-    "100014114": "DE MERCED HUERTA ALONDRA",
-    "100014274": "GARCIA ALVAREZ ERENDIRA SAMANTA",
-    "100014277": "GARCIA LOPEZ DANNA PAOLA",
-    "100014658": "HERNANDEZ RODRIGUEZ NADIA",
-    "100014109": "NIEMBRO ROJAS COVADONGA",
-    "100014456": "NIÑO MARTINEZ JOSE MANUEL",
-    "100014554": "RAMIREZ PALACIOS JAFET",
-    "100017960": "BAEZ MOXO GERARDO ALEXIS",
-    "100018143": "BALTAZAR TAPIA CAMILA",
-    "100017495": "CABAÑAS SANCHEZ CARLOS",
-    "100017538": "DIRCIO VENEGAS CRISTIAN EMMANUEL",
-    "100017890": "ESPINOSA HERNANDEZ KARLA DANIELA",
-    "100017896": "ESQUIVEL LOPEZ MARIA LIZBETH",
-    "100017738": "FLORES BARBOSA MIA ANDREA",
-    "100018159": "FLORES ZEFERINO GUADALUPE",
-    "100017492": "FUENTECILLA SANTIAGO MINERVA",
-    "100017424": "JIMENEZ HERNANDEZ JUAN MANUEL",
-    "100017568": "JIMENEZ MELENDEZ JULISSA",
-    "100017733": "JIMENEZ MELQUIADES ALARICK ISAI",
-    "100018163": "JUAREZ REYES MOISES",
-    "100017418": "LOYOLA ORTEGA NURI GUADALUPE",
-    "100018146": "MARTINEZ LUNA EDITH",
-    "100018173": "MONROY ZAMORA JOSUE GERMAN",
-    "100017529": "MORENO BRISEÑO CINTHIA",
-    "100018001": "OLIVAREZ GARCIA AXCEL",
-    "100017756": "RAMIREZ DAMAS VALERY HAIDE",
-    "100017660": "REYES CELAYA ISAMAR",
-    "100017668": "ROJAS GARCIA AQUETZALIN",
-    "100018183": "RUIZ LIMA ESTEFANIA",
-    "100018160": "SANTAMARIA SORIANO DULCE MARIELA",
-    "100017952": "SANTOS GUTIERREZ DULCE VALERIA",
-    "100018051": "SEGURA LEON VALERIA MICHEL",
-    "100018065": "TENIZA MOSON ARANZA BELEM",
-    "100018092": "VÁZQUEZ MONTIEL VALERIA",
-    "100016789": "AMADOR BELLO BRANDON",
-    "100016387": "BECERRA LOEZA MARIAN ANGELA",
-    "100016593": "BLANCO CASTELLANOS KARLA LUPITA",
-    "100016950": "BRUNO ORTIZ DIANA LAURA",
-    "100016150": "CABRERA CRUZ PILAR",
-    "100016402": "CHARRO QUINTANA MAYREL",
-    "100016992": "CORDERO MONTIEL GALIA",
-    "100016349": "CRESPO DE LA CRUZ LEHOMAR",
-    "100016650": "GARCIA GARCIA DIEGO ENRIQUE",
-    "100016958": "HERNANDEZ HERRERA AUSTIN ALEJANDRO",
-    "100016398": "HERNANDEZ LUIS EMMA PAOLA",
-    "100016673": "LOPEZ PEREZ MIGUEL ANGEL",
-    "100016136": "LUNA ORTEGA SANDY",
-    "100016917": "ORIZAVA RIVERA OLIVER",
-    "100016500": "PEREZ VAZQUEZ FABIAN",
-    "100016784": "RAMOS MENDEZ LIZBETH",
-    "100016702": "ROJAS FLORES ABIGAIL",
-    "100016872": "ROJAS SANCHEZ JOSE MANUEL",
-    "100016782": "SANCHEZ CASTILLO DAFNE SARAI",
-    "100016923": "SANCHEZ SAN MARTIN JUAN YARED",
-    "100016754": "SANTOS ROJAS JOSELIN",
-    "100016874": "SAUCEDO DELGADO ASHLEY"
-};
+/* --- STUDENT DATABASE --- */
+const STUDENT_DB={"100017415":"AVELINO MATEO XIMENA DANIELA","100017697":"BAEZ ROSALES ANGEL HERSAI","100017904":"CARRILLO CASTELAN FERNANDA HARET","100017657":"CATAL LUCAS SANDRA","100018025":"CRUZ LUCAS AIDE NATIVIDAD","100017729":"CUAYA FUENTES ALEX","100018128":"FERRER RODRIGUEZ XIMENA","100017907":"GAONA SORIA ISAAC MARIANO","100017651":"GARCIA ALVAREZ SANTIAGO","100017652":"GIL MARTINEZ BERENICE","100017370":"HERNANDEZ CORTES FATIMA","100018166":"HILARIO CASTAÑEDA ULISES","100017271":"MENA LORENZO OSCAR URIEL","100017869":"MERINO HERNANDEZ MARICRUZ","100018056":"MOCTEZUMA ORTEGA ARIEL","100017497":"MOLINA ENRIQUEZ RENE","100017665":"MORALES BELLO VANESSA","100017775":"MORALES GUTIEREZ ISAAC","100018096":"MORALES POBLANO EMILIO","100018164":"MUÑOZ CASTAÑEDA VALERIA","100017878":"NAVA FLORES SAUL EDUARDO","100017312":"NAVA MONTIEL CAMILA","100018099":"RAMIREZ CARREON EVA SOFIA","100018064":"RODRIGUEZ JIMENEZ MARIA ESTEFANIA","100017243":"SANCHEZ GONZALEZ CAMILA AMEYALTZIN","100017751":"VARGAS CASTILLO INES","100018135":"VARGAS TIRSO MARICARMEN","100016403":"AGUILA CADENA ADALIF ANGELLIQUE","100016666":"AGUILAR MIXCOATL ANDRES GABRIEL","100015977":"ANGEL FLORES MARIA TERESA","100016587":"ARIZA AGUILAR DANNA","100016046":"ARROYO GIL MELISSA","100016190":"AVALOS OLIVAS OLGA MABEL","100016786":"CONTRERAS APANGO VALERIA","100016972":"CORTES DOMINGUEZ SAYURI ALONDRA","100016254":"CORTEZ CALDERON KRIZIA NICOLE","100016271":"DEGANTE SILVERIO AXEL","100016352":"FERNANDEZ ITURRIAGA NICOLAS","100016393":"FLORES MANZANO MARYFER","100016664":"FLORES SALAZAR LUIS RICARDO","100016663":"JARQUIN FLORES ESMERALDA","100016570":"LUNA MARCOS JOSE MARIA","100016493":"MOO VASQUEZ CARLOS ARIEL","100016969":"PERALTA GONZALEZ ALEXANDRA","100016181":"ROMERO NUÑEZ DIEGO GAEL","100015510":"AGUILAR ARELLANO YARIMETH","100015705":"AGUILAR HIDALGO EDGAR MANUEL","100014782":"AGUILAR PEREZ DULCE ARANZA","100015254":"COYOTL SOTO JESUS EDUARDO","100015436":"GONZALEZ TOXTLE ADILENE","100015146":"LEAL GOMEZ KAREN JANINA","100015789":"LOPEZ ANDRADE IRVIN DANIEL","100015504":"MARTINEZ ROMERO GUADALUPE","100015161":"MORALES ROJAS XIMENA","100014091":"MUÑOZ CASTAÑEDA JOSE MANUEL","100015332":"OREA ZARATE MARIANA","100015612":"OSORIO GARCIA JESSICA EMILY","100015244":"PEREZ VAZQUEZ RICARDO","100015601":"SANCHEZ LEON ANIEFH MICHELLE","100015166":"TEHUITZIL RODRIGUEZ YAEL","100015112":"TELLEZ FLORES FRANCISCO JAVIER","100015093":"TORNEZ ROQUE MILKA GUADALUPE","100014418":"AGUILAR MORALES JUARYTH","100014714":"ANDRADE REYES ALEJANDRO","100015048":"ANDRADE VELAZQUEZ MELISA","100014785":"BRAVO RAMIREZ SUANY YARLETH","100014786":"CAMACHO HERNANDEZ JOSE LUIS","100014094":"CASTAÑEDA CRUZ ALBERTO","100014439":"COYOTL HUANETL DAVID","100014290":"FLORES FIGUEROA YARET CELIA","100014235":"LOPEZ GARCIA PEDRO ANDRES","100014275":"MARTINEZ MARTINEZ REGINA","100014715":"POTENCIANO ROMERO URIEL DE JESUS","100014115":"VELAZQUEZ MOYOTL ANA JOLETTE","100013212":"ALTAMIRA GUEVARA ALEX ALBERTO","100013240":"CUAZITL VELASCO MIRIAM ALONDRA","100015586":"ALVARO GONZALEZ REY DAVID","100015408":"CORTES CASTRO PATRICIA","100015247":"GARCIA MENESES KENIA","100015389":"GONZALEZ BAUTISTA MARIANNE","100015301":"JERONIMO GONZALEZ ALY ESTEPHANY","100015303":"LOPEZ MARTINEZ LORELEI JANETH","100015212":"MAGAÑA DE JESUS JAZMIN ARLETTE","100015383":"MARTINEZ HERNANDEZ ANA MONTSERRAT","100015809":"PAEZ DE LEON IAN CARLOS","100015419":"PEREZ HUACHINA YURIDIA","100015515":"PORRAS PROMOTOR ANA PAOLA","100015243":"SALAMA AGUILAR EMILIO","100015442":"VAZQUEZ RAMIREZ MILDRE AZUCENA","100014672":"AGUILAR JUAREZ DANIEL","100014724":"ARCE FLORES ALDO","100014053":"BORJA SANCHEZ RICARDO SAID","100014127":"CAMACHO MACIN ARACELI","100014114":"DE MERCED HUERTA ALONDRA","100014274":"GARCIA ALVAREZ ERENDIRA SAMANTA","100014277":"GARCIA LOPEZ DANNA PAOLA","100014658":"HERNANDEZ RODRIGUEZ NADIA","100014109":"NIEMBRO ROJAS COVADONGA","100014456":"NIÑO MARTINEZ JOSE MANUEL","100014554":"RAMIREZ PALACIOS JAFET","100017960":"BAEZ MOXO GERARDO ALEXIS","100018143":"BALTAZAR TAPIA CAMILA","100017495":"CABAÑAS SANCHEZ CARLOS","100017538":"DIRCIO VENEGAS CRISTIAN EMMANUEL","100017890":"ESPINOSA HERNANDEZ KARLA DANIELA","100017896":"ESQUIVEL LOPEZ MARIA LIZBETH","100017738":"FLORES BARBOSA MIA ANDREA","100018159":"FLORES ZEFERINO GUADALUPE","100017492":"FUENTECILLA SANTIAGO MINERVA","100017424":"JIMENEZ HERNANDEZ JUAN MANUEL","100017568":"JIMENEZ MELENDEZ JULISSA","100017733":"JIMENEZ MELQUIADES ALARICK ISAI","100018163":"JUAREZ REYES MOISES","100017418":"LOYOLA ORTEGA NURI GUADALUPE","100018146":"MARTINEZ LUNA EDITH","100018173":"MONROY ZAMORA JOSUE GERMAN","100017529":"MORENO BRISEÑO CINTHIA","100018001":"OLIVAREZ GARCIA AXCEL","100017756":"RAMIREZ DAMAS VALERY HAIDE","100017660":"REYES CELAYA ISAMAR","100017668":"ROJAS GARCIA AQUETZALIN","100018183":"RUIZ LIMA ESTEFANIA","100018160":"SANTAMARIA SORIANO DULCE MARIELA","100017952":"SANTOS GUTIERREZ DULCE VALERIA","100018051":"SEGURA LEON VALERIA MICHEL","100018065":"TENIZA MOSON ARANZA BELEM","100018092":"VÁZQUEZ MONTIEL VALERIA","100016789":"AMADOR BELLO BRANDON","100016387":"BECERRA LOEZA MARIAN ANGELA","100016593":"BLANCO CASTELLANOS KARLA LUPITA","100016950":"BRUNO ORTIZ DIANA LAURA","100016150":"CABRERA CRUZ PILAR","100016402":"CHARRO QUINTANA MAYREL","100016992":"CORDERO MONTIEL GALIA","100016349":"CRESPO DE LA CRUZ LEHOMAR","100016650":"GARCIA GARCIA DIEGO ENRIQUE","100016958":"HERNANDEZ HERRERA AUSTIN ALEJANDRO","100016398":"HERNANDEZ LUIS EMMA PAOLA","100016673":"LOPEZ PEREZ MIGUEL ANGEL","100016136":"LUNA ORTEGA SANDY","100016917":"ORIZAVA RIVERA OLIVER","100016500":"PEREZ VAZQUEZ FABIAN","100016784":"RAMOS MENDEZ LIZBETH","100016702":"ROJAS FLORES ABIGAIL","100016872":"ROJAS SANCHEZ JOSE MANUEL","100016782":"SANCHEZ CASTILLO DAFNE SARAI","100016923":"SANCHEZ SAN MARTIN JUAN YARED","100016754":"SANTOS ROJAS JOSELIN","100016874":"SAUCEDO DELGADO ASHLEY"};
 
 /* --- UTILS --- */
 function fmtMoney(n) { return "$" + n.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}); }
-// Safe Base64 for Tokens (UTF-8 support)
 function utf8_to_b64(str) { return window.btoa(unescape(encodeURIComponent(str))); }
 function b64_to_utf8(str) { return decodeURIComponent(escape(window.atob(str))); }
 
@@ -400,40 +302,105 @@ const MAX_DAYS = 7;
 const INITIAL_CASH = 1000000;
 
 const assetsDB = [
-    { id: 'ipc', name: 'IPC México', type: 'Índice', base: 54000, desc: "Índice de Precios y Cotizaciones. Refleja la economía mexicana.", risk: "Medio", hist: [1, 1.01, 1.005, 0.98, 0.95, 0.96, 0.99] },
-    { id: 'spx', name: 'S&P 500', type: 'Índice', base: 9500, desc: "Las 500 empresas más grandes de EE.UU.", risk: "Medio", hist: [1, 1.02, 1.03, 1.01, 0.90, 0.92, 0.95] },
-    { id: 'usd', name: 'Dólar (USD)', type: 'Divisa', base: 19.80, desc: "Moneda de reserva mundial. Activo de refugio.", risk: "Bajo", hist: [1, 1.01, 1.03, 1.05, 1.10, 1.08, 1.07] },
-    { id: 'nvda', name: 'NVIDIA', type: 'Acción', base: 2800, desc: "Líder en chips de IA. Alta volatilidad.", risk: "Alto", hist: [1, 1.05, 1.12, 1.15, 0.70, 0.80, 0.95] },
-    { id: 'amzn', name: 'Amazon', type: 'Acción', base: 3200, desc: "Gigante del e-commerce y servicios en la nube.", risk: "Medio", hist: [1, 0.98, 0.99, 1.02, 1.04, 1.06, 1.10] },
-    { id: 'googl', name: 'Google', type: 'Acción', base: 3400, desc: "Dominio en búsquedas y publicidad digital.", risk: "Medio", hist: [1, 1.01, 1.01, 1.02, 0.99, 1.01, 1.03] },
-    { id: 'tsla', name: 'Tesla', type: 'Acción', base: 4100, desc: "Vehículos eléctricos. Muy sensible a noticias.", risk: "Muy Alto", hist: [1, 1.05, 1.02, 0.95, 0.90, 0.85, 1.15] },
-    { id: 'gold', name: 'Oro', type: 'Commodity', base: 35000, desc: "Refugio clásico contra la inflación.", risk: "Bajo", hist: [1, 1.01, 1.02, 1.04, 1.05, 1.06, 1.07] },
-    { id: 'oil', name: 'Petróleo WTI', type: 'Commodity', base: 1400, desc: "Energía global. Sensible a geopolítica.", risk: "Alto", hist: [1, 1.05, 1.10, 1.15, 1.00, 0.90, 0.85] },
-    { id: 'pemex', name: 'Bonos PEMEX', type: 'Obligación', base: 100, desc: "Deuda de petrolera estatal. Riesgo país.", risk: "Alto", hist: [1, 0.99, 0.98, 0.95, 0.90, 0.85, 0.88] },
-    { id: 'bimbo', name: 'Cert. BIMBO', type: 'Obligación', base: 105, desc: "Deuda corporativa estable de consumo masivo.", risk: "Bajo", hist: [1, 1.001, 1.002, 1.003, 1.004, 1.005, 1.006] },
-    { id: 'cetes', name: 'CETES 28', type: 'Bono Gov', base: 10, desc: "Certificados de la Tesorería. La opción más segura.", risk: "Nulo", hist: [1, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012] },
-    { id: 'btc', name: 'Bitcoin', type: 'Cripto', base: 1300000, desc: "Oro digital. Potencial masivo y riesgo de pérdida total.", risk: "Extremo", hist: [1, 1.10, 1.20, 0.90, 0.85, 1.25, 1.40] }
+    { 
+        id: 'ipc', name: 'IPC México', type: 'Índice', base: 54000, 
+        desc: "El Índice de Precios y Cotizaciones es el principal indicador de la Bolsa Mexicana de Valores. Refleja el comportamiento de las 35 empresas más líquidas del país.", 
+        tip: "Si crees que a la economía de México le irá bien, compra esto.",
+        risk: "Medio", vol: "Media", hist: [1, 1.01, 1.005, 0.98, 0.95, 0.96, 0.99] 
+    },
+    { 
+        id: 'spx', name: 'S&P 500', type: 'Índice', base: 9500, 
+        desc: "Las 500 empresas más grandes de Estados Unidos. Es el termómetro de la economía global. Si esto se enferma, el mundo estornuda.", 
+        tip: "La apuesta más segura a largo plazo en renta variable.",
+        risk: "Medio", vol: "Baja", hist: [1, 1.02, 1.03, 1.01, 0.90, 0.92, 0.95] 
+    },
+    { 
+        id: 'usd', name: 'Dólar (USD)', type: 'Divisa', base: 19.80, 
+        desc: "Moneda de reserva mundial. Cuando hay miedo, todos corren hacia el dólar.", 
+        tip: "Funciona como seguro. Si todo cae, el dólar suele subir.",
+        risk: "Bajo", vol: "Baja", hist: [1, 1.01, 1.03, 1.05, 1.10, 1.08, 1.07] 
+    },
+    { 
+        id: 'nvda', name: 'NVIDIA', type: 'Acción', base: 2800, 
+        desc: "El rey de los chips de Inteligencia Artificial. Actualmente la empresa más importante del planeta, pero con una valoración que da vértigo.", 
+        tip: "Puede hacerte rico o pobre en una semana. No apto para cardíacos.",
+        risk: "Alto", vol: "Muy Alta", hist: [1, 1.05, 1.12, 1.15, 0.70, 0.80, 0.95] 
+    },
+    { 
+        id: 'amzn', name: 'Amazon', type: 'Acción', base: 3200, 
+        desc: "Dueño del comercio electrónico y de la mitad de internet (AWS). Una máquina de hacer dinero con márgenes muy estables.", 
+        tip: "Suele subir en temporadas de compras como el Black Friday.",
+        risk: "Medio", vol: "Media", hist: [1, 0.98, 0.99, 1.02, 1.04, 1.06, 1.10] 
+    },
+    { 
+        id: 'googl', name: 'Google', type: 'Acción', base: 3400, 
+        desc: "Monopolio de búsquedas y publicidad. Genera efectivo masivamente, pero enfrenta riesgos regulatorios.", 
+        tip: "Si no sabes qué comprar, Google rara vez falla a largo plazo.",
+        risk: "Medio", vol: "Media", hist: [1, 1.01, 1.01, 1.02, 0.99, 1.01, 1.03] 
+    },
+    { 
+        id: 'tsla', name: 'Tesla', type: 'Acción', base: 4100, 
+        desc: "Coches eléctricos y robots. Su precio se mueve más por los tuits de Elon Musk que por sus ventas reales.", 
+        tip: "Es un culto, no una empresa. Cuidado con la volatilidad.",
+        risk: "Muy Alto", vol: "Extrema", hist: [1, 1.05, 1.02, 0.95, 0.90, 0.85, 1.15] 
+    },
+    { 
+        id: 'gold', name: 'Oro', type: 'Commodity', base: 35000, 
+        desc: "El refugio milenario. No paga intereses ni dividendos, pero mantiene su valor cuando el dinero pierde el suyo.", 
+        tip: "Cómpralo si crees que viene el apocalipsis financiero.",
+        risk: "Bajo", vol: "Baja", hist: [1, 1.01, 1.02, 1.04, 1.05, 1.06, 1.07] 
+    },
+    { 
+        id: 'oil', name: 'Petróleo WTI', type: 'Commodity', base: 1400, 
+        desc: "El motor del mundo industrial. Su precio depende de guerras, cárteles (OPEP) y clima.", 
+        tip: "Sube cuando hay guerra en Medio Oriente.",
+        risk: "Alto", vol: "Alta", hist: [1, 1.05, 1.10, 1.15, 1.00, 0.90, 0.85] 
+    },
+    { 
+        id: 'pemex', name: 'Bonos PEMEX', type: 'Obligación', base: 100, 
+        desc: "Deuda de la petrolera más endeudada del mundo. Paga intereses altísimos porque el riesgo de impago es real.", 
+        tip: "¿Confías en que el gobierno la rescatará siempre?",
+        risk: "Alto", vol: "Media", hist: [1, 0.99, 0.98, 0.95, 0.90, 0.85, 0.88] 
+    },
+    { 
+        id: 'bimbo', name: 'Cert. BIMBO', type: 'Obligación', base: 105, 
+        desc: "Deuda corporativa de la panificadora más grande. Extremadamente estable. La gente come pan en las crisis.", 
+        tip: "Rendimiento bajo pero seguro. Para dormir tranquilo.",
+        risk: "Bajo", vol: "Baja", hist: [1, 1.001, 1.002, 1.003, 1.004, 1.005, 1.006] 
+    },
+    { 
+        id: 'cetes', name: 'CETES 28', type: 'Bono Gov', base: 10, 
+        desc: "Certificados de la Tesorería. Deuda del Gobierno Federal. La inversión 'Libre de Riesgo' en México.", 
+        tip: "Si esto deja de pagar, preocúpate por conseguir comida, no dinero.",
+        risk: "Nulo", vol: "Nula", hist: [1, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012] 
+    },
+    { 
+        id: 'btc', name: 'Bitcoin', type: 'Cripto', base: 1300000, 
+        desc: "Dinero digital incensurable. Puede valer un millón o cero mañana. Pura oferta y demanda.", 
+        tip: "Solo mete el dinero que estés dispuesto a perder.",
+        risk: "Extremo", vol: "Extrema", hist: [1, 1.10, 1.20, 0.90, 0.85, 1.25, 1.40] 
+    }
 ];
 
 const startScenarios = [
-    { fin: ["Bolsa Mexicana toca máximos.", "Superpeso fuerte.", "NVIDIA lidera rally."], eco: ["Confianza consumidor alta.", "Inversión récord.", "Tech imparables."], hint: "Mercado eufórico. Tendencia alcista." },
-    { fin: ["Miedo a recesión EE.UU.", "Petróleo cae.", "Refugio en bonos."], eco: ["PIB desacelera.", "Alerta construcción.", "Oro sube."], hint: "Incertidumbre. Busca seguridad." },
-    { fin: ["Bitcoin rompe barreras.", "Fiebre IA.", "Startups ganan."], eco: ["¿Burbuja?", "Riesgo cripto.", "Volatilidad."], hint: "Alto riesgo, alta recompensa." }
+    { fin: ["Bolsa Mexicana toca máximos históricos esta mañana.", "NVIDIA lidera el rally global con nuevas ganancias."], eco: ["Confianza del consumidor alcanza nivel récord.", "El sector tecnológico se muestra imparable."], hint: "El mercado está eufórico. Aprovecha la tendencia alcista." },
+    { fin: ["Temores de recesión en EE.UU. tiran los mercados.", "Inversores buscan refugio en bonos y oro."], eco: ["PIB global muestra signos claros de desaceleración.", "Alerta roja en el sector de construcción."], hint: "Tiempos inciertos. Busca activos seguros como Bonos o Dólares." },
+    { fin: ["Bitcoin rompe barreras de resistencia importantes.", "Fiebre especulativa por la Inteligencia Artificial."], eco: ["Analistas debaten: ¿Nueva burbuja punto com?", "Alta volatilidad esperada en criptoactivos."], hint: "Alto riesgo, alta recompensa. Cripto promete." }
 ];
 const fixedNews = [ null, null,
-    { fin: ["Regulación Tech Europa.", "Amazon invierte.", "PEMEX presionado."], eco: ["Multa a NVIDIA.", "Deuda PEMEX.", "Incertidumbre."], hint: "Cuidado con NVIDIA y PEMEX." },
-    { fin: ["Inflación repunta.", "Tasas altas.", "IPC baja."], eco: ["Banxico firme.", "BIMBO sólido.", "CETES atractivos."], hint: "Deuda corporativa sólida es refugio." },
-    { fin: ["¡ALERTA ROJA!", "NVIDIA fraude.", "S&P 500 cae."], eco: ["Pánico Wall St.", "Ventas masivas.", "BTC tambalea."], hint: "¡VENDE RIESGO! Busca liquidez." },
-    { fin: ["Estabilización.", "Oportunidades compra.", "Dólar sube."], eco: ["Cazadores ofertas.", "NVIDIA mínimos.", "Refugio divisas."], hint: "¿Rebote técnico? Compra barato." },
-    { fin: ["Rescate deuda.", "Bitcoin rebota.", "Amazon sorprende."], eco: ["Hacienda recompra.", "Cripto brilla.", "Consumo fuerte."], hint: "Consumo y Cripto recuperan." },
-    { fin: ["Cierre fiscal.", "Auditoría final.", "Mixto."], eco: ["Fin ciclo.", "Balances.", "Expectativa."], hint: "Asegura ganancias. Cierra libros." }
+    { fin: ["Rumores de regulación tecnológica en la Unión Europea.", "La deuda de PEMEX preocupa a las calificadoras."], eco: ["La UE prepara una multa millonaria para NVIDIA.", "Incertidumbre cambiaria afecta al peso."], hint: "Cuidado con NVIDIA y PEMEX. Hay ruido negativo." },
+    { fin: ["La inflación repunta ligeramente en el último reporte.", "Se espera que las tasas de interés se mantengan altas."], eco: ["Banxico se mantiene firme con su política monetaria.", "BIMBO reporta solidez financiera ante la crisis."], hint: "En entornos de tasas altas, la deuda corporativa sólida es refugio." },
+    { fin: ["¡ALERTA ROJA! NVIDIA es investigada por fraude contable.", "El S&P 500 cae con fuerza tras la noticia."], eco: ["Pánico vendedor se apodera de Wall Street hoy.", "Inversores liquidan posiciones masivamente."], hint: "¡VENDE RIESGO! El mercado está colapsando. Busca liquidez." },
+    { fin: ["Los mercados intentan estabilizarse tras el crash.", "El dólar se dispara como activo de refugio."], eco: ["Cazadores de ofertas empiezan a comprar acciones baratas.", "NVIDIA toca sus mínimos anuales."], hint: "A veces, tras el pánico viene el rebote. ¿Te atreves a comprar barato?" },
+    { fin: ["El gobierno anuncia plan de rescate para la deuda.", "Amazon sorprende con resultados trimestrales positivos."], eco: ["Hacienda recompra bonos para dar confianza.", "El consumo interno se muestra más fuerte de lo esperado."], hint: "El sector consumo (Amazon) y Cripto lideran la recuperación." },
+    { fin: ["Cierre de ejercicio fiscal. Se recomienda cautela.", "Resultados mixtos al cierre de la jornada."], eco: ["Fin del ciclo bursátil. Es hora de hacer balances.", "Expectativa de cierre tranquila."], hint: "Asegura ganancias. No arriesgues hoy. Cierra libros." }
 ];
 
 const hustles = [
-    { title: "Lote de Vapes", desc: "Un contacto vende mercancía china 'gris' a precio de remate.", cost: 50000 },
-    { title: "Puesto de Tacos", desc: "Traspaso de local frente a la universidad.", cost: 100000 },
-    { title: "Préstamo Personal", desc: "Un compañero necesita dinero urgente. Pagaré firmado.", cost: 20000 },
-    { title: "NFTs de Monos", desc: "Colección de arte digital. Dicen que subirá.", cost: 10000 }
+    { title: "Lote de Vapes", desc: "Un contacto vende mercancía china 'gris' a precio de remate.", cost: 50000, riskText: "La policía confiscó la mercancía." },
+    { title: "Puesto de Tacos", desc: "Traspaso de local frente a la universidad.", cost: 100000, riskText: "Clausurado por salubridad." },
+    { title: "Préstamo Personal", desc: "Un compañero necesita dinero urgente. Pagaré firmado.", cost: 20000, riskText: "El compañero se dio de baja y desapareció." },
+    { title: "NFTs de Monos", desc: "Colección de arte digital. Dicen que subirá.", cost: 10000, riskText: "El proyecto era una estafa (Rug Pull)." }
 ];
 
 let gameState = {
@@ -455,14 +422,8 @@ function toggleLoginMode(mode) {
 function startSequence() {
     const id = document.getElementById('studentId').value.trim();
     if(!id) return alert("Ingresa tu matrícula");
-    
-    // VALIDACIÓN CONTRA BASE DE DATOS
     const studentName = STUDENT_DB[id];
-    
-    if(!studentName) {
-        alert("⛔ ACCESO DENEGADO\nLa matrícula " + id + " no está autorizada para usar este simulador.");
-        return;
-    }
+    if(!studentName) return alert("⛔ ACCESO DENEGADO\nMatrícula no autorizada.");
 
     gameState.id = id;
     gameState.name = studentName;
@@ -471,6 +432,7 @@ function startSequence() {
     gameState.portfolio = {};
     assetsDB.forEach(a => gameState.portfolio[a.id] = 0);
     gameState.narrativeId = Math.floor(Math.random() * 3);
+    gameState.lastSaveTime = Date.now(); // Reset time check on new game
     
     if(document.getElementById('guideCheck').checked) document.querySelectorAll('.help-icon').forEach(el => el.classList.remove('hidden'));
     
@@ -494,15 +456,12 @@ function renderGame() {
 
     // Expert Status
     const btnExp = document.getElementById('btnExpert');
-    const cost = netWorth < INITIAL_CASH ? 1000 : 5000;
-    document.getElementById('expertCostBadge').innerText = fmtMoney(cost);
-    
     if(gameState.expertConsulted) {
         btnExp.classList.add('opacity-50', 'cursor-not-allowed');
         btnExp.innerHTML = `<span><i class="fas fa-check"></i> Ya Consultado</span>`;
     } else {
         btnExp.classList.remove('opacity-50', 'cursor-not-allowed');
-        btnExp.innerHTML = `<span><i class="fas fa-chart-pie"></i> Experto</span><span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">${fmtMoney(cost)}</span>`;
+        btnExp.innerHTML = `<span><i class="fas fa-user-tie"></i> Consultar Analista</span><span class="text-[9px] bg-gray-300 px-1 rounded">Varios</span>`;
     }
 
     // Loan Status
@@ -569,59 +528,106 @@ function renderNews() {
 }
 function toggleNewsSource() { currentNewsSource = currentNewsSource === 'fin' ? 'eco' : 'fin'; renderNews(); }
 
-/* --- INFO MODAL --- */
+/* --- MODALS --- */
 function showInfo(id) {
     const a = assetsDB.find(x => x.id === id);
-    document.getElementById('infoTitle').innerText = a.name; document.getElementById('infoDesc').innerText = a.desc; document.getElementById('infoType').innerText = a.type; document.getElementById('infoRisk').innerText = a.risk;
+    document.getElementById('infoTitle').innerText = a.name;
+    document.getElementById('infoDesc').innerText = a.desc;
+    document.getElementById('infoType').innerText = a.type;
+    document.getElementById('infoRisk').innerText = a.risk;
+    document.getElementById('infoVol').innerText = a.vol; 
+    document.getElementById('infoTip').innerText = a.tip; // NEW: Tip Field
     document.getElementById('infoModal').classList.remove('hidden'); document.getElementById('infoModal').classList.add('flex');
 }
 
-/* --- EXPERTO --- */
-function consultExpert() {
-    if(gameState.expertConsulted) { showExpertHint(); return; }
-    let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0) * getPrice(a, gameState.day));
-    const net = gameState.cash + portVal; const cost = net < INITIAL_CASH ? 1000 : 5000;
-    if(gameState.cash < cost) return alert("Saldo insuficiente.");
-    if(!confirm(`¿Autorizar cargo de ${fmtMoney(cost)}?`)) return;
-    gameState.cash -= cost; gameState.expertConsulted = true; showExpertHint(); renderGame();
-}
-function showExpertHint() {
-    let nextHint = "Mantén la cautela."; if(gameState.day < MAX_DAYS) { const nextData = fixedNews[gameState.day + 1]; if(nextData) nextHint = nextData.hint; }
-    const resBox = document.getElementById('expertResult'); resBox.innerText = `ANALISTA: "${nextHint}"`; resBox.classList.remove('hidden');
+function openExpertModal() {
+    if(gameState.expertConsulted) return alert("Ya has consultado a un experto hoy.");
+    document.getElementById('expertModal').classList.remove('hidden'); document.getElementById('expertModal').classList.add('flex');
 }
 
-/* --- CRÉDITO & HUSTLE --- */
+function buyAdvice(type) {
+    let cost = 0;
+    if(type === 'junior') cost = 500;
+    else if(type === 'senior') cost = 3000;
+    else if(type === 'insider') cost = 10000;
+
+    if(gameState.cash < cost) return alert("Saldo insuficiente.");
+    if(!confirm(`¿Contratar servicio por ${fmtMoney(cost)}?`)) return;
+
+    gameState.cash -= cost;
+    gameState.expertConsulted = true;
+    document.getElementById('expertModal').classList.add('hidden');
+    
+    // Advice Logic
+    let hint = "Sin datos claros.";
+    if(gameState.day < MAX_DAYS) {
+        const nextData = fixedNews[gameState.day + 1];
+        if(nextData) hint = nextData.hint;
+    }
+    
+    // Accuracy RNG
+    let msg = hint;
+    if(type === 'junior' && Math.random() > 0.5) msg = "El mercado parece tranquilo... creo.";
+    if(type === 'senior' && Math.random() > 0.8) msg = "Se observan señales mixtas.";
+    
+    const resBox = document.getElementById('expertResult');
+    resBox.innerText = `CONSEJO: "${msg}"`;
+    resBox.classList.remove('hidden');
+    renderGame();
+}
+
 function openLoanModal() { document.getElementById('loanModal').classList.remove('hidden'); }
 function selectLoan(bank) {
     let amount=0, rate=0;
-    if(bank==='azteca'){amount=500000;rate=0.05;} else if(bank==='santander'){amount=1000000;rate=0.03;} else if(bank==='bbva'){let p=0;assetsDB.forEach(a=>p+=(gameState.portfolio[a.id]||0)*getPrice(a,gameState.day));if((gameState.cash+p)<1200000)return alert("Patrimonio insuficiente.");amount=2000000;rate=0.015;}
+    if(bank==='azteca'){amount=300000;rate=0.04;} else if(bank==='santander'){amount=500000;rate=0.025;} else if(bank==='bbva'){
+        let p=0;assetsDB.forEach(a=>p+=(gameState.portfolio[a.id]||0)*getPrice(a,gameState.day));
+        if((gameState.cash+p)<1200000 && Math.random() > 0.3) return alert("Solicitud rechazada por riesgo.");
+        amount=1000000;rate=0.012;
+    }
     if(confirm(`¿Contratar crédito?\nRecibes: ${fmtMoney(amount)}\nInterés Diario: ${(rate*100)}%`)) { gameState.loan={bank,amount,rate}; gameState.cash+=amount; document.getElementById('loanModal').classList.add('hidden'); renderGame(); }
 }
+function payLoan() {
+    if(gameState.loan.amount <= 0) return;
+    if(gameState.cash < gameState.loan.amount) return alert("No tienes suficiente liquidez para liquidar la deuda.");
+    if(confirm(`¿Liquidar deuda de ${fmtMoney(gameState.loan.amount)}?`)) {
+        gameState.cash -= gameState.loan.amount;
+        gameState.loan = { bank: null, amount: 0, rate: 0 };
+        renderGame();
+    }
+}
+
 function openHustleModal() { if(gameState.hustleDone) return; const hustle = hustles[Math.floor(Math.random() * hustles.length)]; document.getElementById('hustleTitle').innerText = hustle.title; document.getElementById('hustleDesc').innerText = hustle.desc; document.getElementById('hustleCost').innerText = fmtMoney(hustle.cost); document.getElementById('hustleModal').classList.remove('hidden'); gameState.tempHustle = hustle; }
 function executeHustle() {
     const h = gameState.tempHustle; if(!h || gameState.cash < h.cost) return alert("Sin fondos.");
     gameState.cash -= h.cost; document.getElementById('hustleModal').classList.add('hidden'); gameState.hustleDone = true;
-    if(Math.random() > 0.5) { gameState.cash += h.cost * 2; alert(`🎉 ¡ÉXITO! Ganaste ${fmtMoney(h.cost)} extra.`); } else { alert(`📉 FRACASO. Perdiste la inversión.`); }
+    // RNG outcome
+    if(Math.random() > 0.5) { 
+        let profit = h.cost * (1.5 + Math.random()); 
+        gameState.cash += profit; 
+        alert(`🎉 ¡ÉXITO! Ganaste ${fmtMoney(profit - h.cost)} netos.`); 
+    } else { 
+        alert(`📉 FRACASO. ${h.riskText} Perdiste la inversión.`); 
+    }
     renderGame();
-}
-
-/* --- EVENTOS --- */
-function triggerBlackSwan() {
-    if(gameState.day < 3) return;
-    assetsDB.forEach(a => {
-        if(Math.random() < 0.04 && gameState.blackSwans[a.id] === undefined) {
-            if(a.id === 'pemex') { alert(`🇲🇽 ¡MISS UNIVERSO! 🇲🇽\nLa representante de México ganó. Bonos PEMEX suben.`); gameState.blackSwans[a.id] = 1.5; }
-            else if (a.id === 'nvda') { alert(`📉 PELEA DE CEOS 📉\nEl CEO de NVIDIA perdió una pelea. Acciones caen.`); gameState.blackSwans[a.id] = 0.6; }
-            else if (a.id === 'amzn') { alert(`📦 OXYGEN PRIME 📦\nAmazon patenta el aire. Acciones suben.`); gameState.blackSwans[a.id] = 1.3; }
-            else if (a.type === 'Cripto') { alert(`💀 RUG PULL 💀\nCEO 'desaparecido'. Valor cero.`); gameState.blackSwans[a.id] = 0.00; }
-            else if (a.type.includes('Obligación')) { alert(`💀 DEFAULT 💀\nPagos suspendidos.`); gameState.blackSwans[a.id] = 0.2; }
-        }
-    });
 }
 
 /* --- TRADE --- */
 let currTradeId = null, tradeMode = 'buy';
-function openTrade(id) { currTradeId = id; tradeMode = 'buy'; const a = assetsDB.find(x => x.id === id); const p = getPrice(a, gameState.day); document.getElementById('tradeModal').classList.remove('hidden'); document.getElementById('tradeModal').classList.add('flex'); document.getElementById('tradeAssetName').innerText = a.name; document.getElementById('tradeAssetPrice').innerText = fmtMoney(p); document.getElementById('tradeAmount').value = ''; setTradeMode('buy'); }
+function openTrade(id) { 
+    currTradeId = id; tradeMode = 'buy'; 
+    const a = assetsDB.find(x => x.id === id); 
+    const p = getPrice(a, gameState.day); 
+    const owned = gameState.portfolio[id] || 0;
+    
+    document.getElementById('tradeModal').classList.remove('hidden'); 
+    document.getElementById('tradeModal').classList.add('flex'); 
+    document.getElementById('tradeAssetName').innerText = a.name; 
+    document.getElementById('tradeAssetPrice').innerText = fmtMoney(p); 
+    document.getElementById('tradeOwnedQty').innerText = owned.toFixed(4);
+    document.getElementById('tradeOwnedVal').innerText = fmtMoney(owned * p);
+    document.getElementById('tradeAmount').value = ''; 
+    setTradeMode('buy'); 
+}
 function setTradeMode(m) { tradeMode = m; const bB = document.getElementById('btnModeBuy'), bS = document.getElementById('btnModeSell'); if(m==='buy') { bB.className="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white"; bS.className="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500"; } else { bS.className="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white"; bB.className="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500"; } }
 function closeTradeModal() { document.getElementById('tradeModal').classList.add('hidden'); document.getElementById('tradeModal').classList.remove('flex'); }
 function executeTrade() {
@@ -636,25 +642,37 @@ function executeTrade() {
 function endDay() {
     if(!confirm("¿Cerrar libros del día?")) return;
     let loanMsg = "";
-    if(gameState.loan.amount > 0) { const int = gameState.loan.amount * gameState.loan.rate; gameState.cash -= int; loanMsg = `Intereses: -${fmtMoney(int)}`; if(gameState.cash < 0) alert("⚠️ ALERTA: Saldo negativo por intereses."); }
+    if(gameState.loan.amount > 0) { const int = gameState.loan.amount * gameState.loan.rate; gameState.cash -= int; loanMsg = `Intereses cobrados: -${fmtMoney(int)}`; }
+    
     let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0)*getPrice(a, gameState.day));
     const todayNet = gameState.cash + portVal - gameState.loan.amount;
-    let art = "😐"; const roi = (todayNet - INITIAL_CASH); if(roi > 50000) art = "🚀"; else if (roi > 0) art = "📈"; else if (roi < -50000) art = "💀"; else if (roi < 0) art = "📉";
-    document.getElementById('pixelArtHeader').innerHTML = `<span class="transform scale-150 inline-block">${art}</span>`;
-    document.getElementById('endDayMsg').innerText = roi >= 0 ? `Ganancia: +${fmtMoney(roi)}` : `Pérdida: ${fmtMoney(roi)}`;
+    const roi = (todayNet - INITIAL_CASH);
+    
+    // Oregon Trail Style Visuals
+    let art = "😐"; let colorClass = "text-gray-500";
+    if(roi > 100000) { art = "🚀"; colorClass="text-green-400"; }
+    else if(roi > 0) { art = "📈"; colorClass="text-green-600"; }
+    else if(roi < -100000) { art = "💀"; colorClass="text-red-600"; }
+    else { art = "📉"; colorClass="text-yellow-600"; }
+
+    document.getElementById('pixelArtHeader').innerHTML = art;
+    document.getElementById('endDayTitle').className = `text-xl font-bold mb-2 pixel-font text-xs leading-relaxed ${colorClass}`;
+    document.getElementById('endDayMsg').innerText = roi >= 0 ? `Ganancia acumulada: +${fmtMoney(roi)}` : `Pérdida acumulada: ${fmtMoney(roi)}`;
     document.getElementById('daySummary').innerText = loanMsg;
+
     if(gameState.day >= MAX_DAYS) { showResults(); return; }
     
-    // SAVE ONLY STATE, NO NAME (To Avoid encoding errors with accents)
-    // The ID is preserved, so we can recover the name from DB on load
+    // PREPARE NEXT DAY
     let nextState = JSON.parse(JSON.stringify(gameState)); 
     nextState.day++; nextState.expertConsulted = false; nextState.hustleDone = false;
-    delete nextState.name; // Remove name from token to safe space and avoid utf8 issues
-    
+    delete nextState.name; // Don't save name in token
+    nextState.lastSaveTime = Date.now(); // Mark time
+
     const jsonStr = JSON.stringify(nextState);
     const code = "UDAL-" + utf8_to_b64(jsonStr).split('').reverse().join('');
-    
-    document.getElementById('generatedCode').innerText = code; document.getElementById('saveModal').classList.remove('hidden'); document.getElementById('saveModal').classList.add('flex');
+    document.getElementById('generatedCode').innerText = code; 
+    document.getElementById('saveModal').classList.remove('hidden'); 
+    document.getElementById('saveModal').classList.add('flex');
 }
 
 /* --- SAVE/LOAD --- */
@@ -664,26 +682,43 @@ function showResults() {
     const finalVal = gameState.cash + portVal - gameState.loan.amount; const roi = ((finalVal - INITIAL_CASH) / INITIAL_CASH) * 100;
     document.getElementById('finalNetWorth').innerText = fmtMoney(finalVal); document.getElementById('finalROI').innerText = roi.toFixed(2) + "%";
     const icon = document.getElementById('badgeIcon'), title = document.getElementById('rankTitle'), desc = document.getElementById('rankDesc');
-    if(finalVal > 1200000) { icon.innerHTML = '👑'; title.innerText = "MAGNATE"; desc.innerText = "Dominaste el mercado."; }
-    else if (finalVal > 1050000) { icon.innerHTML = '💼'; title.innerText = "EJECUTIVO"; desc.innerText = "Buen rendimiento."; }
-    else if (finalVal > 1000000) { icon.innerHTML = '😐'; title.innerText = "AHORRADOR"; desc.innerText = "No perdiste dinero."; }
-    else { icon.innerHTML = '📉'; title.innerText = "QUIEBRA"; desc.innerText = "El mercado gana esta vez."; }
+    
+    // Final Endings
+    if(finalVal > 1200000) { 
+        icon.innerHTML = '👑'; title.innerText = "MAGNATE"; desc.innerText = "Tu imperio sobrevivió a la peste."; 
+    } else if (finalVal > 1050000) { 
+        icon.innerHTML = '💼'; title.innerText = "EJECUTIVO"; desc.innerText = "Llegaste a la meta con ganancias."; 
+    } else if (finalVal > 1000000) { 
+        icon.innerHTML = '😐'; title.innerText = "SOBREVIVIENTE"; desc.innerText = "No perdiste la carreta, pero tampoco ganaste."; 
+    } else { 
+        icon.innerHTML = '💀'; title.innerText = "QUIEBRA"; desc.innerText = "Tu carrera financiera terminó. Ahora vendes cursos de trading en TikTok."; 
+    }
 }
 
 function loadGame() {
     let code = document.getElementById('saveCodeInput').value.trim().replace(/\s/g, '');
-    let bypass = false; if(code.startsWith("4242UDAL")) { bypass = true; code = code.substring(4); }
+    let bypass = false; 
+    
+    // BYPASS CHECK (UDAL42-)
+    if(code.startsWith("UDAL42-")) { 
+        bypass = true; 
+        code = "UDAL-" + code.substring(7); // Restore standard prefix for decoding
+    }
+
     try {
         const encodedStr = code.replace("UDAL-","").split('').reverse().join('');
         const jsonStr = b64_to_utf8(encodedStr);
         const data = JSON.parse(jsonStr);
         if(!data.loan) data.loan = {amount:0, rate:0};
         
-        // RECOVER NAME FROM DB USING ID
-        if(data.id && STUDENT_DB[data.id]) {
-            data.name = STUDENT_DB[data.id];
-        } else {
-            data.name = "Desconocido (Error DB)";
+        // RECOVER NAME
+        if(data.id && STUDENT_DB[data.id]) { data.name = STUDENT_DB[data.id]; } 
+        else { data.name = "Desconocido"; }
+
+        // TIME CHECK (If not bypassed)
+        if(!bypass && data.day > 1 && data.lastSaveTime) {
+            const hoursPassed = (Date.now() - data.lastSaveTime) / (1000 * 60 * 60);
+            if(hoursPassed < 24) return alert(`Mercado cerrado. Debes esperar ${Math.ceil(24-hoursPassed)} horas más.`);
         }
 
         gameState = data;
@@ -701,16 +736,14 @@ function copyCode() { navigator.clipboard.writeText(document.getElementById('gen
 function checkTeacherLogin() { if(document.getElementById('teacherPwd').value === "udalintrader") { document.getElementById('teacherLoginModal').classList.add('hidden'); document.getElementById('teacherSection').classList.remove('hidden'); } }
 function showTeacherLogin() { document.getElementById('teacherLoginModal').classList.remove('hidden'); document.getElementById('teacherLoginModal').classList.add('flex'); }
 function verifyStudentCode() {
-    let code = document.getElementById('teacherInput').value.trim().replace(/\s/g, ''); if(code.startsWith("4242UDAL")) code = code.substring(4);
+    let code = document.getElementById('teacherInput').value.trim().replace(/\s/g, ''); 
+    if(code.startsWith("UDAL42-")) code = "UDAL-" + code.substring(7);
+    
     try {
         const encodedStr = code.replace("UDAL-","").split('').reverse().join('');
         const jsonStr = b64_to_utf8(encodedStr);
         const data = JSON.parse(jsonStr);
-        
-        // Recover name for teacher view
-        let studentName = "Desconocido";
-        if(data.id && STUDENT_DB[data.id]) studentName = STUDENT_DB[data.id];
-
+        let studentName = (data.id && STUDENT_DB[data.id]) ? STUDENT_DB[data.id] : "Desconocido";
         let total = data.cash; assetsDB.forEach(a => { let idx = (data.day > 1) ? data.day - 2 : 0; total += (data.portfolio[a.id]||0) * (a.base * a.hist[idx]); });
         if(data.loan) total -= data.loan.amount;
         document.getElementById('teacherResult').classList.remove('hidden');
