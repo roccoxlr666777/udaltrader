@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UDAL TRADER - Plataforma de Mercados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Montserrat:wght@400;600;800&family=Merriweather:ital,wght@0,300;0,700;1,300&family=Playfair+Display:wght@700;900&family=Press+Start+2P&display=swap');
+        
+        /* COLORES INSTITUCIONALES UDAL */
+        :root {
+            --udal-blue: #002855; 
+            --udal-red: #a51c30;  
+            --paper-bg: #fdfbf7;
+        }
+
+        body { font-family: 'Montserrat', sans-serif; background-color: #f1f5f9; color: #1e293b; overflow-x: hidden; }
+        .retro-font { font-family: 'Roboto Mono', monospace; }
+        .pixel-font { font-family: 'Press Start 2P', cursive; } /* Fuente 8-bit */
+        .serif-font { font-family: 'Merriweather', serif; }
+        .headline-font { font-family: 'Playfair Display', serif; }
+        
+        .card { background-color: white; border-top: 4px solid var(--udal-blue); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 0.5rem; }
+        .btn-udal { background-color: var(--udal-blue); color: white; transition: all 0.2s; }
+        .btn-udal:hover { background-color: #0f172a; transform: translateY(-1px); }
+        .btn-danger { background-color: var(--udal-red); color: white; }
+        .btn-danger:hover { background-color: #7f1d1d; }
+
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Efecto Periódico */
+        .newspaper {
+            background-color: var(--paper-bg);
+            border: 1px solid #d1d5db;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .newspaper::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--udal-blue) 0%, var(--udal-red) 100%);
+        }
+
+        /* Tutorial Spotlight */
+        .highlight-element {
+            position: relative;
+            z-index: 50;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.85);
+            pointer-events: auto;
+            background-color: white;
+            border-radius: 4px;
+        }
+        
+        /* PIXEL ART CSS (Simple 8-bit smiley/skull) */
+        .pixel-art-container {
+            width: 64px; height: 64px;
+            display: inline-block;
+            image-rendering: pixelated;
+        }
+        
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between relative">
+
+    <!-- Header -->
+    <header class="w-full bg-white shadow-md z-10 relative">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <!-- Logo UDAL CSS -->
+                <div class="flex items-center justify-center bg-white border-2 border-blue-900 w-16 h-10 rounded shadow overflow-hidden">
+                    <span class="text-blue-900 font-black text-lg tracking-tighter">UDAL</span>
+                </div>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-blue-900 tracking-tighter">SIMULADOR <span class="text-red-800">DE MERCADOS</span></h1>
+                </div>
+            </div>
+            <button onclick="showTeacherLogin()" class="text-xs text-gray-400 hover:text-blue-900 transition-colors"><i class="fas fa-lock"></i> Acceso Docente</button>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center p-4 relative w-full max-w-7xl mx-auto">
+        
+        <!-- INTRO / LOGIN -->
+        <section id="loginSection" class="w-full max-w-lg card p-8 mb-4 fade-in mt-8 relative">
+            <div class="absolute -top-3 -right-3 bg-red-700 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v3.1 Director's Cut</div>
+            
+            <h2 class="text-xl font-bold mb-2 text-center text-blue-900">Plataforma de Trading</h2>
+            <p class="text-xs text-center text-gray-500 mb-6 px-4">Entorno financiero profesional. Universidad de América Latina.</p>
+
+            <!-- Tabs -->
+            <div class="flex border-b border-gray-200 mb-6">
+                <button onclick="toggleLoginMode('new')" id="tabNew" class="flex-1 py-2 text-blue-900 border-b-2 border-blue-900 font-bold text-sm">Nuevo Portafolio</button>
+                <button onclick="toggleLoginMode('load')" id="tabLoad" class="flex-1 py-2 text-gray-400 text-sm hover:text-gray-600">Continuar Operativa</button>
+            </div>
+
+            <!-- Nuevo Juego -->
+            <div id="newGameForm">
+                <label class="block text-xs font-bold mb-1 text-gray-500 uppercase">Nombre del Operador</label>
+                <input type="text" id="studentName" class="w-full bg-gray-50 border border-gray-300 rounded p-3 mb-4 text-gray-800 focus:outline-none focus:border-blue-900" placeholder="Ej. Ana García">
+                
+                <div class="flex items-center mb-4 bg-blue-50 p-3 rounded border border-blue-100">
+                    <input type="checkbox" id="tutorialCheck" class="w-4 h-4 text-blue-600 rounded" checked>
+                    <label for="tutorialCheck" class="ml-2 text-sm text-blue-900 font-semibold cursor-pointer">Ejecutar Tutorial de Inducción</label>
+                </div>
+
+                <button onclick="startSequence()" class="w-full btn-udal font-bold py-3 rounded shadow-lg">ACCEDER AL MERCADO</button>
+            </div>
+
+            <!-- Cargar Juego -->
+            <div id="loadGameForm" class="hidden">
+                <label class="block text-xs font-bold mb-1 text-gray-500 uppercase">Token de Acceso</label>
+                <textarea id="saveCodeInput" class="w-full bg-gray-50 border border-gray-300 rounded p-3 mb-2 text-blue-900 retro-font text-xs h-24 focus:outline-none focus:border-blue-900" placeholder="Ingresa tu clave cifrada..."></textarea>
+                <button onclick="loadGame()" class="w-full btn-danger font-bold py-3 rounded shadow-lg">RESTAURAR SESIÓN</button>
+                <div id="loadMsg" class="mt-3 text-center text-xs font-bold text-red-600 hidden"></div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD JUEGO -->
+        <section id="gameSection" class="w-full hidden fade-in">
+            
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="statsBar">
+                <div id="statDay" class="bg-white p-4 rounded shadow border-l-4 border-blue-900">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Jornada Bursátil</p>
+                    <p class="text-2xl font-bold retro-font text-blue-900" id="displayDay">Día 1 / 7</p>
+                </div>
+                <div id="statCash" class="bg-white p-4 rounded shadow border-l-4 border-green-600">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Liquidez (MXN)</p>
+                    <p class="text-xl font-bold retro-font text-green-700" id="displayCash">$1,000,000</p>
+                </div>
+                <div id="statInvest" class="bg-white p-4 rounded shadow border-l-4 border-purple-600">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Valor Mercado</p>
+                    <p class="text-xl font-bold retro-font text-purple-700" id="displayPortfolioVal">$0</p>
+                </div>
+                <div class="bg-white p-4 rounded shadow border-l-4 border-gray-800">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Patrimonio Neto</p>
+                    <p class="text-xl font-bold retro-font text-gray-800" id="displayNetWorth">$1,000,000</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Sidebar: Noticias y Acciones -->
+                <div class="lg:col-span-1 flex flex-col gap-4">
+                    
+                    <!-- Periódico -->
+                    <div id="newsSection" class="newspaper p-5 rounded relative">
+                        <div class="border-b-2 border-black mb-3 pb-2 flex justify-between items-end">
+                            <div>
+                                <h3 class="headline-font font-black text-2xl text-black leading-none" id="newsTitle">EL FINANCIERO</h3>
+                                <p class="text-[9px] text-gray-500 font-serif mt-1">INFORMACIÓN EN TIEMPO REAL</p>
+                            </div>
+                            <button onclick="toggleNewsSource()" id="newsBtn" class="text-[10px] border border-gray-400 px-2 py-1 rounded text-gray-600 hover:bg-white transition-colors">Fuente <i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        
+                        <div id="newsFeed" class="space-y-4">
+                            <!-- Noticias inyectadas -->
+                        </div>
+                    </div>
+
+                    <!-- Botón Experto -->
+                    <div id="expertCard" class="bg-gray-50 border border-gray-200 p-4 rounded text-center">
+                        <p class="text-xs text-gray-500 mb-2">¿Solicitar análisis premium?</p>
+                        <button onclick="consultExpert()" id="btnExpert" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-center items-center gap-2 bg-gray-200 text-gray-700">
+                            <i class="fas fa-chart-pie"></i> CONSULTORÍA (<span id="expertCost">$5,000</span>)
+                        </button>
+                        <p id="expertResult" class="mt-2 text-sm font-bold hidden bg-yellow-100 p-2 rounded text-yellow-800 animate-pulse"></p>
+                    </div>
+
+                    <!-- Botón Finalizar -->
+                    <div id="endDayCard" class="bg-blue-900 p-5 rounded shadow text-white">
+                        <h3 class="font-bold mb-1">Cierre de Libros</h3>
+                        <p class="text-[10px] text-blue-200 mb-3">Consolida posiciones y avanza al siguiente periodo.</p>
+                        <button onclick="endDay()" class="w-full py-3 bg-red-700 hover:bg-red-600 rounded font-bold shadow text-sm transition-colors border border-red-500">
+                            EJECUTAR CIERRE DIARIO
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla de Mercado -->
+                <div id="marketSection" class="lg:col-span-2 bg-white rounded shadow overflow-hidden flex flex-col">
+                    <div class="p-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-blue-900 text-sm flex items-center gap-2">
+                            <i class="fas fa-balance-scale"></i> Pizarra de Cotizaciones
+                        </h3>
+                        <span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-1 rounded">MXN</span>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-600">
+                            <thead class="text-xs text-gray-500 uppercase bg-gray-100 sticky top-0">
+                                <tr>
+                                    <th class="px-3 py-3">Instrumento</th>
+                                    <th class="px-3 py-3 text-center">Tendencia</th>
+                                    <th class="px-3 py-3 text-right">Precio</th>
+                                    <th class="px-3 py-3 text-center">Posición</th>
+                                    <th class="px-3 py-3 text-center">Orden</th>
+                                </tr>
+                            </thead>
+                            <tbody id="marketTableBody" class="divide-y divide-gray-100">
+                                <!-- Filas JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN RESULTADOS FINALES -->
+        <section id="resultsSection" class="w-full max-w-4xl hidden fade-in mt-8">
+            <div class="bg-white rounded-lg shadow-2xl overflow-hidden border-t-8 border-yellow-500">
+                <div class="p-8 text-center bg-gray-900 text-white relative">
+                    <h2 class="text-3xl font-bold mb-2 text-yellow-500">INFORME FINAL</h2>
+                    <p class="text-sm text-gray-400">Auditoría de Desempeño - UDAL TRADER</p>
+                </div>
+                
+                <div class="p-8">
+                    <div class="flex flex-col md:flex-row gap-8 items-center justify-center">
+                        <div class="text-center w-full md:w-1/3">
+                            <div id="badgeIcon" class="text-6xl mb-4 text-gray-300"></div>
+                            <h3 id="rankTitle" class="text-xl font-bold text-blue-900 mb-1">...</h3>
+                            <p class="text-xs text-gray-500" id="rankDesc">...</p>
+                        </div>
+                        <div class="w-full md:w-2/3 text-center md:text-left space-y-4">
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase">Capital Final</p>
+                                <p class="text-4xl font-mono font-bold text-gray-800" id="finalNetWorth">$0.00</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 uppercase">Retorno (ROI)</p>
+                                <p class="text-xl font-bold" id="finalROI">0%</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button onclick="location.reload()" class="bg-blue-900 text-white px-6 py-2 rounded text-sm font-bold hover:bg-blue-800">Cerrar Sistema</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOOLTIP DEL TUTORIAL -->
+        <div id="tutorialBubble" class="hidden absolute z-50 bg-white p-4 rounded-lg shadow-2xl border-l-4 border-red-700 w-64">
+            <h4 class="font-bold text-blue-900 mb-1 text-sm" id="tutTitle">Título</h4>
+            <p class="text-xs text-gray-600 mb-3" id="tutDesc">Descripción</p>
+            <button onclick="nextTutorialStep()" class="w-full bg-blue-900 text-white text-xs py-1 rounded">Entendido</button>
+        </div>
+
+        <!-- MODAL COMPRA/VENTA -->
+        <div id="tradeModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] backdrop-blur">
+            <div class="bg-white p-6 rounded-lg w-80 shadow-2xl border-t-4 border-blue-900 relative">
+                <h3 id="tradeAssetName" class="text-lg font-bold mb-1 text-blue-900">Orden de Mercado</h3>
+                <p class="text-xs text-gray-500 mb-4">Cotización: <span id="tradeAssetPrice" class="text-black font-mono font-bold"></span></p>
+                <div class="flex gap-2 mb-4">
+                    <button onclick="setTradeMode('buy')" id="btnModeBuy" class="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white">COMPRAR</button>
+                    <button onclick="setTradeMode('sell')" id="btnModeSell" class="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500">VENDER</button>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold">Volumen (MXN)</label>
+                    <input type="number" id="tradeAmount" class="w-full bg-gray-50 border border-gray-300 rounded p-2 text-gray-900 font-mono focus:border-blue-900 outline-none" placeholder="0.00">
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="closeTradeModal()" class="flex-1 py-2 rounded border border-gray-300 text-gray-500 text-xs font-bold hover:bg-gray-100">CANCELAR</button>
+                    <button onclick="executeTrade()" id="btnConfirmTrade" class="flex-1 py-2 rounded bg-blue-900 text-white font-bold text-xs hover:bg-blue-800 shadow">EJECUTAR</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL CIERRE DEL DÍA CON 8-BIT -->
+        <div id="saveModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[70] p-4">
+            <div class="bg-white p-6 rounded max-w-lg w-full text-center border-4 border-gray-800 shadow-[0_0_20px_rgba(255,255,255,0.5)]">
+                
+                <!-- 8-BIT HEADER -->
+                <div id="pixelArtHeader" class="mb-4 flex justify-center text-4xl">
+                    <!-- JS inyectará el emoji o arte aquí -->
+                </div>
+                
+                <h2 class="text-xl font-bold text-gray-800 mb-2 pixel-font text-xs leading-relaxed" id="endDayTitle">JORNADA FINALIZADA</h2>
+                <p class="text-gray-600 text-xs mb-4" id="endDayMsg">Copia tu Token de Seguridad.</p>
+                
+                <div class="bg-gray-900 p-3 rounded mb-3 border-2 border-gray-600 text-left overflow-hidden">
+                    <code id="generatedCode" class="text-green-400 retro-font text-[10px] break-all block select-all cursor-text">...</code>
+                </div>
+                
+                <button onclick="copyCode()" class="text-xs text-blue-600 underline mb-4 hover:text-blue-800">Copiar Token</button>
+                <button onclick="location.reload()" class="block w-full px-4 py-3 bg-red-700 text-white rounded font-bold hover:bg-red-800 pixel-font text-[10px]">SALIR DEL SISTEMA</button>
+            </div>
+        </div>
+
+        <!-- LOGIN PROFESOR -->
+        <div id="teacherLoginModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[80]">
+            <div class="bg-white p-6 rounded-lg max-w-sm w-full border-t-4 border-yellow-500">
+                <h3 class="text-blue-900 font-bold text-lg mb-4">Acceso Docente</h3>
+                <input type="password" id="teacherPwd" class="w-full border border-gray-300 p-2 rounded mb-4 text-black bg-gray-50" placeholder="Contraseña">
+                <div class="flex justify-end gap-2">
+                    <button onclick="document.getElementById('teacherLoginModal').classList.add('hidden')" class="px-4 py-2 text-gray-500 text-sm font-bold">Cancelar</button>
+                    <button onclick="checkTeacherLogin()" class="px-4 py-2 bg-blue-900 text-white rounded text-sm font-bold hover:bg-blue-800">Entrar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL PROFESOR -->
+        <section id="teacherSection" class="w-full max-w-4xl card p-6 hidden mt-8 mb-12 border-yellow-500">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-4">
+                <h2 class="text-xl font-bold text-blue-900">Auditoría Docente</h2>
+                <button onclick="location.reload()" class="text-xs bg-gray-200 px-3 py-1 rounded hover:bg-gray-300 text-gray-700">Cerrar Sesión</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <p class="text-xs text-gray-500 mb-2 font-bold uppercase">Token del Alumno:</p>
+                    <textarea id="teacherInput" class="w-full bg-gray-50 border border-gray-300 rounded p-3 text-blue-900 retro-font text-xs h-32 focus:border-blue-900 outline-none mb-2"></textarea>
+                    <button onclick="verifyStudentCode()" class="w-full bg-blue-900 text-white font-bold py-2 rounded hover:bg-blue-800 text-sm shadow">Auditar</button>
+                </div>
+                <div id="teacherResult" class="bg-gray-50 p-4 rounded border border-gray-200 text-sm h-full overflow-y-auto hidden"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-500 py-4 text-center text-[10px] mt-auto">
+        <p>© 2025 Dr. Julio C. G. Quintero. Todos los derechos reservados.</p>
+        <p class="mt-1 opacity-50">Plataforma educativa UDAL TRADER.</p>
+    </footer>
+
+<script>
+/* --- CONFIGURACIÓN DE JUEGO (7 DÍAS) --- */
+const MAX_DAYS = 7;
+const INITIAL_CASH = 1000000;
+
+/* --- BASE DE DATOS DE ACTIVOS (Precios Simulados en MXN) --- */
+const assetsDB = [
+    // DIVISAS & INDICES
+    { id: 'ipc', name: 'IPC México', type: 'Índice', base: 54000, hist: [1, 1.01, 1.005, 0.98, 0.95, 0.96, 0.99] },
+    { id: 'spx', name: 'S&P 500 (IVV)', type: 'Índice', base: 9500, hist: [1, 1.02, 1.03, 1.01, 0.90, 0.92, 0.95] }, // Caída día 4
+    { id: 'usd', name: 'Dólar (USD)', type: 'Divisa', base: 19.80, hist: [1, 1.01, 1.03, 1.05, 1.10, 1.08, 1.07] },
+    
+    // ACCIONES
+    { id: 'nvda', name: 'NVIDIA', type: 'Acción', base: 2800, hist: [1, 1.05, 1.12, 1.15, 0.70, 0.80, 0.95] }, // Crash día 4
+    { id: 'amzn', name: 'Amazon', type: 'Acción', base: 3200, hist: [1, 0.98, 0.99, 1.02, 1.04, 1.06, 1.10] },
+    
+    // OBLIGACIONES & BONOS
+    { id: 'pemex', name: 'Bonos PEMEX', type: 'Obligación', base: 100, hist: [1, 0.99, 0.98, 0.95, 0.90, 0.85, 0.88] }, // Alto Riesgo
+    { id: 'bimbo', name: 'Cert. BIMBO', type: 'Obligación', base: 105, hist: [1, 1.001, 1.002, 1.003, 1.004, 1.005, 1.006] }, // Seguro Corp
+    { id: 'cetes', name: 'CETES 28', type: 'Bono Gov', base: 10, hist: [1, 1.002, 1.004, 1.006, 1.008, 1.010, 1.012] },
+    
+    // CRIPTO
+    { id: 'btc', name: 'Bitcoin', type: 'Cripto', base: 1300000, hist: [1, 1.10, 1.20, 0.90, 0.85, 1.25, 1.40] }
+];
+
+/* --- NARRATIVAS RAMIFICADAS DÍA 1 --- */
+const startScenarios = [
+    {   // Variante A: Optimismo
+        fin: ["Bolsa Mexicana toca máximos históricos.", "El Superpeso se fortalece.", "NVIDIA lidera rally global."],
+        eco: ["Confianza del consumidor al alza.", "Inversión extranjera récord.", "Tecnológicas imparables."],
+        hint: "El mercado está eufórico. Aprovecha la tendencia alcista."
+    },
+    {   // Variante B: Miedo
+        fin: ["Temores de recesión en EE.UU.", "Petróleo cae por baja demanda.", "Inversores buscan refugio."],
+        eco: ["PIB global se desacelera.", "Alerta en sector construcción.", "Oro y Dólar suben."],
+        hint: "Tiempos inciertos. Busca activos seguros como Bonos o Dólares."
+    },
+    {   // Variante C: Especulación
+        fin: ["Bitcoin rompe barreras.", "Fiebre por la Inteligencia Artificial.", "Startups mexicanas atraen capital."],
+        eco: ["¿Nueva burbuja punto com?", "Reguladores advierten riesgo cripto.", "Volatilidad extrema."],
+        hint: "Alto riesgo, alta recompensa. El sector tecnológico y cripto prometen."
+    }
+];
+
+// Noticias Fijas Días 2-7
+const fixedNews = [
+    null, // Placeholder dia 0
+    null, // Placeholder dia 1 (se usa startScenarios)
+    {   // DÍA 2
+        fin: ["Rumores de regulación Tech en Europa.", "Amazon invierte en logística.", "PEMEX bajo presión."],
+        eco: ["UE prepara multa a NVIDIA.", "Deuda de PEMEX preocupa.", "Incertidumbre cambiaria."],
+        hint: "Cuidado con NVIDIA y PEMEX. Hay ruido negativo."
+    },
+    {   // DÍA 3
+        fin: ["Inflación repunta ligeramente.", "Tasas de interés se mantendrán altas.", "IPC retrocede."],
+        eco: ["Banxico firme con política monetaria.", "BIMBO reporta solidez.", "CETES siguen atractivos."],
+        hint: "En entornos de tasas altas, la deuda corporativa sólida (Bimbo) es refugio."
+    },
+    {   // DÍA 4 (EL CRASH)
+        fin: ["¡ALERTA ROJA EN MERCADOS!", "NVIDIA investigada por fraude.", "S&P 500 cae con fuerza."],
+        eco: ["Pánico vendedor en Wall Street.", "Inversores liquidan posiciones.", "Bitcoin tambalea."],
+        hint: "¡VENDE RIESGO! El mercado está colapsando. Busca liquidez."
+    },
+    {   // DÍA 5
+        fin: ["Mercados intentan estabilizarse.", "Oportunidades de compra tras la caída.", "Dólar se dispara."],
+        eco: ["Cazadores de ofertas entran al mercado.", "NVIDIA en mínimos anuales.", "Refugio en divisas."],
+        hint: "A veces, tras el pánico viene el rebote. ¿Te atreves a comprar barato?"
+    },
+    {   // DÍA 6
+        fin: ["Gobierno rescata confianza en deuda.", "Bitcoin rebota con fuerza.", "Amazon sorprende."],
+        eco: ["Hacienda recompra bonos.", "Criptomonedas recuperan brillo.", "Consumo interno fuerte."],
+        hint: "El sector consumo (Amazon) y Cripto lideran la recuperación."
+    },
+    {   // DÍA 7 (FINAL)
+        fin: ["Cierre de ejercicio fiscal.", "Auditoría final de carteras.", "Resultados mixtos al cierre."],
+        eco: ["Fin de ciclo bursátil.", "Balances finales.", "Expectativa de cierre."],
+        hint: "Asegura ganancias. No arriesgues hoy. Cierra libros."
+    }
+];
+
+// STATE
+let gameState = {
+    name: "",
+    day: 1,
+    cash: INITIAL_CASH,
+    portfolio: {},
+    accessLog: [], // Nuevo: Historial de accesos
+    bypassed: 0,
+    blackSwans: {}, // Almacena el MULTIPLICADOR (no solo true/false)
+    tutorialActive: false,
+    tutorialStep: 0,
+    narrativeId: 0 
+};
+
+assetsDB.forEach(a => gameState.portfolio[a.id] = 0);
+let currentNewsSource = 'fin'; 
+
+/* --- LÓGICA DE INTERFAZ --- */
+
+function toggleLoginMode(mode) {
+    const btnNew = document.getElementById('tabNew');
+    const btnLoad = document.getElementById('tabLoad');
+    const formNew = document.getElementById('newGameForm');
+    const formLoad = document.getElementById('loadGameForm');
+
+    if(mode === 'new') {
+        formNew.classList.remove('hidden'); formLoad.classList.add('hidden');
+        btnNew.classList.replace('text-gray-400', 'text-blue-900'); btnNew.classList.add('border-blue-900');
+        btnLoad.classList.replace('text-blue-900', 'text-gray-400'); btnLoad.classList.remove('border-blue-900');
+    } else {
+        formNew.classList.add('hidden'); formLoad.classList.remove('hidden');
+        btnLoad.classList.replace('text-gray-400', 'text-blue-900'); btnLoad.classList.add('border-blue-900');
+        btnNew.classList.replace('text-blue-900', 'text-gray-400'); btnNew.classList.remove('border-blue-900');
+    }
+}
+
+function startSequence() {
+    const name = document.getElementById('studentName').value.trim();
+    if(!name) return alert("Nombre requerido");
+    
+    gameState.name = name;
+    gameState.day = 1;
+    gameState.cash = INITIAL_CASH;
+    gameState.portfolio = {};
+    assetsDB.forEach(a => gameState.portfolio[a.id] = 0);
+    gameState.accessLog = [new Date().toLocaleString()];
+    gameState.narrativeId = Math.floor(Math.random() * 3); // 0, 1 o 2
+    
+    const useTutorial = document.getElementById('tutorialCheck').checked;
+    document.getElementById('loginSection').classList.add('hidden');
+    document.getElementById('gameSection').classList.remove('hidden');
+
+    if(useTutorial) startTutorial();
+    else renderGame();
+}
+
+/* --- TUTORIAL --- */
+function startTutorial() {
+    gameState.tutorialActive = true;
+    gameState.tutorialStep = 1;
+    gameState.day = 0; 
+    renderGame();
+    highlightStep(1);
+}
+
+function highlightStep(step) {
+    document.querySelectorAll('.highlight-element').forEach(el => el.classList.remove('highlight-element'));
+    const bubble = document.getElementById('tutorialBubble');
+    bubble.classList.add('hidden');
+    
+    let el, title, text;
+    if(step === 1) { el = document.getElementById('statDay'); title='Jornada'; text='Duración: 7 días bursátiles.'; }
+    else if (step === 2) { el = document.getElementById('statCash'); title='Capital'; text='Tu liquidez disponible.'; }
+    else if (step === 3) { el = document.getElementById('newsSection'); title='Información'; text='Lee las noticias para anticiparte.'; }
+    else if (step === 4) { el = document.getElementById('marketSection'); title='Operativa'; text='Prueba comprando CETES ahora.'; }
+
+    if(el) {
+        el.classList.add('highlight-element');
+        const rect = el.getBoundingClientRect();
+        bubble.style.top = (rect.bottom + window.scrollY + 10) + 'px';
+        bubble.style.left = (rect.left + window.scrollX) + 'px';
+        document.getElementById('tutTitle').innerText = title;
+        document.getElementById('tutDesc').innerText = text;
+        bubble.classList.remove('hidden');
+    }
+}
+
+function nextTutorialStep() {
+    gameState.tutorialStep++;
+    if(gameState.tutorialStep > 4) document.getElementById('tutorialBubble').classList.add('hidden');
+    else highlightStep(gameState.tutorialStep);
+}
+
+/* --- MOTOR DEL JUEGO --- */
+function renderGame() {
+    document.getElementById('displayDay').innerText = gameState.tutorialActive ? "Inducción" : `Día ${gameState.day} / ${MAX_DAYS}`;
+    document.getElementById('displayCash').innerText = fmtMoney(gameState.cash);
+    
+    let portVal = 0;
+    assetsDB.forEach(a => {
+        let price = getPrice(a, gameState.day);
+        portVal += (gameState.portfolio[a.id] || 0) * price;
+    });
+    
+    const netWorth = gameState.cash + portVal;
+    document.getElementById('displayPortfolioVal').innerText = fmtMoney(portVal);
+    document.getElementById('displayNetWorth').innerText = fmtMoney(netWorth);
+
+    // Expert Price
+    const btnExp = document.getElementById('btnExpert');
+    const cost = netWorth < INITIAL_CASH ? 1000 : 5000;
+    document.getElementById('expertCost').innerText = fmtMoney(cost);
+    if(netWorth < INITIAL_CASH) btnExp.classList.add('bg-yellow-100', 'text-yellow-800');
+    else btnExp.classList.remove('bg-yellow-100', 'text-yellow-800');
+
+    renderNews();
+
+    const tbody = document.getElementById('marketTableBody');
+    tbody.innerHTML = '';
+    
+    assetsDB.forEach(a => {
+        const price = getPrice(a, gameState.day);
+        const qty = gameState.portfolio[a.id] || 0;
+        
+        // Emojis de Estado + Detección de Moonshot/Crash
+        let status = '<span class="text-gray-400">▬</span>';
+        
+        // Revisar si hay evento activo en este asset
+        const swanMult = (gameState.blackSwans && gameState.blackSwans[a.id]) !== undefined ? gameState.blackSwans[a.id] : null;
+        
+        if (swanMult !== null) {
+            if(swanMult > 1.2) status = '🚀 MOON';
+            else if (swanMult < 0.1) status = '💀 CRASH';
+            else if (swanMult < 1) status = '🔻 DOWN';
+        } else if(gameState.day > 1 && !gameState.tutorialActive) {
+            const prev = getPrice(a, gameState.day - 1);
+            const change = (price - prev) / prev;
+            if(change > 0.03) status = '<span class="text-green-600 font-bold">▲▲</span>';
+            else if(change > 0) status = '<span class="text-green-500">▲</span>';
+            else if(change < -0.03) status = '<span class="text-red-600 font-bold">▼▼</span>';
+            else if(change < 0) status = '<span class="text-red-500">▼</span>';
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-blue-50 transition-colors border-b border-gray-100";
+        tr.innerHTML = `
+            <td class="px-3 py-3">
+                <div class="font-bold text-blue-900 text-xs">${a.name}</div>
+                <div class="text-[10px] text-gray-400">${a.type}</div>
+            </td>
+            <td class="px-3 py-3 text-center text-xs font-bold">${status}</td>
+            <td class="px-3 py-3 text-right font-mono text-xs text-gray-700 font-bold">${fmtMoney(price)}</td>
+            <td class="px-3 py-3 text-center text-xs text-gray-500">${qty.toFixed(2)}</td>
+            <td class="px-3 py-3 text-center">
+                <button onclick="openTrade('${a.id}')" class="bg-blue-900 hover:bg-blue-800 text-white text-[10px] px-3 py-1 rounded font-bold shadow" ${swanMult !== null && swanMult < 0.1 ? 'disabled class="opacity-50 cursor-not-allowed bg-gray-400 px-3 py-1 rounded text-white text-[10px]"' : ''}>OPERAR</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function getPrice(asset, day) {
+    if(day === 0) return asset.base;
+    
+    // Logic for Black Swans Multiplier
+    let multiplier = 1;
+    if(gameState.blackSwans && gameState.blackSwans[asset.id] !== undefined) {
+        // Backwards compatibility with boolean
+        if(gameState.blackSwans[asset.id] === true) multiplier = 0.01;
+        else multiplier = gameState.blackSwans[asset.id];
+    }
+
+    let idx = day - 1;
+    if(idx >= asset.hist.length) idx = asset.hist.length - 1;
+    return asset.base * asset.hist[idx] * multiplier;
+}
+
+function renderNews() {
+    let items, title, color;
+    
+    if(gameState.tutorialActive) {
+        items = ["Bienvenido a la plataforma.", "CETES: Deuda segura del gobierno.", "Realiza una compra de prueba."];
+        title = "INDUCCIÓN";
+        color = "text-gray-800";
+    } else {
+        // Lógica de narrativa
+        let data;
+        if(gameState.day === 1) {
+            data = startScenarios[gameState.narrativeId || 0];
+        } else {
+            data = fixedNews[gameState.day] || { fin:[], eco:[], hint:"" };
+        }
+        
+        items = currentNewsSource === 'fin' ? data.fin : data.eco;
+        title = currentNewsSource === 'fin' ? 'EL FINANCIERO' : 'EL ECONOMISTA';
+        color = currentNewsSource === 'fin' ? 'text-orange-700' : 'text-blue-900';
+    }
+    
+    document.getElementById('newsTitle').innerText = title;
+    document.getElementById('newsTitle').className = `headline-font font-black text-2xl leading-none ${color}`;
+    
+    const feed = document.getElementById('newsFeed');
+    feed.innerHTML = '';
+    items.forEach(txt => {
+        const borderCol = title.includes('FINANCIERO') ? 'border-orange-400' : 'border-blue-900';
+        feed.innerHTML += `<div class="border-l-4 ${borderCol} pl-3 py-1"><p class="font-serif font-bold text-gray-800 text-xs leading-tight">${txt}</p></div>`;
+    });
+}
+
+function toggleNewsSource() {
+    currentNewsSource = currentNewsSource === 'fin' ? 'eco' : 'fin';
+    renderNews();
+}
+
+function consultExpert() {
+    if(gameState.tutorialActive) return alert("Función no disponible en tutorial.");
+    let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0) * getPrice(a, gameState.day));
+    const net = gameState.cash + portVal;
+    const cost = net < INITIAL_CASH ? 1000 : 5000;
+    
+    if(gameState.cash < cost) return alert("Saldo insuficiente.");
+    if(!confirm(`¿Autorizar cargo de ${fmtMoney(cost)}?`)) return;
+    
+    gameState.cash -= cost;
+    
+    // Consejo del siguiente día
+    let nextHint = "Mantén la cautela.";
+    if(gameState.day < MAX_DAYS) {
+        const nextData = fixedNews[gameState.day + 1];
+        if(nextData) nextHint = nextData.hint;
+    }
+    
+    const resBox = document.getElementById('expertResult');
+    resBox.innerText = `ANALISTA: "${nextHint}"`;
+    resBox.classList.remove('hidden');
+    renderGame();
+}
+
+/* --- EVENTOS ALEATORIOS (CISNES NEGROS & MOONSHOTS) --- */
+function triggerBlackSwan() {
+    if(gameState.day < 3) return; // Protección primeros días
+    
+    assetsDB.forEach(a => {
+        // 4% Probabilidad de evento raro
+        if(Math.random() < 0.04 && gameState.blackSwans[a.id] === undefined) {
+            
+            // Lógica Específica
+            if(a.id === 'pemex') {
+                // Moonshot Iónico
+                alert(`🇲🇽 ¡ORGULLO NACIONAL! 🇲🇽\nLa representante de México ganó Miss Universo. Por alguna razón inexplicable, los Bonos PEMEX se disparan. Nadie pregunta, solo cobran.`);
+                gameState.blackSwans[a.id] = 1.5; // +50%
+            
+            } else if (a.id === 'nvda') {
+                // Crash
+                alert(`📉 CAOS EN EL VALLE 📉\nEl CEO de NVIDIA fue retado a una pelea en jaula por Mark Zuckerberg y perdió. Las acciones se desploman por vergüenza corporativa.`);
+                gameState.blackSwans[a.id] = 0.6; // -40%
+            
+            } else if (a.id === 'amzn') {
+                // Moonshot
+                alert(`📦 DOMINIO TOTAL 📦\nAmazon logró patentar el aire dentro de sus almacenes. Las acciones suben por el nuevo modelo de suscripción 'Oxygen Prime'.`);
+                gameState.blackSwans[a.id] = 1.3; // +30%
+            
+            } else if (a.type === 'Cripto') {
+                // Crash Total
+                alert(`💀 RUG PULL 💀\nTu CEO 'desapareció' en un retiro espiritual en la India con las claves privadas. Ahora es pastor de cabras. Tus fondos valen cero.`);
+                gameState.blackSwans[a.id] = 0.00; // Zero
+            
+            } else if (a.type.includes('Obligación')) {
+                // Default
+                alert(`💀 DEFAULT TÉCNICO EN ${a.name} 💀\nEl emisor decidió pagar los cupones con 'abrazos y buenas vibras'. El mercado no lo tomó bien.`);
+                gameState.blackSwans[a.id] = 0.2;
+            }
+        }
+    });
+}
+
+/* --- OPERATIVA --- */
+let currTradeId = null; let tradeMode = 'buy';
+
+function openTrade(id) {
+    if(gameState.tutorialActive && id !== 'cetes') return alert("Selecciona CETES para el tutorial.");
+    currTradeId = id; tradeMode = 'buy';
+    const asset = assetsDB.find(x => x.id === id);
+    const price = getPrice(asset, gameState.day);
+    const qty = gameState.portfolio[id] || 0;
+    
+    document.getElementById('tradeModal').classList.remove('hidden');
+    document.getElementById('tradeModal').classList.add('flex');
+    document.getElementById('tradeAssetName').innerText = asset.name;
+    document.getElementById('tradeAssetPrice').innerText = fmtMoney(price);
+    document.getElementById('tradeAmount').value = gameState.tutorialActive ? 50000 : '';
+    setTradeMode('buy');
+}
+
+function setTradeMode(m) { 
+    tradeMode = m; 
+    const bB = document.getElementById('btnModeBuy'); const bS = document.getElementById('btnModeSell');
+    if(m==='buy') { bB.className="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white"; bS.className="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500"; }
+    else { bS.className="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white"; bB.className="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500"; }
+}
+function closeTradeModal() {
+    document.getElementById('tradeModal').classList.add('hidden');
+    document.getElementById('tradeModal').classList.remove('flex');
+}
+function executeTrade() {
+    const amt = parseFloat(document.getElementById('tradeAmount').value);
+    if(!amt || amt<=0) return;
+    const asset = assetsDB.find(x => x.id === currTradeId);
+    const price = getPrice(asset, gameState.day);
+    
+    if(tradeMode === 'buy') {
+        if(amt > gameState.cash) return alert("Liquidez insuficiente.");
+        gameState.cash -= amt;
+        if(!gameState.portfolio[currTradeId]) gameState.portfolio[currTradeId] = 0;
+        gameState.portfolio[currTradeId] += amt/price;
+    } else {
+        const currVal = (gameState.portfolio[currTradeId]||0)*price;
+        if(amt > currVal+1) return alert("Posición insuficiente.");
+        if(Math.abs(amt-currVal)<10) { gameState.cash+=currVal; gameState.portfolio[currTradeId]=0; }
+        else { gameState.cash+=amt; gameState.portfolio[currTradeId]-=amt/price; }
+    }
+    closeTradeModal(); renderGame();
+
+    if(gameState.tutorialActive) {
+        alert("Orden ejecutada. Tutorial completado. Iniciando Día 1...");
+        gameState.tutorialActive = false; gameState.day = 1;
+        document.querySelectorAll('.highlight-element').forEach(el=>el.classList.remove('highlight-element'));
+        document.getElementById('tutorialBubble').classList.add('hidden');
+        renderGame();
+    }
+}
+
+/* --- CIERRE DÍA & 8-BIT ART --- */
+function endDay() {
+    if(gameState.tutorialActive) return alert("Completa la orden primero.");
+    if(!confirm("¿Cerrar libros del día?")) return;
+    
+    // Calc daily performance
+    let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0)*getPrice(a, gameState.day));
+    const todayNet = gameState.cash + portVal;
+    
+    // Determine 8-bit Art based on performance vs start
+    let art = "😐"; // Neutral
+    const roi = (todayNet - INITIAL_CASH);
+    
+    if(roi > 50000) art = "🚀"; // Stonks
+    else if (roi > 0) art = "📈"; // Good
+    else if (roi < -50000) art = "💀"; // Dead
+    else if (roi < 0) art = "📉"; // Bad
+
+    document.getElementById('pixelArtHeader').innerHTML = `<span class="transform scale-150 inline-block">${art}</span>`;
+    document.getElementById('endDayMsg').innerText = roi >= 0 ? `Ganancia Neta: +${fmtMoney(roi)}` : `Pérdida Neta: ${fmtMoney(roi)}`;
+
+    if(gameState.day >= MAX_DAYS) {
+        showResults(); return;
+    }
+
+    let nextState = JSON.parse(JSON.stringify(gameState));
+    nextState.day++;
+    nextState.accessLog.push(new Date().toLocaleString()); // Log access
+    
+    const code = "UDAL-" + btoa(JSON.stringify(nextState)).split('').reverse().join('');
+    document.getElementById('generatedCode').innerText = code;
+    document.getElementById('saveModal').classList.remove('hidden');
+    document.getElementById('saveModal').classList.add('flex');
+}
+
+/* --- RESULTADOS --- */
+function showResults() {
+    document.getElementById('gameSection').classList.add('hidden');
+    document.getElementById('resultsSection').classList.remove('hidden');
+    document.getElementById('resultsSection').classList.add('flex');
+    
+    let portVal=0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0)*getPrice(a, MAX_DAYS));
+    const finalVal = gameState.cash + portVal;
+    const roi = ((finalVal - INITIAL_CASH) / INITIAL_CASH) * 100;
+    
+    document.getElementById('finalNetWorth').innerText = fmtMoney(finalVal);
+    document.getElementById('finalROI').innerText = roi.toFixed(2) + "%";
+    
+    const icon = document.getElementById('badgeIcon');
+    const title = document.getElementById('rankTitle');
+    const desc = document.getElementById('rankDesc');
+    
+    if(finalVal > 1200000) { icon.innerHTML = '👑'; title.innerText = "MAGNATE"; desc.innerText = "Dominaste el mercado."; }
+    else if (finalVal > 1050000) { icon.innerHTML = '💼'; title.innerText = "EJECUTIVO"; desc.innerText = "Buen rendimiento."; }
+    else if (finalVal > 1000000) { icon.innerHTML = '😐'; title.innerText = "AHORRADOR"; desc.innerText = "No perdiste dinero."; }
+    else { icon.innerHTML = '📉'; title.innerText = "QUIEBRA"; desc.innerText = "El mercado gana esta vez."; }
+}
+
+function loadGame() {
+    let code = document.getElementById('saveCodeInput').value.trim();
+    let bypass = false;
+    if(code.startsWith("4242UDAL")) { bypass = true; code = code.substring(4); }
+    
+    try {
+        const str = atob(code.replace("UDAL-","").split('').reverse().join(''));
+        const data = JSON.parse(str);
+        
+        // Agregar log actual al cargar
+        if(!data.accessLog) data.accessLog = [];
+        data.accessLog.push(new Date().toLocaleString() + " (Login)");
+
+        gameState = data;
+        
+        // Disparar evento aleatorio al cargar el día (si corresponde)
+        triggerBlackSwan();
+        
+        if(gameState.day > MAX_DAYS) showResults();
+        else startGame(); // Skip intro
+        
+    } catch(e) { alert("Token corrupto."); }
+}
+
+function copyCode() { navigator.clipboard.writeText(document.getElementById('generatedCode').innerText); alert("Copiado"); }
+function fmtMoney(n) { return "$" + n.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+// DOCENTE
+function checkTeacherLogin() { if(document.getElementById('teacherPwd').value === "udalintrader") { document.getElementById('teacherLoginModal').classList.add('hidden'); document.getElementById('teacherSection').classList.remove('hidden'); } }
+function showTeacherLogin() { document.getElementById('teacherLoginModal').classList.remove('hidden'); document.getElementById('teacherLoginModal').classList.add('flex'); }
+function verifyStudentCode() {
+    let code = document.getElementById('teacherInput').value.trim();
+    if(code.startsWith("4242UDAL")) code = code.substring(4);
+    try {
+        const data = JSON.parse(atob(code.replace("UDAL-","").split('').reverse().join('')));
+        let total = data.cash;
+        assetsDB.forEach(a => {
+            let idx = (data.day > 1) ? data.day - 2 : 0; 
+            total += (data.portfolio[a.id]||0) * (a.base * a.hist[idx]);
+        });
+        
+        // Mostrar Logs
+        let logs = data.accessLog ? data.accessLog.join('<br>') : "Sin datos";
+        
+        document.getElementById('teacherResult').classList.remove('hidden');
+        document.getElementById('teacherResult').innerHTML = `
+            <p class="font-bold text-blue-900">Alumno: ${data.name}</p>
+            <p>Día Actual: ${data.day}</p>
+            <p class="text-xl font-bold text-green-700">${fmtMoney(total)}</p>
+            <div class="mt-2 text-[10px] text-gray-500 border-t pt-2">
+                <strong>Log de Accesos:</strong><br>${logs}
+            </div>
+        `;
+    } catch(e){ alert("Error al leer token"); }
+}
+</script>
+</body>
+</html>
