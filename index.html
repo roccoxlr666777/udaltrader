@@ -57,7 +57,7 @@
         @keyframes blinker { 50% { opacity: 0; } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between relative bg-gray-50">
+<body class="min-h-screen flex flex-col justify-between relative">
 
     <!-- Header -->
     <header class="w-full bg-white shadow-md z-10 relative">
@@ -78,7 +78,7 @@
         
         <!-- INTRO / LOGIN -->
         <section id="loginSection" class="w-full max-w-lg card p-8 mb-4 fade-in mt-8 relative">
-            <div class="absolute -top-3 -right-3 bg-red-800 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v2.2 FINAL</div>
+            <div class="absolute -top-3 -right-3 bg-red-800 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v2.0 FINAL</div>
             
             <h2 class="text-xl font-bold mb-2 text-center text-blue-900">Acceso Estudiantes</h2>
             <p class="text-xs text-center text-gray-500 mb-6 px-4">Ingresa tu matrícula para validar tu identidad en el sistema.</p>
@@ -86,13 +86,19 @@
             <!-- Tabs -->
             <div class="flex border-b border-gray-200 mb-6">
                 <button onclick="toggleLoginMode('new')" id="tabNew" class="flex-1 py-2 text-blue-900 border-b-2 border-blue-900 font-bold text-sm">Nuevo Portafolio</button>
-                <button onclick="toggleLoginMode('load')" id="tabLoad" class="flex-1 py-2 text-gray-400 text-sm hover:text-gray-600">Continuar Operativa</button>
+                <button onclick="toggleLoginMode('load')" id="tabLoad" class="flex-1 py-2 text-gray-400 text-sm hover:text-gray-600">Continuar Inversiones</button>
             </div>
 
             <!-- Nuevo Juego -->
             <div id="newGameForm">
                 <label class="block text-xs font-bold mb-1 text-gray-500 uppercase">Matrícula (9 Dígitos)</label>
                 <input type="number" id="studentId" class="w-full bg-gray-50 border border-gray-300 rounded p-3 mb-4 text-gray-800 focus:outline-none focus:border-blue-900 font-mono tracking-widest" placeholder="Ej. 100017415">
+                
+                <div class="flex items-center mb-4 bg-blue-50 p-3 rounded border border-blue-100">
+                    <input type="checkbox" id="guideCheck" class="w-4 h-4 text-blue-600 rounded" checked>
+                    <label for="guideCheck" class="ml-2 text-sm text-blue-900 font-semibold cursor-pointer">Activar Asistente de Interfaz (Día 1)</label>
+                </div>
+
                 <button onclick="startSequence()" class="w-full btn-udal font-bold py-3 rounded shadow-lg">VALIDAR Y ACCEDER</button>
             </div>
 
@@ -236,7 +242,7 @@
                                     <th class="px-3 py-3 text-center bg-gray-100">Tendencia</th>
                                     <th class="px-3 py-3 text-right bg-gray-100">Precio</th>
                                     <th class="px-3 py-3 text-center bg-gray-100">Posición</th>
-                                    <th class="px-3 py-3 text-center bg-gray-100">Orden</th>
+                                    <th class="px-3 py-3 text-center bg-gray-100">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="marketTableBody" class="divide-y divide-gray-100">
