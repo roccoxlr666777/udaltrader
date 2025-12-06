@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UDAL TRADER - Plataforma Oficial</title>
+    <title>UDAL TRADER - Acceso Estudiantes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
     <style>
@@ -29,14 +29,6 @@
         /* Efecto Periódico */
         .newspaper { background-color: var(--paper-bg); border: 1px solid #d1d5db; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); position: relative; }
         .newspaper::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--udal-blue) 0%, var(--udal-red) 100%); }
-
-        /* Tooltips */
-        .help-icon { cursor: help; color: var(--udal-blue); margin-left: 5px; opacity: 0.7; }
-        .help-icon:hover::after {
-            content: attr(data-tip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
-            background: #333; color: white; padding: 8px; border-radius: 4px; font-size: 10px; width: 200px; text-align: center; z-index: 100; pointer-events: none;
-        }
-        .relative-tip { position: relative; display: inline-block; }
 
         /* Scroll */
         .custom-scroll::-webkit-scrollbar { width: 8px; }
@@ -70,10 +62,10 @@
         
         <!-- INTRO / LOGIN -->
         <section id="loginSection" class="w-full max-w-lg card p-8 mb-4 fade-in mt-8 relative">
-            <div class="absolute -top-3 -right-3 bg-green-600 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v2.1 FINAL REPAIRED</div>
+            <div class="absolute -top-3 -right-3 bg-blue-900 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v3.0 SECURE</div>
             
-            <h2 class="text-xl font-bold mb-2 text-center text-blue-900">Plataforma de Trading</h2>
-            <p class="text-xs text-center text-gray-500 mb-6 px-4">Entorno financiero profesional. Universidad de América Latina.</p>
+            <h2 class="text-xl font-bold mb-2 text-center text-blue-900">Acceso Estudiantes</h2>
+            <p class="text-xs text-center text-gray-500 mb-6 px-4">Ingresa tu matrícula para validar tu identidad en el sistema.</p>
 
             <!-- Tabs -->
             <div class="flex border-b border-gray-200 mb-6">
@@ -83,15 +75,15 @@
 
             <!-- Nuevo Juego -->
             <div id="newGameForm">
-                <label class="block text-xs font-bold mb-1 text-gray-500 uppercase">Nombre del Operador</label>
-                <input type="text" id="studentName" class="w-full bg-gray-50 border border-gray-300 rounded p-3 mb-4 text-gray-800 focus:outline-none focus:border-blue-900" placeholder="Ej. Ana García">
+                <label class="block text-xs font-bold mb-1 text-gray-500 uppercase">Matrícula (9 Dígitos)</label>
+                <input type="number" id="studentId" class="w-full bg-gray-50 border border-gray-300 rounded p-3 mb-4 text-gray-800 focus:outline-none focus:border-blue-900 font-mono tracking-widest" placeholder="Ej. 100017415">
                 
                 <div class="flex items-center mb-4 bg-blue-50 p-3 rounded border border-blue-100">
                     <input type="checkbox" id="guideCheck" class="w-4 h-4 text-blue-600 rounded" checked>
                     <label for="guideCheck" class="ml-2 text-sm text-blue-900 font-semibold cursor-pointer">Activar Asistente de Interfaz (Día 1)</label>
                 </div>
 
-                <button onclick="startSequence()" class="w-full btn-udal font-bold py-3 rounded shadow-lg">ACCEDER AL MERCADO</button>
+                <button onclick="startSequence()" class="w-full btn-udal font-bold py-3 rounded shadow-lg">VALIDAR Y ACCEDER</button>
             </div>
 
             <!-- Cargar Juego -->
@@ -105,34 +97,33 @@
         <!-- DASHBOARD JUEGO -->
         <section id="gameSection" class="w-full hidden fade-in">
             
+            <div class="flex justify-between items-end mb-4 border-b border-gray-200 pb-2">
+                <div>
+                    <p class="text-[10px] text-gray-400 uppercase">Operador Autorizado</p>
+                    <h2 class="text-sm font-bold text-blue-900" id="operatorNameDisplay">...</h2>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-gray-400">Matrícula</p>
+                    <p class="text-sm font-mono text-gray-600" id="operatorIdDisplay">...</p>
+                </div>
+            </div>
+
             <!-- Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="statsBar">
-                <div class="bg-white p-4 rounded shadow border-l-4 border-blue-900 relative-tip">
-                    <div class="flex justify-between">
-                        <p class="text-[10px] text-gray-500 uppercase font-bold">Jornada</p>
-                        <i class="fas fa-question-circle help-icon hidden" id="tipDay" data-tip="Indica tu progreso en la simulación de 7 días."></i>
-                    </div>
+                <div class="bg-white p-4 rounded shadow border-l-4 border-blue-900 relative">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Jornada <i class="fas fa-question-circle text-gray-300 ml-1 cursor-help" title="Día actual de 7."></i></p>
                     <p class="text-2xl font-bold retro-font text-blue-900" id="displayDay">Día 1 / 7</p>
                 </div>
-                <div class="bg-white p-4 rounded shadow border-l-4 border-green-600 relative-tip">
-                    <div class="flex justify-between">
-                        <p class="text-[10px] text-gray-500 uppercase font-bold">Liquidez (MXN)</p>
-                        <i class="fas fa-question-circle help-icon hidden" id="tipCash" data-tip="Dinero en efectivo disponible."></i>
-                    </div>
+                <div class="bg-white p-4 rounded shadow border-l-4 border-green-600 relative">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Liquidez <i class="fas fa-question-circle text-gray-300 ml-1 cursor-help" title="Efectivo disponible."></i></p>
                     <p class="text-xl font-bold retro-font text-green-700" id="displayCash">$1,000,000</p>
                 </div>
-                <div class="bg-white p-4 rounded shadow border-l-4 border-purple-600 relative-tip">
-                    <div class="flex justify-between">
-                        <p class="text-[10px] text-gray-500 uppercase font-bold">Valor Mercado</p>
-                        <i class="fas fa-question-circle help-icon hidden" id="tipVal" data-tip="Valor actual de tus activos."></i>
-                    </div>
+                <div class="bg-white p-4 rounded shadow border-l-4 border-purple-600 relative">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Inversiones <i class="fas fa-question-circle text-gray-300 ml-1 cursor-help" title="Valor de activos hoy."></i></p>
                     <p class="text-xl font-bold retro-font text-purple-700" id="displayPortfolioVal">$0</p>
                 </div>
-                <div class="bg-white p-4 rounded shadow border-l-4 border-gray-800 relative-tip">
-                    <div class="flex justify-between">
-                        <p class="text-[10px] text-gray-500 uppercase font-bold">Patrimonio Neto</p>
-                        <i class="fas fa-question-circle help-icon hidden" id="tipNet" data-tip="Tu valor total real (Efectivo + Activos - Deudas)."></i>
-                    </div>
+                <div class="bg-white p-4 rounded shadow border-l-4 border-gray-800 relative">
+                    <p class="text-[10px] text-gray-500 uppercase font-bold">Patrimonio <i class="fas fa-question-circle text-gray-300 ml-1 cursor-help" title="Valor total real."></i></p>
                     <p class="text-xl font-bold retro-font text-gray-800" id="displayNetWorth">$1,000,000</p>
                 </div>
             </div>
@@ -141,103 +132,63 @@
                 
                 <!-- Sidebar -->
                 <div class="lg:col-span-1 flex flex-col gap-4">
-                    
                     <!-- Periódico -->
                     <div id="newsSection" class="newspaper p-5 rounded relative">
                         <div class="border-b-2 border-black mb-3 pb-2 flex justify-between items-end">
-                            <div>
-                                <h3 class="headline-font font-black text-2xl text-black leading-none" id="newsTitle">EL FINANCIERO</h3>
-                                <p class="text-[9px] text-gray-500 font-serif mt-1">INFORMACIÓN EN TIEMPO REAL</p>
-                            </div>
-                            <button onclick="toggleNewsSource()" class="text-[10px] border border-gray-400 px-2 py-1 rounded text-gray-600 hover:bg-white transition-colors relative-tip">
-                                Fuente <i class="fas fa-sync-alt"></i>
-                                <i class="fas fa-question-circle help-icon hidden" id="tipNews" data-tip="Cambia de fuente de noticias."></i>
-                            </button>
+                            <h3 class="headline-font font-black text-xl text-black leading-none" id="newsTitle">EL FINANCIERO</h3>
+                            <button onclick="toggleNewsSource()" class="text-[10px] border border-gray-400 px-2 py-1 rounded hover:bg-white">Fuente <i class="fas fa-sync-alt"></i></button>
                         </div>
                         <div id="newsFeed" class="space-y-4"></div>
                     </div>
 
-                    <!-- Panel Servicios Financieros -->
-                    <div class="bg-white border-t-4 border-gray-800 p-4 rounded shadow relative-tip">
-                        <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm"><i class="fas fa-briefcase"></i> Servicios Financieros</h3>
+                    <!-- Panel Servicios -->
+                    <div class="bg-white border-t-4 border-gray-800 p-4 rounded shadow">
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2 text-sm"><i class="fas fa-briefcase"></i> Opciones</h3>
                         
-                        <div class="mb-3">
-                            <button onclick="consultExpert()" id="btnExpert" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-between items-center px-3 bg-gray-100 text-gray-700 hover:bg-gray-200">
-                                <span><i class="fas fa-chart-pie"></i> Consultar Experto</span>
-                                <span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">$5k</span>
-                            </button>
-                            <p id="expertResult" class="mt-1 text-[10px] hidden bg-yellow-100 p-2 rounded text-yellow-800 border-l-2 border-yellow-500 italic"></p>
-                        </div>
-
-                        <div class="mb-3">
-                            <button onclick="openLoanModal()" id="btnLoan" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-between items-center px-3 bg-gray-100 text-gray-700 hover:bg-gray-200">
-                                <span><i class="fas fa-landmark"></i> Solicitar Crédito</span>
-                                <span class="text-[9px] bg-gray-300 px-1 rounded">Único</span>
-                            </button>
-                            <div id="loanStatus" class="hidden text-[10px] bg-red-50 text-red-800 p-2 rounded border border-red-100 mt-1">
-                                <i class="fas fa-check-circle"></i> Crédito Activo
-                            </div>
-                        </div>
-
-                        <div>
-                            <button onclick="openHustleModal()" id="btnHustle" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-between items-center px-3 bg-yellow-500 text-white hover:bg-yellow-600 btn-opportunity">
-                                <span><i class="fas fa-bolt"></i> Oportunidad Flash</span>
-                                <span class="text-[9px] bg-yellow-700 px-1 rounded">Diario</span>
-                            </button>
-                            <div id="hustleStatus" class="hidden text-[10px] text-gray-400 text-center mt-1 italic">
-                                Ya participaste hoy.
-                            </div>
-                        </div>
+                        <div class="mb-2"><button onclick="consultExpert()" id="btnExpert" class="w-full py-2 rounded font-bold text-xs shadow flex justify-between px-3 bg-gray-100 hover:bg-gray-200 text-gray-700"><span><i class="fas fa-chart-pie"></i> Experto</span><span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">$5k</span></button><p id="expertResult" class="mt-1 text-[10px] hidden bg-yellow-100 p-2 rounded italic"></p></div>
+                        <div class="mb-2"><button onclick="openLoanModal()" id="btnLoan" class="w-full py-2 rounded font-bold text-xs shadow flex justify-between px-3 bg-gray-100 hover:bg-gray-200 text-gray-700"><span><i class="fas fa-landmark"></i> Crédito</span><span class="text-[9px] bg-gray-300 px-1 rounded">Único</span></button><div id="loanStatus" class="hidden text-[10px] bg-red-50 text-red-800 p-2 rounded font-bold text-center">Crédito Activo</div></div>
+                        <div><button onclick="openHustleModal()" id="btnHustle" class="w-full py-2 rounded font-bold text-xs shadow flex justify-between px-3 bg-yellow-500 text-white hover:bg-yellow-600 btn-opportunity"><span><i class="fas fa-bolt"></i> Oportunidad</span><span class="text-[9px] bg-yellow-700 px-1 rounded">Flash</span></button><div id="hustleStatus" class="hidden text-[10px] text-gray-400 text-center mt-1 italic">Agotado hoy</div></div>
                     </div>
 
                     <!-- Botón Finalizar -->
-                    <div class="bg-blue-900 p-5 rounded shadow text-white relative-tip">
-                        <h3 class="font-bold mb-1 flex justify-between">Cierre de Libros <i class="fas fa-question-circle help-icon text-white hidden" id="tipEnd" data-tip="Cierra el día y guarda el progreso."></i></h3>
-                        <p class="text-[10px] text-blue-200 mb-3">Consolida posiciones y avanza al siguiente periodo.</p>
-                        <button onclick="endDay()" class="w-full py-3 bg-red-700 hover:bg-red-600 rounded font-bold shadow text-sm transition-colors border border-red-500">
-                            EJECUTAR CIERRE DIARIO
-                        </button>
+                    <div class="bg-blue-900 p-5 rounded shadow text-white">
+                        <h3 class="font-bold mb-1">Cierre de Libros</h3>
+                        <p class="text-[10px] text-blue-200 mb-3">Guarda progreso y avanza día.</p>
+                        <button onclick="endDay()" class="w-full py-3 bg-red-700 hover:bg-red-600 rounded font-bold shadow text-sm border border-red-500">EJECUTAR CIERRE</button>
                     </div>
                 </div>
 
-                <!-- Tabla de Mercado -->
+                <!-- Tabla -->
                 <div class="lg:col-span-2 bg-white rounded shadow overflow-hidden flex flex-col h-[600px]">
                     <div class="p-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center shrink-0">
-                        <h3 class="font-bold text-blue-900 text-sm flex items-center gap-2">
-                            <i class="fas fa-balance-scale"></i> Pizarra de Cotizaciones
-                        </h3>
-                        <span class="text-[10px] bg-blue-100 text-blue-800 px-2 py-1 rounded">MXN</span>
+                        <h3 class="font-bold text-blue-900 text-sm flex items-center gap-2"><i class="fas fa-balance-scale"></i> Mercado (MXN)</h3>
                     </div>
-                    
                     <div class="overflow-y-auto custom-scroll flex-grow">
                         <table class="w-full text-sm text-left text-gray-600">
                             <thead class="text-xs text-gray-500 uppercase bg-gray-100 sticky top-0 z-10">
                                 <tr>
-                                    <th class="px-3 py-3 bg-gray-100">Instrumento</th>
+                                    <th class="px-3 py-3 bg-gray-100">Activo</th>
                                     <th class="px-3 py-3 text-center bg-gray-100">Info</th>
-                                    <th class="px-3 py-3 text-center bg-gray-100">Tendencia</th>
+                                    <th class="px-3 py-3 text-center bg-gray-100">Estado</th>
                                     <th class="px-3 py-3 text-right bg-gray-100">Precio</th>
-                                    <th class="px-3 py-3 text-center bg-gray-100">Posición</th>
-                                    <th class="px-3 py-3 text-center bg-gray-100">Orden</th>
+                                    <th class="px-3 py-3 text-center bg-gray-100">Tenencia</th>
+                                    <th class="px-3 py-3 text-center bg-gray-100">Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="marketTableBody" class="divide-y divide-gray-100">
-                                <!-- Filas JS -->
-                            </tbody>
+                            <tbody id="marketTableBody" class="divide-y divide-gray-100"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN RESULTADOS FINALES -->
+        <!-- SECCIÓN RESULTADOS -->
         <section id="resultsSection" class="w-full max-w-4xl hidden fade-in mt-8">
             <div class="bg-white rounded-lg shadow-2xl overflow-hidden border-t-8 border-yellow-500">
-                <div class="p-8 text-center bg-gray-900 text-white relative">
+                <div class="p-8 text-center bg-gray-900 text-white">
                     <h2 class="text-3xl font-bold mb-2 text-yellow-500">INFORME FINAL</h2>
-                    <p class="text-sm text-gray-400">Auditoría de Desempeño - UDAL TRADER</p>
+                    <p class="text-sm text-gray-400">Auditoría de Desempeño</p>
                 </div>
-                
                 <div class="p-8">
                     <div class="flex flex-col md:flex-row gap-8 items-center justify-center">
                         <div class="text-center w-full md:w-1/3">
@@ -246,132 +197,36 @@
                             <p class="text-xs text-gray-500" id="rankDesc">...</p>
                         </div>
                         <div class="w-full md:w-2/3 text-center md:text-left space-y-4">
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase">Capital Final</p>
-                                <p class="text-4xl font-mono font-bold text-gray-800" id="finalNetWorth">$0.00</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-500 uppercase">Retorno (ROI)</p>
-                                <p class="text-xl font-bold" id="finalROI">0%</p>
-                            </div>
+                            <div><p class="text-xs text-gray-500 uppercase">Capital Final</p><p class="text-4xl font-mono font-bold text-gray-800" id="finalNetWorth">$0.00</p></div>
+                            <div><p class="text-xs text-gray-500 uppercase">Retorno (ROI)</p><p class="text-xl font-bold" id="finalROI">0%</p></div>
                         </div>
                     </div>
-                    <div class="mt-8 text-center">
-                        <button onclick="location.reload()" class="bg-blue-900 text-white px-6 py-2 rounded text-sm font-bold hover:bg-blue-800">Cerrar Sistema</button>
-                    </div>
+                    <div class="mt-8 text-center"><button onclick="location.reload()" class="bg-blue-900 text-white px-6 py-2 rounded text-sm font-bold hover:bg-blue-800">Cerrar Sistema</button></div>
                 </div>
             </div>
         </section>
 
-        <!-- MODAL INFO FICHA TÉCNICA -->
-        <div id="infoModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm">
-            <div class="bg-white rounded-lg w-full max-w-sm p-6 shadow-2xl border-t-4 border-blue-900">
-                <h3 class="text-lg font-bold text-blue-900 mb-2" id="infoTitle">Nombre Activo</h3>
-                <p class="text-xs text-gray-600 mb-4 italic" id="infoDesc">Descripción...</p>
-                
-                <div class="grid grid-cols-2 gap-2 mb-4">
-                    <div class="bg-gray-100 p-2 rounded text-center">
-                        <p class="text-[10px] text-gray-500 uppercase">Tipo</p>
-                        <p class="text-xs font-bold text-gray-800" id="infoType">Acción</p>
-                    </div>
-                    <div class="bg-gray-100 p-2 rounded text-center">
-                        <p class="text-[10px] text-gray-500 uppercase">Riesgo</p>
-                        <p class="text-xs font-bold text-gray-800" id="infoRisk">Alto</p>
-                    </div>
-                </div>
-                <button onclick="document.getElementById('infoModal').classList.add('hidden')" class="w-full py-2 text-xs font-bold bg-blue-900 text-white rounded hover:bg-blue-800">Cerrar Ficha</button>
-            </div>
-        </div>
-
-        <!-- MODAL CRÉDITO -->
-        <div id="loanModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm">
-            <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl">
-                <h3 class="text-xl font-bold text-blue-900 mb-4 flex items-center gap-2"><i class="fas fa-university"></i> Mercado de Crédito</h3>
-                <p class="text-xs text-gray-500 mb-4">Elige una institución para apalancarte. El interés se cobra diariamente. Solo puedes elegir uno.</p>
-                <div class="space-y-3">
-                    <div onclick="selectLoan('azteca')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group">
-                        <div><p class="font-bold text-green-700">Banco Azteca (UDAL)</p><p class="text-xs text-gray-500">Monto: $500,000 | Tasa Diaria: 5%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded group-hover:bg-green-200">Elegir</span>
-                    </div>
-                    <div onclick="selectLoan('santander')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group">
-                        <div><p class="font-bold text-red-700">Santander</p><p class="text-xs text-gray-500">Monto: $1,000,000 | Tasa Diaria: 3%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded group-hover:bg-red-200">Elegir</span>
-                    </div>
-                    <div onclick="selectLoan('bbva')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group">
-                        <div><p class="font-bold text-blue-700">BBVA</p><p class="text-xs text-gray-500">Monto: $2,000,000 | Tasa Diaria: 1.5%</p><p class="text-[9px] text-red-500">* Requiere $1.2M Patrimonio</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded group-hover:bg-blue-200">Elegir</span>
-                    </div>
-                </div>
-                <button onclick="document.getElementById('loanModal').classList.add('hidden')" class="mt-4 w-full py-2 text-gray-500 text-xs font-bold border rounded hover:bg-gray-100">Cancelar</button>
-            </div>
-        </div>
-
-        <!-- MODAL OPORTUNIDAD -->
-        <div id="hustleModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur">
-            <div class="bg-yellow-50 rounded-lg w-full max-w-sm p-6 shadow-[0_0_30px_rgba(234,179,8,0.5)] border-2 border-yellow-400 text-center">
-                <div class="text-4xl mb-2">⚡</div>
-                <h3 class="text-xl font-black text-yellow-800 mb-2 uppercase">Oportunidad Flash</h3>
-                <p class="text-sm font-bold text-gray-800 mb-1" id="hustleTitle">...</p>
-                <p class="text-xs text-gray-600 mb-4" id="hustleDesc">...</p>
-                <div class="bg-white p-3 rounded border border-yellow-200 mb-4"><p class="text-xs font-bold text-gray-500 uppercase">Inversión Requerida</p><p class="text-xl font-mono font-bold text-gray-800" id="hustleCost">$0</p></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="document.getElementById('hustleModal').classList.add('hidden')" class="py-2 bg-gray-200 rounded text-xs font-bold text-gray-600">Ignorar</button>
-                    <button onclick="executeHustle()" class="py-2 bg-yellow-500 text-white rounded text-xs font-bold hover:bg-yellow-600 shadow-lg">¡Arriesgar!</button>
-                </div>
-                <p class="text-[9px] text-gray-400 mt-2 italic">Probabilidad de éxito: 50%</p>
-            </div>
-        </div>
-
-        <!-- MODAL COMPRA/VENTA -->
-        <div id="tradeModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] backdrop-blur">
-            <div class="bg-white p-6 rounded-lg w-80 shadow-2xl border-t-4 border-blue-900 relative">
-                <h3 id="tradeAssetName" class="text-lg font-bold mb-1 text-blue-900">Orden de Mercado</h3>
-                <p class="text-xs text-gray-500 mb-4">Cotización: <span id="tradeAssetPrice" class="text-black font-mono font-bold"></span></p>
-                <div class="flex gap-2 mb-4">
-                    <button onclick="setTradeMode('buy')" id="btnModeBuy" class="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white">COMPRAR</button>
-                    <button onclick="setTradeMode('sell')" id="btnModeSell" class="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500">VENDER</button>
-                </div>
-                <div class="mb-4"><label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold">Volumen (MXN)</label><input type="number" id="tradeAmount" class="w-full bg-gray-50 border border-gray-300 rounded p-2 text-gray-900 font-mono focus:border-blue-900 outline-none" placeholder="0.00"></div>
-                <div class="flex gap-2"><button onclick="closeTradeModal()" class="flex-1 py-2 rounded border border-gray-300 text-gray-500 text-xs font-bold hover:bg-gray-100">CANCELAR</button><button onclick="executeTrade()" id="btnConfirmTrade" class="flex-1 py-2 rounded bg-blue-900 text-white font-bold text-xs hover:bg-blue-800 shadow">EJECUTAR</button></div>
-            </div>
-        </div>
-
-        <!-- MODAL CIERRE (TOKEN) -->
-        <div id="saveModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[70] p-4">
-            <div class="bg-white p-6 rounded max-w-lg w-full text-center border-4 border-gray-800 shadow-[0_0_20px_rgba(255,255,255,0.5)]">
-                <div id="pixelArtHeader" class="mb-4 flex justify-center text-4xl"></div>
-                <h2 class="text-xl font-bold text-gray-800 mb-2 pixel-font text-xs leading-relaxed" id="endDayTitle">JORNADA FINALIZADA</h2>
-                <p class="text-gray-600 text-xs mb-2" id="endDayMsg">Resultados del día.</p>
-                <div id="daySummary" class="text-[10px] text-gray-500 mb-4 italic"></div>
-                <p class="text-[10px] font-bold text-red-600 mb-1 uppercase">Importante:</p>
-                <p class="text-[10px] text-gray-500 mb-3 text-justify px-4">El sistema no guarda en la nube. Copia este código para continuar mañana.</p>
-                <div class="bg-gray-900 p-3 rounded mb-3 border-2 border-gray-600 text-left overflow-hidden"><code id="generatedCode" class="text-green-400 retro-font text-[10px] break-all block select-all cursor-text">...</code></div>
-                <button onclick="copyCode()" class="text-xs text-blue-600 underline mb-4 hover:text-blue-800">Copiar Token</button>
-                <button onclick="location.reload()" class="block w-full px-4 py-3 bg-red-700 text-white rounded font-bold hover:bg-red-800 pixel-font text-[10px]">SALIR DEL SISTEMA</button>
-            </div>
-        </div>
-
-        <!-- LOGIN PROFESOR -->
-        <div id="teacherLoginModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[80]">
-            <div class="bg-white p-6 rounded-lg max-w-sm w-full border-t-4 border-yellow-500">
-                <h3 class="text-blue-900 font-bold text-lg mb-4">Acceso Docente</h3>
-                <input type="password" id="teacherPwd" class="w-full border border-gray-300 p-2 rounded mb-4 text-black bg-gray-50" placeholder="Contraseña">
-                <div class="flex justify-end gap-2"><button onclick="document.getElementById('teacherLoginModal').classList.add('hidden')" class="px-4 py-2 text-gray-500 text-sm font-bold">Cancelar</button><button onclick="checkTeacherLogin()" class="px-4 py-2 bg-blue-900 text-white rounded text-sm font-bold hover:bg-blue-800">Entrar</button></div>
-            </div>
-        </div>
-
-        <!-- PANEL PROFESOR -->
-        <section id="teacherSection" class="w-full max-w-4xl card p-6 hidden mt-8 mb-12 border-yellow-500">
-            <div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-4">
-                <h2 class="text-xl font-bold text-blue-900">Auditoría Docente</h2>
-                <button onclick="location.reload()" class="text-xs bg-gray-200 px-3 py-1 rounded hover:bg-gray-300 text-gray-700">Cerrar Sesión</button>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <p class="text-xs text-gray-500 mb-2 font-bold uppercase">Token del Alumno:</p>
-                    <textarea id="teacherInput" class="w-full bg-gray-50 border border-gray-300 rounded p-3 text-blue-900 retro-font text-xs h-32 focus:border-blue-900 outline-none mb-2"></textarea>
-                    <button onclick="verifyStudentCode()" class="w-full bg-blue-900 text-white font-bold py-2 rounded hover:bg-blue-800 text-sm shadow">Auditar</button>
-                </div>
-                <div id="teacherResult" class="bg-gray-50 p-4 rounded border border-gray-200 text-sm h-full overflow-y-auto hidden"></div>
-            </div>
-        </section>
+        <!-- MODALES (Info, Loan, Hustle, Trade, Save, Teacher) -->
+        <!-- Info -->
+        <div id="infoModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm"><div class="bg-white rounded-lg w-full max-w-sm p-6 shadow-2xl border-t-4 border-blue-900"><h3 class="text-lg font-bold text-blue-900 mb-2" id="infoTitle"></h3><p class="text-xs text-gray-600 mb-4 italic" id="infoDesc"></p><div class="grid grid-cols-2 gap-2 mb-4"><div class="bg-gray-100 p-2 rounded text-center"><p class="text-[10px] text-gray-500 uppercase">Tipo</p><p class="text-xs font-bold text-gray-800" id="infoType"></p></div><div class="bg-gray-100 p-2 rounded text-center"><p class="text-[10px] text-gray-500 uppercase">Riesgo</p><p class="text-xs font-bold text-gray-800" id="infoRisk"></p></div></div><button onclick="document.getElementById('infoModal').classList.add('hidden')" class="w-full py-2 text-xs font-bold bg-blue-900 text-white rounded hover:bg-blue-800">Cerrar</button></div></div>
+        
+        <!-- Loan -->
+        <div id="loanModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm"><div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl"><h3 class="text-xl font-bold text-blue-900 mb-4"><i class="fas fa-university"></i> Crédito</h3><div class="space-y-3"><div onclick="selectLoan('azteca')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group"><div><p class="font-bold text-green-700">Banco Azteca</p><p class="text-xs text-gray-500">500k | Tasa 5%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded">Elegir</span></div><div onclick="selectLoan('santander')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group"><div><p class="font-bold text-red-700">Santander</p><p class="text-xs text-gray-500">1M | Tasa 3%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded">Elegir</span></div><div onclick="selectLoan('bbva')" class="border p-3 rounded cursor-pointer hover:bg-gray-50 flex justify-between items-center group"><div><p class="font-bold text-blue-700">BBVA</p><p class="text-xs text-gray-500">2M | Tasa 1.5%</p></div><span class="text-xs bg-gray-200 px-2 py-1 rounded">Elegir</span></div></div><button onclick="document.getElementById('loanModal').classList.add('hidden')" class="mt-4 w-full py-2 text-gray-500 text-xs font-bold border rounded hover:bg-gray-100">Cancelar</button></div></div>
+        
+        <!-- Hustle -->
+        <div id="hustleModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 backdrop-blur"><div class="bg-yellow-50 rounded-lg w-full max-w-sm p-6 shadow-2xl border-2 border-yellow-400 text-center"><h3 class="text-xl font-black text-yellow-800 mb-2">OPORTUNIDAD</h3><p class="text-sm font-bold text-gray-800 mb-1" id="hustleTitle"></p><p class="text-xs text-gray-600 mb-4" id="hustleDesc"></p><div class="bg-white p-3 rounded border border-yellow-200 mb-4"><p class="text-xs font-bold text-gray-500 uppercase">Inversión</p><p class="text-xl font-mono font-bold text-gray-800" id="hustleCost"></p></div><div class="grid grid-cols-2 gap-3"><button onclick="document.getElementById('hustleModal').classList.add('hidden')" class="py-2 bg-gray-200 rounded text-xs font-bold text-gray-600">Ignorar</button><button onclick="executeHustle()" class="py-2 bg-yellow-500 text-white rounded text-xs font-bold hover:bg-yellow-600 shadow-lg">¡Arriesgar!</button></div></div></div>
+        
+        <!-- Trade -->
+        <div id="tradeModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-[60] backdrop-blur"><div class="bg-white p-6 rounded-lg w-80 shadow-2xl border-t-4 border-blue-900 relative"><h3 id="tradeAssetName" class="text-lg font-bold mb-1 text-blue-900">Orden</h3><p class="text-xs text-gray-500 mb-4">Precio: <span id="tradeAssetPrice" class="text-black font-mono font-bold"></span></p><div class="flex gap-2 mb-4"><button onclick="setTradeMode('buy')" id="btnModeBuy" class="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white">COMPRAR</button><button onclick="setTradeMode('sell')" id="btnModeSell" class="flex-1 py-1 rounded text-xs font-bold bg-gray-200 text-gray-500">VENDER</button></div><div class="mb-4"><label class="block text-[10px] text-gray-500 mb-1 uppercase font-bold">Monto (MXN)</label><input type="number" id="tradeAmount" class="w-full bg-gray-50 border border-gray-300 rounded p-2 text-gray-900 font-mono focus:border-blue-900 outline-none" placeholder="0.00"></div><div class="flex gap-2"><button onclick="closeTradeModal()" class="flex-1 py-2 rounded border border-gray-300 text-gray-500 text-xs font-bold hover:bg-gray-100">CANCELAR</button><button onclick="executeTrade()" class="flex-1 py-2 rounded bg-blue-900 text-white font-bold text-xs hover:bg-blue-800 shadow">EJECUTAR</button></div></div></div>
+        
+        <!-- Save/Token -->
+        <div id="saveModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[70] p-4"><div class="bg-white p-6 rounded max-w-lg w-full text-center border-4 border-gray-800 shadow-2xl"><div id="pixelArtHeader" class="mb-4 text-4xl"></div><h2 class="text-xl font-bold text-gray-800 mb-2 pixel-font text-xs">JORNADA FINALIZADA</h2><p class="text-gray-600 text-xs mb-2" id="endDayMsg"></p><div id="daySummary" class="text-[10px] text-gray-500 mb-4 italic"></div><p class="text-[10px] font-bold text-red-600 mb-1 uppercase">Importante:</p><p class="text-[10px] text-gray-500 mb-3 px-4">Copia este código. Es tu único respaldo.</p><div class="bg-gray-900 p-3 rounded mb-3 border-2 border-gray-600 text-left overflow-hidden"><code id="generatedCode" class="text-green-400 retro-font text-[10px] break-all block select-all cursor-text">...</code></div><button onclick="copyCode()" class="text-xs text-blue-600 underline mb-4">Copiar Token</button><button onclick="location.reload()" class="block w-full px-4 py-3 bg-red-700 text-white rounded font-bold hover:bg-red-800 pixel-font text-[10px]">SALIR</button></div></div>
+        
+        <!-- Teacher Login -->
+        <div id="teacherLoginModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-[80]"><div class="bg-white p-6 rounded-lg max-w-sm w-full border-t-4 border-yellow-500"><h3 class="text-blue-900 font-bold text-lg mb-4">Acceso Docente</h3><input type="password" id="teacherPwd" class="w-full border border-gray-300 p-2 rounded mb-4 text-black bg-gray-50" placeholder="Contraseña"><div class="flex justify-end gap-2"><button onclick="document.getElementById('teacherLoginModal').classList.add('hidden')" class="px-4 py-2 text-gray-500 text-sm font-bold">Cancelar</button><button onclick="checkTeacherLogin()" class="px-4 py-2 bg-blue-900 text-white rounded text-sm font-bold hover:bg-blue-800">Entrar</button></div></div></div>
+        
+        <!-- Teacher Panel -->
+        <section id="teacherSection" class="w-full max-w-4xl card p-6 hidden mt-8 mb-12 border-yellow-500"><div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-4"><h2 class="text-xl font-bold text-blue-900">Auditoría Docente</h2><button onclick="location.reload()" class="text-xs bg-gray-200 px-3 py-1 rounded hover:bg-gray-300">Cerrar Sesión</button></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><p class="text-xs text-gray-500 mb-2 font-bold uppercase">Token del Alumno:</p><textarea id="teacherInput" class="w-full bg-gray-50 border border-gray-300 rounded p-3 text-blue-900 retro-font text-xs h-32 focus:border-blue-900 outline-none mb-2"></textarea><button onclick="verifyStudentCode()" class="w-full bg-blue-900 text-white font-bold py-2 rounded hover:bg-blue-800 text-sm shadow">Auditar</button></div><div id="teacherResult" class="bg-gray-50 p-4 rounded border border-gray-200 text-sm h-full overflow-y-auto hidden"></div></div></section>
 
     </main>
 
@@ -381,12 +236,166 @@
     </footer>
 
 <script>
-/* --- UTILS: SAFE UTF-8 BASE64 --- */
+/* --- BASE DE DATOS DE ESTUDIANTES AUTORIZADOS --- */
+const STUDENT_DB = {
+    "100017415": "AVELINO MATEO XIMENA DANIELA",
+    "100017697": "BAEZ ROSALES ANGEL HERSAI",
+    "100017904": "CARRILLO CASTELAN FERNANDA HARET",
+    "100017657": "CATAL LUCAS SANDRA",
+    "100018025": "CRUZ LUCAS AIDE NATIVIDAD",
+    "100017729": "CUAYA FUENTES ALEX",
+    "100018128": "FERRER RODRIGUEZ XIMENA",
+    "100017907": "GAONA SORIA ISAAC MARIANO",
+    "100017651": "GARCIA ALVAREZ SANTIAGO",
+    "100017652": "GIL MARTINEZ BERENICE",
+    "100017370": "HERNANDEZ CORTES FATIMA",
+    "100018166": "HILARIO CASTAÑEDA ULISES",
+    "100017271": "MENA LORENZO OSCAR URIEL",
+    "100017869": "MERINO HERNANDEZ MARICRUZ",
+    "100018056": "MOCTEZUMA ORTEGA ARIEL",
+    "100017497": "MOLINA ENRIQUEZ RENE",
+    "100017665": "MORALES BELLO VANESSA",
+    "100017775": "MORALES GUTIEREZ ISAAC",
+    "100018096": "MORALES POBLANO EMILIO",
+    "100018164": "MUÑOZ CASTAÑEDA VALERIA",
+    "100017878": "NAVA FLORES SAUL EDUARDO",
+    "100017312": "NAVA MONTIEL CAMILA",
+    "100018099": "RAMIREZ CARREON EVA SOFIA",
+    "100018064": "RODRIGUEZ JIMENEZ MARIA ESTEFANIA",
+    "100017243": "SANCHEZ GONZALEZ CAMILA AMEYALTZIN",
+    "100017751": "VARGAS CASTILLO INES",
+    "100018135": "VARGAS TIRSO MARICARMEN",
+    "100016403": "AGUILA CADENA ADALIF ANGELLIQUE",
+    "100016666": "AGUILAR MIXCOATL ANDRES GABRIEL",
+    "100015977": "ANGEL FLORES MARIA TERESA",
+    "100016587": "ARIZA AGUILAR DANNA",
+    "100016046": "ARROYO GIL MELISSA",
+    "100016190": "AVALOS OLIVAS OLGA MABEL",
+    "100016786": "CONTRERAS APANGO VALERIA",
+    "100016972": "CORTES DOMINGUEZ SAYURI ALONDRA",
+    "100016254": "CORTEZ CALDERON KRIZIA NICOLE",
+    "100016271": "DEGANTE SILVERIO AXEL",
+    "100016352": "FERNANDEZ ITURRIAGA NICOLAS",
+    "100016393": "FLORES MANZANO MARYFER",
+    "100016664": "FLORES SALAZAR LUIS RICARDO",
+    "100016663": "JARQUIN FLORES ESMERALDA",
+    "100016570": "LUNA MARCOS JOSE MARIA",
+    "100016493": "MOO VASQUEZ CARLOS ARIEL",
+    "100016969": "PERALTA GONZALEZ ALEXANDRA",
+    "100016181": "ROMERO NUÑEZ DIEGO GAEL",
+    "100015510": "AGUILAR ARELLANO YARIMETH",
+    "100015705": "AGUILAR HIDALGO EDGAR MANUEL",
+    "100014782": "AGUILAR PEREZ DULCE ARANZA",
+    "100015254": "COYOTL SOTO JESUS EDUARDO",
+    "100015436": "GONZALEZ TOXTLE ADILENE",
+    "100015146": "LEAL GOMEZ KAREN JANINA",
+    "100015789": "LOPEZ ANDRADE IRVIN DANIEL",
+    "100015504": "MARTINEZ ROMERO GUADALUPE",
+    "100015161": "MORALES ROJAS XIMENA",
+    "100014091": "MUÑOZ CASTAÑEDA JOSE MANUEL",
+    "100015332": "OREA ZARATE MARIANA",
+    "100015612": "OSORIO GARCIA JESSICA EMILY",
+    "100015244": "PEREZ VAZQUEZ RICARDO",
+    "100015601": "SANCHEZ LEON ANIEFH MICHELLE",
+    "100015166": "TEHUITZIL RODRIGUEZ YAEL",
+    "100015112": "TELLEZ FLORES FRANCISCO JAVIER",
+    "100015093": "TORNEZ ROQUE MILKA GUADALUPE",
+    "100014418": "AGUILAR MORALES JUARYTH",
+    "100014714": "ANDRADE REYES ALEJANDRO",
+    "100015048": "ANDRADE VELAZQUEZ MELISA",
+    "100014785": "BRAVO RAMIREZ SUANY YARLETH",
+    "100014786": "CAMACHO HERNANDEZ JOSE LUIS",
+    "100014094": "CASTAÑEDA CRUZ ALBERTO",
+    "100014439": "COYOTL HUANETL DAVID",
+    "100014290": "FLORES FIGUEROA YARET CELIA",
+    "100014235": "LOPEZ GARCIA PEDRO ANDRES",
+    "100014275": "MARTINEZ MARTINEZ REGINA",
+    "100014715": "POTENCIANO ROMERO URIEL DE JESUS",
+    "100014115": "VELAZQUEZ MOYOTL ANA JOLETTE",
+    "100013212": "ALTAMIRA GUEVARA ALEX ALBERTO",
+    "100013240": "CUAZITL VELASCO MIRIAM ALONDRA",
+    "100015586": "ALVARO GONZALEZ REY DAVID",
+    "100015408": "CORTES CASTRO PATRICIA",
+    "100015247": "GARCIA MENESES KENIA",
+    "100015389": "GONZALEZ BAUTISTA MARIANNE",
+    "100015301": "JERONIMO GONZALEZ ALY ESTEPHANY",
+    "100015303": "LOPEZ MARTINEZ LORELEI JANETH",
+    "100015212": "MAGAÑA DE JESUS JAZMIN ARLETTE",
+    "100015383": "MARTINEZ HERNANDEZ ANA MONTSERRAT",
+    "100015809": "PAEZ DE LEON IAN CARLOS",
+    "100015419": "PEREZ HUACHINA YURIDIA",
+    "100015515": "PORRAS PROMOTOR ANA PAOLA",
+    "100015243": "SALAMA AGUILAR EMILIO",
+    "100015442": "VAZQUEZ RAMIREZ MILDRE AZUCENA",
+    "100014672": "AGUILAR JUAREZ DANIEL",
+    "100014724": "ARCE FLORES ALDO",
+    "100014053": "BORJA SANCHEZ RICARDO SAID",
+    "100014127": "CAMACHO MACIN ARACELI",
+    "100014114": "DE MERCED HUERTA ALONDRA",
+    "100014274": "GARCIA ALVAREZ ERENDIRA SAMANTA",
+    "100014277": "GARCIA LOPEZ DANNA PAOLA",
+    "100014658": "HERNANDEZ RODRIGUEZ NADIA",
+    "100014109": "NIEMBRO ROJAS COVADONGA",
+    "100014456": "NIÑO MARTINEZ JOSE MANUEL",
+    "100014554": "RAMIREZ PALACIOS JAFET",
+    "100017960": "BAEZ MOXO GERARDO ALEXIS",
+    "100018143": "BALTAZAR TAPIA CAMILA",
+    "100017495": "CABAÑAS SANCHEZ CARLOS",
+    "100017538": "DIRCIO VENEGAS CRISTIAN EMMANUEL",
+    "100017890": "ESPINOSA HERNANDEZ KARLA DANIELA",
+    "100017896": "ESQUIVEL LOPEZ MARIA LIZBETH",
+    "100017738": "FLORES BARBOSA MIA ANDREA",
+    "100018159": "FLORES ZEFERINO GUADALUPE",
+    "100017492": "FUENTECILLA SANTIAGO MINERVA",
+    "100017424": "JIMENEZ HERNANDEZ JUAN MANUEL",
+    "100017568": "JIMENEZ MELENDEZ JULISSA",
+    "100017733": "JIMENEZ MELQUIADES ALARICK ISAI",
+    "100018163": "JUAREZ REYES MOISES",
+    "100017418": "LOYOLA ORTEGA NURI GUADALUPE",
+    "100018146": "MARTINEZ LUNA EDITH",
+    "100018173": "MONROY ZAMORA JOSUE GERMAN",
+    "100017529": "MORENO BRISEÑO CINTHIA",
+    "100018001": "OLIVAREZ GARCIA AXCEL",
+    "100017756": "RAMIREZ DAMAS VALERY HAIDE",
+    "100017660": "REYES CELAYA ISAMAR",
+    "100017668": "ROJAS GARCIA AQUETZALIN",
+    "100018183": "RUIZ LIMA ESTEFANIA",
+    "100018160": "SANTAMARIA SORIANO DULCE MARIELA",
+    "100017952": "SANTOS GUTIERREZ DULCE VALERIA",
+    "100018051": "SEGURA LEON VALERIA MICHEL",
+    "100018065": "TENIZA MOSON ARANZA BELEM",
+    "100018092": "VÁZQUEZ MONTIEL VALERIA",
+    "100016789": "AMADOR BELLO BRANDON",
+    "100016387": "BECERRA LOEZA MARIAN ANGELA",
+    "100016593": "BLANCO CASTELLANOS KARLA LUPITA",
+    "100016950": "BRUNO ORTIZ DIANA LAURA",
+    "100016150": "CABRERA CRUZ PILAR",
+    "100016402": "CHARRO QUINTANA MAYREL",
+    "100016992": "CORDERO MONTIEL GALIA",
+    "100016349": "CRESPO DE LA CRUZ LEHOMAR",
+    "100016650": "GARCIA GARCIA DIEGO ENRIQUE",
+    "100016958": "HERNANDEZ HERRERA AUSTIN ALEJANDRO",
+    "100016398": "HERNANDEZ LUIS EMMA PAOLA",
+    "100016673": "LOPEZ PEREZ MIGUEL ANGEL",
+    "100016136": "LUNA ORTEGA SANDY",
+    "100016917": "ORIZAVA RIVERA OLIVER",
+    "100016500": "PEREZ VAZQUEZ FABIAN",
+    "100016784": "RAMOS MENDEZ LIZBETH",
+    "100016702": "ROJAS FLORES ABIGAIL",
+    "100016872": "ROJAS SANCHEZ JOSE MANUEL",
+    "100016782": "SANCHEZ CASTILLO DAFNE SARAI",
+    "100016923": "SANCHEZ SAN MARTIN JUAN YARED",
+    "100016754": "SANTOS ROJAS JOSELIN",
+    "100016874": "SAUCEDO DELGADO ASHLEY"
+};
+
+/* --- UTILS --- */
+function fmtMoney(n) { return "$" + n.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+// Safe Base64 for Tokens (UTF-8 support)
 function utf8_to_b64(str) { return window.btoa(unescape(encodeURIComponent(str))); }
 function b64_to_utf8(str) { return decodeURIComponent(escape(window.atob(str))); }
-function fmtMoney(n) { return "$" + n.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}); }
 
-/* --- CONFIGURACIÓN --- */
+/* --- CONFIG --- */
 const MAX_DAYS = 7;
 const INITIAL_CASH = 1000000;
 
@@ -427,7 +436,12 @@ const hustles = [
     { title: "NFTs de Monos", desc: "Colección de arte digital. Dicen que subirá.", cost: 10000 }
 ];
 
-let gameState = { name: "", day: 1, cash: INITIAL_CASH, portfolio: {}, bypassed: 0, blackSwans: {}, narrativeId: 0, expertConsulted: false, loan: { bank: null, amount: 0, rate: 0 }, hustleDone: false };
+let gameState = {
+    id: "", name: "", day: 1, cash: INITIAL_CASH, portfolio: {},
+    bypassed: 0, blackSwans: {}, narrativeId: 0,
+    expertConsulted: false, loan: { bank: null, amount: 0, rate: 0 }, hustleDone: false
+};
+
 assetsDB.forEach(a => gameState.portfolio[a.id] = 0);
 let currentNewsSource = 'fin'; 
 
@@ -439,12 +453,27 @@ function toggleLoginMode(mode) {
 }
 
 function startSequence() {
-    const name = document.getElementById('studentName').value.trim();
-    if(!name) return alert("Nombre requerido");
-    gameState.name = name; gameState.day = 1; gameState.cash = INITIAL_CASH; gameState.portfolio = {};
+    const id = document.getElementById('studentId').value.trim();
+    if(!id) return alert("Ingresa tu matrícula");
+    
+    // VALIDACIÓN CONTRA BASE DE DATOS
+    const studentName = STUDENT_DB[id];
+    
+    if(!studentName) {
+        alert("⛔ ACCESO DENEGADO\nLa matrícula " + id + " no está autorizada para usar este simulador.");
+        return;
+    }
+
+    gameState.id = id;
+    gameState.name = studentName;
+    gameState.day = 1;
+    gameState.cash = INITIAL_CASH;
+    gameState.portfolio = {};
     assetsDB.forEach(a => gameState.portfolio[a.id] = 0);
     gameState.narrativeId = Math.floor(Math.random() * 3);
+    
     if(document.getElementById('guideCheck').checked) document.querySelectorAll('.help-icon').forEach(el => el.classList.remove('hidden'));
+    
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('gameSection').classList.remove('hidden');
     renderGame();
@@ -452,22 +481,35 @@ function startSequence() {
 
 /* --- GAME LOGIC --- */
 function renderGame() {
+    document.getElementById('operatorNameDisplay').innerText = gameState.name;
+    document.getElementById('operatorIdDisplay').innerText = gameState.id;
     document.getElementById('displayDay').innerText = `Día ${gameState.day} / ${MAX_DAYS}`;
     document.getElementById('displayCash').innerText = fmtMoney(gameState.cash);
+    
     let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0) * getPrice(a, gameState.day));
     const netWorth = gameState.cash + portVal - gameState.loan.amount;
+    
     document.getElementById('displayPortfolioVal').innerText = fmtMoney(portVal);
     document.getElementById('displayNetWorth').innerText = fmtMoney(netWorth);
 
+    // Expert Status
     const btnExp = document.getElementById('btnExpert');
     const cost = netWorth < INITIAL_CASH ? 1000 : 5000;
     document.getElementById('expertCostBadge').innerText = fmtMoney(cost);
-    if(gameState.expertConsulted) { btnExp.classList.add('opacity-50', 'cursor-not-allowed'); btnExp.innerHTML = `<span><i class="fas fa-check"></i> Ya Consultado</span>`; }
-    else { btnExp.classList.remove('opacity-50', 'cursor-not-allowed'); btnExp.innerHTML = `<span><i class="fas fa-chart-pie"></i> Consultar Experto</span><span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">${fmtMoney(cost)}</span>`; }
+    
+    if(gameState.expertConsulted) {
+        btnExp.classList.add('opacity-50', 'cursor-not-allowed');
+        btnExp.innerHTML = `<span><i class="fas fa-check"></i> Ya Consultado</span>`;
+    } else {
+        btnExp.classList.remove('opacity-50', 'cursor-not-allowed');
+        btnExp.innerHTML = `<span><i class="fas fa-chart-pie"></i> Experto</span><span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">${fmtMoney(cost)}</span>`;
+    }
 
+    // Loan Status
     if(gameState.loan.amount > 0) { document.getElementById('btnLoan').classList.add('hidden'); document.getElementById('loanStatus').classList.remove('hidden'); }
     else { document.getElementById('btnLoan').classList.remove('hidden'); document.getElementById('loanStatus').classList.add('hidden'); }
 
+    // Hustle Status
     if(gameState.hustleDone) { document.getElementById('btnHustle').classList.add('opacity-50', 'cursor-not-allowed'); document.getElementById('hustleStatus').classList.remove('hidden'); }
     else { document.getElementById('btnHustle').classList.remove('opacity-50', 'cursor-not-allowed'); document.getElementById('hustleStatus').classList.add('hidden'); }
 
@@ -481,19 +523,31 @@ function renderTable() {
         const qty = gameState.portfolio[a.id] || 0;
         let status = '<span class="text-gray-400">▬</span>';
         const swanMult = (gameState.blackSwans && gameState.blackSwans[a.id]) !== undefined ? gameState.blackSwans[a.id] : null;
-        if (swanMult !== null) { if(swanMult > 1.2) status = '🚀 MOON'; else if (swanMult < 0.1) status = '💀 CRASH'; else if (swanMult < 1) status = '🔻 DOWN'; }
-        else if(gameState.day > 1) {
-            const prev = getPrice(a, gameState.day - 1); const change = (price - prev) / prev;
-            if(change > 0.03) status = '<span class="text-green-600 font-bold">▲▲</span>'; else if(change > 0) status = '<span class="text-green-500">▲</span>'; else if(change < -0.03) status = '<span class="text-red-600 font-bold">▼▼</span>'; else if(change < 0) status = '<span class="text-red-500">▼</span>';
+        
+        if (swanMult !== null) {
+            if(swanMult > 1.2) status = '🚀 MOON';
+            else if (swanMult < 0.1) status = '💀 CRASH';
+            else if (swanMult < 1) status = '🔻 DOWN';
+        } else if(gameState.day > 1) {
+            const prev = getPrice(a, gameState.day - 1);
+            const change = (price - prev) / prev;
+            if(change > 0.03) status = '<span class="text-green-600 font-bold">▲▲</span>';
+            else if(change > 0) status = '<span class="text-green-500">▲</span>';
+            else if(change < -0.03) status = '<span class="text-red-600 font-bold">▼▼</span>';
+            else if(change < 0) status = '<span class="text-red-500">▼</span>';
         }
-        const tr = document.createElement('tr'); tr.className = "hover:bg-blue-50 transition-colors border-b border-gray-100";
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-blue-50 transition-colors border-b border-gray-100";
         tr.innerHTML = `
             <td class="px-3 py-3 font-bold text-blue-900 text-xs">${a.name}</td>
             <td class="px-3 py-3 text-center"><button onclick="showInfo('${a.id}')" class="text-[9px] bg-gray-200 hover:bg-gray-300 text-gray-600 px-2 py-1 rounded">FICHA</button></td>
             <td class="px-3 py-3 text-center text-xs font-bold">${status}</td>
             <td class="px-3 py-3 text-right font-mono text-xs text-gray-700 font-bold">${fmtMoney(price)}</td>
             <td class="px-3 py-3 text-center text-xs text-gray-500">${qty.toFixed(2)}</td>
-            <td class="px-3 py-3 text-center"><button onclick="openTrade('${a.id}')" class="bg-blue-900 hover:bg-blue-800 text-white text-[10px] px-3 py-1 rounded font-bold shadow" ${swanMult !== null && swanMult < 0.1 ? 'disabled class="opacity-50"' : ''}>OPERAR</button></td>
+            <td class="px-3 py-3 text-center">
+                <button onclick="openTrade('${a.id}')" class="bg-blue-900 hover:bg-blue-800 text-white text-[10px] px-3 py-1 rounded font-bold shadow" ${swanMult !== null && swanMult < 0.1 ? 'disabled class="opacity-50"' : ''}>OPERAR</button>
+            </td>
         `;
         tbody.appendChild(tr);
     });
@@ -543,9 +597,9 @@ function selectLoan(bank) {
     if(bank==='azteca'){amount=500000;rate=0.05;} else if(bank==='santander'){amount=1000000;rate=0.03;} else if(bank==='bbva'){let p=0;assetsDB.forEach(a=>p+=(gameState.portfolio[a.id]||0)*getPrice(a,gameState.day));if((gameState.cash+p)<1200000)return alert("Patrimonio insuficiente.");amount=2000000;rate=0.015;}
     if(confirm(`¿Contratar crédito?\nRecibes: ${fmtMoney(amount)}\nInterés Diario: ${(rate*100)}%`)) { gameState.loan={bank,amount,rate}; gameState.cash+=amount; document.getElementById('loanModal').classList.add('hidden'); renderGame(); }
 }
-function openHustleModal() { if(gameState.hustleDone) return; const hustle = hustles[Math.floor(Math.random() * hustles.length)]; gameState.activeHustle = hustle; document.getElementById('hustleTitle').innerText = hustle.title; document.getElementById('hustleDesc').innerText = hustle.desc; document.getElementById('hustleCost').innerText = fmtMoney(hustle.cost); document.getElementById('hustleModal').classList.remove('hidden'); }
+function openHustleModal() { if(gameState.hustleDone) return; const hustle = hustles[Math.floor(Math.random() * hustles.length)]; document.getElementById('hustleTitle').innerText = hustle.title; document.getElementById('hustleDesc').innerText = hustle.desc; document.getElementById('hustleCost').innerText = fmtMoney(hustle.cost); document.getElementById('hustleModal').classList.remove('hidden'); gameState.tempHustle = hustle; }
 function executeHustle() {
-    const h = gameState.activeHustle; if(!h || gameState.cash < h.cost) return alert("Sin fondos.");
+    const h = gameState.tempHustle; if(!h || gameState.cash < h.cost) return alert("Sin fondos.");
     gameState.cash -= h.cost; document.getElementById('hustleModal').classList.add('hidden'); gameState.hustleDone = true;
     if(Math.random() > 0.5) { gameState.cash += h.cost * 2; alert(`🎉 ¡ÉXITO! Ganaste ${fmtMoney(h.cost)} extra.`); } else { alert(`📉 FRACASO. Perdiste la inversión.`); }
     renderGame();
@@ -590,9 +644,16 @@ function endDay() {
     document.getElementById('endDayMsg').innerText = roi >= 0 ? `Ganancia: +${fmtMoney(roi)}` : `Pérdida: ${fmtMoney(roi)}`;
     document.getElementById('daySummary').innerText = loanMsg;
     if(gameState.day >= MAX_DAYS) { showResults(); return; }
-    let nextState = JSON.parse(JSON.stringify(gameState)); nextState.day++; nextState.expertConsulted = false; nextState.hustleDone = false;
+    
+    // SAVE ONLY STATE, NO NAME (To Avoid encoding errors with accents)
+    // The ID is preserved, so we can recover the name from DB on load
+    let nextState = JSON.parse(JSON.stringify(gameState)); 
+    nextState.day++; nextState.expertConsulted = false; nextState.hustleDone = false;
+    delete nextState.name; // Remove name from token to safe space and avoid utf8 issues
+    
     const jsonStr = JSON.stringify(nextState);
     const code = "UDAL-" + utf8_to_b64(jsonStr).split('').reverse().join('');
+    
     document.getElementById('generatedCode').innerText = code; document.getElementById('saveModal').classList.remove('hidden'); document.getElementById('saveModal').classList.add('flex');
 }
 
@@ -617,9 +678,21 @@ function loadGame() {
         const jsonStr = b64_to_utf8(encodedStr);
         const data = JSON.parse(jsonStr);
         if(!data.loan) data.loan = {amount:0, rate:0};
+        
+        // RECOVER NAME FROM DB USING ID
+        if(data.id && STUDENT_DB[data.id]) {
+            data.name = STUDENT_DB[data.id];
+        } else {
+            data.name = "Desconocido (Error DB)";
+        }
+
         gameState = data;
         triggerBlackSwan();
-        if(gameState.day > MAX_DAYS) showResults(); else startGame();
+        if(gameState.day > MAX_DAYS) showResults(); else {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('gameSection').classList.remove('hidden');
+            renderGame();
+        }
     } catch(e) { alert("Token corrupto o formato inválido."); console.error(e); }
 }
 
@@ -633,10 +706,15 @@ function verifyStudentCode() {
         const encodedStr = code.replace("UDAL-","").split('').reverse().join('');
         const jsonStr = b64_to_utf8(encodedStr);
         const data = JSON.parse(jsonStr);
+        
+        // Recover name for teacher view
+        let studentName = "Desconocido";
+        if(data.id && STUDENT_DB[data.id]) studentName = STUDENT_DB[data.id];
+
         let total = data.cash; assetsDB.forEach(a => { let idx = (data.day > 1) ? data.day - 2 : 0; total += (data.portfolio[a.id]||0) * (a.base * a.hist[idx]); });
         if(data.loan) total -= data.loan.amount;
         document.getElementById('teacherResult').classList.remove('hidden');
-        document.getElementById('teacherResult').innerHTML = `<p class="font-bold text-blue-900">Alumno: ${data.name}</p><p>Día Actual: ${data.day}</p><p class="text-xl font-bold text-green-700">${fmtMoney(total)}</p>`;
+        document.getElementById('teacherResult').innerHTML = `<p class="font-bold text-blue-900">Alumno: ${studentName}</p><p class="text-xs text-gray-500">ID: ${data.id}</p><p>Día Actual: ${data.day}</p><p class="text-xl font-bold text-green-700">${fmtMoney(total)}</p>`;
     } catch(e){ alert("Error al leer token"); }
 }
 </script>
