@@ -103,7 +103,7 @@
         
         <!-- INTRO / LOGIN -->
         <section id="loginSection" class="w-full max-w-lg card p-8 mb-4 fade-in mt-8 relative">
-            <div class="absolute -top-3 -right-3 bg-red-700 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v4.0 Wall St.</div>
+            <div class="absolute -top-3 -right-3 bg-red-700 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v4.1 Final Fix</div>
             
             <h2 class="text-xl font-bold mb-2 text-center text-blue-900">Plataforma de Trading</h2>
             <p class="text-xs text-center text-gray-500 mb-6 px-4">Entorno financiero profesional. Universidad de América Latina.</p>
@@ -139,16 +139,6 @@
         <!-- DASHBOARD JUEGO -->
         <section id="gameSection" class="w-full hidden fade-in">
             
-            <!-- Botonera Superior Extra -->
-            <div class="flex justify-between items-center mb-4">
-                <div class="flex gap-2">
-                    <button onclick="openLoanModal()" id="btnLoan" class="text-xs bg-gray-800 text-white px-3 py-2 rounded shadow hover:bg-gray-700 flex items-center gap-2"><i class="fas fa-landmark"></i> Solicitar Crédito</button>
-                    <div id="loanStatus" class="hidden text-xs bg-red-100 text-red-800 px-3 py-2 rounded border border-red-200 font-bold flex items-center gap-1"><i class="fas fa-hand-holding-usd"></i> Deuda Activa</div>
-                </div>
-                <!-- Botón de Oportunidad (Hidden by default) -->
-                <button onclick="openHustleModal()" id="btnHustle" class="hidden text-xs bg-yellow-500 text-white px-4 py-2 rounded shadow-lg btn-opportunity font-bold"><i class="fas fa-bolt"></i> OPORTUNIDAD FLASH</button>
-            </div>
-
             <!-- Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="statsBar">
                 <div class="bg-white p-4 rounded shadow border-l-4 border-blue-900 relative-tip">
@@ -201,12 +191,40 @@
                         <div id="newsFeed" class="space-y-4"></div>
                     </div>
 
-                    <!-- Botón Experto -->
-                    <div class="bg-gray-50 border border-gray-200 p-4 rounded text-center">
-                        <button onclick="consultExpert()" id="btnExpert" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-center items-center gap-2 bg-gray-200 text-gray-700 hover:bg-gray-300">
-                            <i class="fas fa-chart-pie"></i> CONSULTORÍA (<span id="expertCost">$5,000</span>)
-                        </button>
-                        <p id="expertResult" class="mt-2 text-sm font-bold hidden bg-yellow-100 p-2 rounded text-yellow-800 border-l-4 border-yellow-500 text-left italic"></p>
+                    <!-- Panel Servicios Financieros (Unificado) -->
+                    <div class="bg-white border-t-4 border-gray-800 p-4 rounded shadow relative-tip">
+                        <h3 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fas fa-briefcase"></i> Servicios Financieros</h3>
+                        
+                        <!-- Botón Experto -->
+                        <div class="mb-3">
+                            <button onclick="consultExpert()" id="btnExpert" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-between items-center px-3 bg-gray-100 text-gray-700 hover:bg-gray-200">
+                                <span><i class="fas fa-chart-pie"></i> Consultar Experto</span>
+                                <span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">$5k</span>
+                            </button>
+                            <p id="expertResult" class="mt-1 text-[10px] hidden bg-yellow-100 p-2 rounded text-yellow-800 border-l-2 border-yellow-500 italic"></p>
+                        </div>
+
+                        <!-- Botón Crédito -->
+                        <div class="mb-3">
+                            <button onclick="openLoanModal()" id="btnLoan" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-between items-center px-3 bg-gray-100 text-gray-700 hover:bg-gray-200">
+                                <span><i class="fas fa-landmark"></i> Solicitar Crédito</span>
+                                <span class="text-[9px] bg-gray-300 px-1 rounded">Único</span>
+                            </button>
+                            <div id="loanStatus" class="hidden text-[10px] bg-red-50 text-red-800 p-2 rounded border border-red-100 mt-1">
+                                <i class="fas fa-check-circle"></i> Crédito Activo
+                            </div>
+                        </div>
+
+                        <!-- Botón Side Hustle -->
+                        <div>
+                            <button onclick="openHustleModal()" id="btnHustle" class="w-full py-2 rounded font-bold text-xs shadow transition-colors flex justify-between items-center px-3 bg-yellow-500 text-white hover:bg-yellow-600 btn-opportunity">
+                                <span><i class="fas fa-bolt"></i> Oportunidad Flash</span>
+                                <span class="text-[9px] bg-yellow-700 px-1 rounded">Diario</span>
+                            </button>
+                            <div id="hustleStatus" class="hidden text-[10px] text-gray-400 text-center mt-1 italic">
+                                Ya participaste hoy.
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Botón Finalizar -->
@@ -220,7 +238,7 @@
                 </div>
 
                 <!-- Tabla de Mercado -->
-                <div class="lg:col-span-2 bg-white rounded shadow overflow-hidden flex flex-col h-[500px]">
+                <div class="lg:col-span-2 bg-white rounded shadow overflow-hidden flex flex-col h-[550px]">
                     <div class="p-3 bg-gray-50 border-b border-gray-200 flex justify-between items-center shrink-0">
                         <h3 class="font-bold text-blue-900 text-sm flex items-center gap-2">
                             <i class="fas fa-balance-scale"></i> Pizarra de Cotizaciones
@@ -472,7 +490,7 @@ let gameState = {
     bypassed: 0, blackSwans: {}, narrativeId: 0,
     expertConsulted: false, // flag diario
     loan: { bank: null, amount: 0, rate: 0 },
-    activeHustle: null // current hustle available
+    hustleDone: false // Nuevo flag diario
 };
 
 assetsDB.forEach(a => gameState.portfolio[a.id] = 0);
@@ -522,26 +540,34 @@ function renderGame() {
     // Expert Button State
     const btnExp = document.getElementById('btnExpert');
     const cost = netWorth < INITIAL_CASH ? 1000 : 5000;
-    document.getElementById('expertCost').innerText = fmtMoney(cost);
+    document.getElementById('expertCostBadge').innerText = fmtMoney(cost);
+    
     if(gameState.expertConsulted) {
-        btnExp.classList.remove('bg-gray-200'); btnExp.classList.add('bg-green-100', 'text-green-800');
-        btnExp.innerHTML = '<i class="fas fa-check"></i> CONSULTADO';
+        btnExp.classList.add('opacity-50', 'cursor-not-allowed');
+        btnExp.innerHTML = `<span><i class="fas fa-check"></i> Ya Consultado</span>`;
     } else {
-        btnExp.classList.add('bg-gray-200'); btnExp.classList.remove('bg-green-100', 'text-green-800');
-        btnExp.innerHTML = `<i class="fas fa-chart-pie"></i> CONSULTORÍA (<span id="expertCost">${fmtMoney(cost)}</span>)`;
+        btnExp.classList.remove('opacity-50', 'cursor-not-allowed');
+        btnExp.innerHTML = `<span><i class="fas fa-chart-pie"></i> Consultar Experto</span><span class="text-[9px] bg-gray-300 px-1 rounded" id="expertCostBadge">${fmtMoney(cost)}</span>`;
     }
 
     // Loan Status
+    const btnLoan = document.getElementById('btnLoan');
     if(gameState.loan.amount > 0) {
+        btnLoan.classList.add('hidden');
         document.getElementById('loanStatus').classList.remove('hidden');
-        document.getElementById('btnLoan').classList.add('hidden');
+    } else {
+        btnLoan.classList.remove('hidden');
+        document.getElementById('loanStatus').classList.add('hidden');
     }
 
-    // Hustle Button (Day 3 & 6)
-    if((gameState.day === 3 || gameState.day === 6) && !gameState.activeHustle) {
-        document.getElementById('btnHustle').classList.remove('hidden');
+    // Hustle Button (Always visible but disabled if done today)
+    const btnHustle = document.getElementById('btnHustle');
+    if(gameState.hustleDone) {
+        btnHustle.classList.add('opacity-50', 'cursor-not-allowed');
+        document.getElementById('hustleStatus').classList.remove('hidden');
     } else {
-        document.getElementById('btnHustle').classList.add('hidden');
+        btnHustle.classList.remove('opacity-50', 'cursor-not-allowed');
+        document.getElementById('hustleStatus').classList.add('hidden');
     }
 
     renderNews();
@@ -617,19 +643,18 @@ function toggleNewsSource() { currentNewsSource = currentNewsSource === 'fin' ? 
 
 /* --- EXPERTO --- */
 function consultExpert() {
-    let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0) * getPrice(a, gameState.day));
-    const net = gameState.cash + portVal;
-    const cost = net < INITIAL_CASH ? 1000 : 5000;
-    
     // Check if already paid
     if(gameState.expertConsulted) {
         showExpertHint();
         return;
     }
 
+    let portVal = 0; assetsDB.forEach(a => portVal += (gameState.portfolio[a.id]||0) * getPrice(a, gameState.day));
+    const net = gameState.cash + portVal;
+    const cost = net < INITIAL_CASH ? 1000 : 5000;
+
     if(gameState.cash < cost) return alert("Saldo insuficiente.");
     
-    // First time warning
     if(!confirm(`⚠️ ATENCIÓN ⚠️\n\nEstás a punto de contratar un servicio de consultoría.\n\nCosto: ${fmtMoney(cost)}\nFiabilidad: 90%\n\n¿Autorizar cargo único por el día de hoy?`)) return;
     
     gameState.cash -= cost;
@@ -672,6 +697,7 @@ function selectLoan(bank) {
 
 /* --- SIDE HUSTLES --- */
 function openHustleModal() {
+    if(gameState.hustleDone) return;
     const hustle = hustles[Math.floor(Math.random() * hustles.length)];
     gameState.activeHustle = hustle; // Store temp
     
@@ -688,7 +714,7 @@ function executeHustle() {
     
     gameState.cash -= h.cost;
     document.getElementById('hustleModal').classList.add('hidden');
-    document.getElementById('btnHustle').classList.add('hidden'); // Hide button
+    gameState.hustleDone = true;
     
     // 50/50 Chance
     const success = Math.random() > 0.5;
@@ -782,10 +808,13 @@ function endDay() {
     let nextState = JSON.parse(JSON.stringify(gameState));
     nextState.day++;
     nextState.expertConsulted = false; // Reset expert
-    nextState.activeHustle = null; // Clear hustle
+    nextState.hustleDone = false; // Reset hustle
     nextState.accessLog.push(new Date().toLocaleString());
     
-    const code = "UDAL-" + btoa(JSON.stringify(nextState)).split('').reverse().join('');
+    // SAFE ENCODING
+    const jsonStr = JSON.stringify(nextState);
+    const code = "UDAL-" + btoa(unescape(encodeURIComponent(jsonStr))).split('').reverse().join('');
+    
     document.getElementById('generatedCode').innerText = code;
     document.getElementById('saveModal').classList.remove('hidden');
     document.getElementById('saveModal').classList.add('flex');
@@ -810,15 +839,18 @@ function loadGame() {
     let code = document.getElementById('saveCodeInput').value.trim();
     let bypass = false; if(code.startsWith("4242UDAL")) { bypass = true; code = code.substring(4); }
     try {
-        const str = atob(code.replace("UDAL-","").split('').reverse().join(''));
-        const data = JSON.parse(str);
+        // SAFE DECODING
+        const encodedStr = code.replace("UDAL-","").split('').reverse().join('');
+        const jsonStr = decodeURIComponent(escape(atob(encodedStr)));
+        const data = JSON.parse(jsonStr);
+        
         if(!data.accessLog) data.accessLog = []; data.accessLog.push(new Date().toLocaleString() + " (Login)");
         // Restore defaults if older version
         if(!data.loan) data.loan = {amount:0, rate:0};
         gameState = data;
         triggerBlackSwan();
         if(gameState.day > MAX_DAYS) showResults(); else startGame();
-    } catch(e) { alert("Token corrupto."); }
+    } catch(e) { alert("Token corrupto o formato inválido."); console.error(e); }
 }
 
 function copyCode() { navigator.clipboard.writeText(document.getElementById('generatedCode').innerText); alert("Copiado"); }
@@ -830,7 +862,9 @@ function showTeacherLogin() { document.getElementById('teacherLoginModal').class
 function verifyStudentCode() {
     let code = document.getElementById('teacherInput').value.trim(); if(code.startsWith("4242UDAL")) code = code.substring(4);
     try {
-        const data = JSON.parse(atob(code.replace("UDAL-","").split('').reverse().join('')));
+        const encodedStr = code.replace("UDAL-","").split('').reverse().join('');
+        const jsonStr = decodeURIComponent(escape(atob(encodedStr)));
+        const data = JSON.parse(jsonStr);
         let total = data.cash; assetsDB.forEach(a => { let idx = (data.day > 1) ? data.day - 2 : 0; total += (data.portfolio[a.id]||0) * (a.base * a.hist[idx]); });
         if(data.loan) total -= data.loan.amount;
         let logs = data.accessLog ? data.accessLog.join('<br>') : "Sin datos";
