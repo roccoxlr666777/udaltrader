@@ -103,7 +103,7 @@
         
         <!-- INTRO / LOGIN -->
         <section id="loginSection" class="w-full max-w-lg card p-8 mb-4 fade-in mt-8 relative">
-            <div class="absolute -top-3 -right-3 bg-red-700 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v4.1 Final Fix</div>
+            <div class="absolute -top-3 -right-3 bg-red-700 text-white text-[10px] font-bold px-2 py-1 rounded shadow transform rotate-6">v2.0 FINAL</div>
             
             <h2 class="text-xl font-bold mb-2 text-center text-blue-900">Plataforma de Trading</h2>
             <p class="text-xs text-center text-gray-500 mb-6 px-4">Entorno financiero profesional. Universidad de América Latina.</p>
@@ -486,7 +486,7 @@ const hustles = [
 
 // STATE
 let gameState = {
-    name: "", day: 1, cash: INITIAL_CASH, portfolio: {}, accessLog: [],
+    name: "", day: 1, cash: INITIAL_CASH, portfolio: {},
     bypassed: 0, blackSwans: {}, narrativeId: 0,
     expertConsulted: false, // flag diario
     loan: { bank: null, amount: 0, rate: 0 },
@@ -511,7 +511,7 @@ function startSequence() {
     if(!name) return alert("Nombre requerido");
     gameState.name = name; gameState.day = 1; gameState.cash = INITIAL_CASH; gameState.portfolio = {};
     assetsDB.forEach(a => gameState.portfolio[a.id] = 0);
-    gameState.accessLog = [new Date().toLocaleString()];
+    // Removed accessLog array initialization here
     gameState.narrativeId = Math.floor(Math.random() * 3);
     
     // Activar Guía si checkbox
@@ -809,7 +809,7 @@ function endDay() {
     nextState.day++;
     nextState.expertConsulted = false; // Reset expert
     nextState.hustleDone = false; // Reset hustle
-    nextState.accessLog.push(new Date().toLocaleString());
+    // Removed accessLog update
     
     // SAFE ENCODING
     const jsonStr = JSON.stringify(nextState);
@@ -836,7 +836,8 @@ function showResults() {
 }
 
 function loadGame() {
-    let code = document.getElementById('saveCodeInput').value.trim();
+    // Sanitization step: remove spaces and newlines
+    let code = document.getElementById('saveCodeInput').value.trim().replace(/\s/g, '');
     let bypass = false; if(code.startsWith("4242UDAL")) { bypass = true; code = code.substring(4); }
     try {
         // SAFE DECODING
@@ -844,7 +845,7 @@ function loadGame() {
         const jsonStr = decodeURIComponent(escape(atob(encodedStr)));
         const data = JSON.parse(jsonStr);
         
-        if(!data.accessLog) data.accessLog = []; data.accessLog.push(new Date().toLocaleString() + " (Login)");
+        // Remove accessLog logic here as well
         // Restore defaults if older version
         if(!data.loan) data.loan = {amount:0, rate:0};
         gameState = data;
@@ -860,16 +861,18 @@ function fmtMoney(n) { return "$" + n.toLocaleString('es-MX', {minimumFractionDi
 function checkTeacherLogin() { if(document.getElementById('teacherPwd').value === "udalintrader") { document.getElementById('teacherLoginModal').classList.add('hidden'); document.getElementById('teacherSection').classList.remove('hidden'); } }
 function showTeacherLogin() { document.getElementById('teacherLoginModal').classList.remove('hidden'); document.getElementById('teacherLoginModal').classList.add('flex'); }
 function verifyStudentCode() {
-    let code = document.getElementById('teacherInput').value.trim(); if(code.startsWith("4242UDAL")) code = code.substring(4);
+    // Sanitization step for teacher input as well
+    let code = document.getElementById('teacherInput').value.trim().replace(/\s/g, ''); 
+    if(code.startsWith("4242UDAL")) code = code.substring(4);
     try {
         const encodedStr = code.replace("UDAL-","").split('').reverse().join('');
         const jsonStr = decodeURIComponent(escape(atob(encodedStr)));
         const data = JSON.parse(jsonStr);
         let total = data.cash; assetsDB.forEach(a => { let idx = (data.day > 1) ? data.day - 2 : 0; total += (data.portfolio[a.id]||0) * (a.base * a.hist[idx]); });
         if(data.loan) total -= data.loan.amount;
-        let logs = data.accessLog ? data.accessLog.join('<br>') : "Sin datos";
+        // Removed logs display
         document.getElementById('teacherResult').classList.remove('hidden');
-        document.getElementById('teacherResult').innerHTML = `<p class="font-bold text-blue-900">Alumno: ${data.name}</p><p>Día Actual: ${data.day}</p><p class="text-xl font-bold text-green-700">${fmtMoney(total)}</p><div class="mt-2 text-[10px] text-gray-500 border-t pt-2"><strong>Log de Accesos:</strong><br>${logs}</div>`;
+        document.getElementById('teacherResult').innerHTML = `<p class="font-bold text-blue-900">Alumno: ${data.name}</p><p>Día Actual: ${data.day}</p><p class="text-xl font-bold text-green-700">${fmtMoney(total)}</p>`;
     } catch(e){ alert("Error al leer token"); }
 }
 </script>
