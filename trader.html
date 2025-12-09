@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UDAL TRADER - Simulador Financiero</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Montserrat:wght@400;600;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Press+Start+2P&display=swap');
+        
+        :root { --udal-blue: #002855; --udal-red: #a51c30; --paper-bg: #fdfbf7; }
+
+        body { font-family: 'Montserrat', sans-serif; background-color: #f1f5f9; color: #1e293b; }
+        .retro-font { font-family: 'Roboto Mono', monospace; }
+        .pixel-font { font-family: 'Press Start 2P', cursive; }
+        .serif-font { font-family: 'Merriweather', serif; }
+        
+        /* UI Elements */
+        .card { background-color: white; border-top: 4px solid var(--udal-blue); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 0.5rem; }
+        .btn-udal { background-color: var(--udal-blue); color: white; transition: all 0.2s; }
+        .btn-udal:hover { background-color: #0f172a; transform: translateY(-1px); }
+        
+        /* Periodico */
+        .newspaper { background-color: var(--paper-bg); border: 1px solid #d1d5db; box-shadow: 2px 2px 10px rgba(0,0,0,0.05); padding: 20px; position: relative; }
+        .newspaper-header { border-bottom: 2px solid black; border-top: 1px solid black; padding: 10px 0; text-align: center; margin-bottom: 15px; }
+
+        /* Tooltips */
+        .help-icon { cursor: help; color: var(--udal-blue); margin-left: 5px; opacity: 0.7; }
+        
+        /* Animaciones */
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
+        .btn-opportunity { animation: pulse-gold 2s infinite; }
+
+        /* Estilos Oregon Trail */
+        .oregon-modal { background-color: #000; color: #33ff00; font-family: 'Press Start 2P', monospace; border: 4px double #33ff00; text-transform: uppercase; }
+        .oregon-btn { border: 2px solid #33ff00; color: #33ff00; background: transparent; padding: 10px; cursor: pointer; transition: all 0.2s; font-size: 10px; width: 100%; margin-top: 10px; }
+        .oregon-btn:hover { background: #33ff00; color: #000; }
+
+        /* Impresión */
+        @media print {
+            body * { visibility: hidden; }
+            #finalReportSection, #finalReportSection * { visibility: visible; }
+            #finalReportSection { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50">
+
+    <!-- Header -->
+    <header class="w-full bg-white shadow-md z-10 no-print p-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="border-2 border-blue-900 w-12 h-12 flex items-center justify-center rounded font-black text-blue-900">UDAL</div>
+                <h1 class="text-xl font-bold text-blue-900">TRADER <span class="text-red-800">SIMULATOR</span></h1>
+            </div>
+            <div class="text-xs font-bold text-gray-400">v3.0 FINAL</div>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto p-4">
+        
+        <!-- PANTALLA INICIO -->
+        <section id="introSection" class="w-full max-w-4xl mx-auto card p-10 mt-10 text-center fade-in">
+            <h2 class="text-3xl font-bold text-blue-900 mb-2">Piso de Remates</h2>
+            <p class="text-gray-600 mb-8">Elige tu perfil de riesgo para comenzar:</p>
+            
+            <input type="text" id="playerName" placeholder="Tu Nombre Completo" class="border p-3 rounded w-full max-w-md text-center mb-8 border-blue-200 outline-none focus:border-blue-900" />
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <button onclick="initGame('high')" class="p-6 border-2 border-green-500 rounded hover:bg-green-50 transition">
+                    <div class="text-4xl mb-2">💎</div>
+                    <h3 class="font-bold text-green-700">MAGNATE</h3>
+                    <p class="text-xs text-gray-500 font-bold">FÁCIL ($1M MXN)</p>
+                </button>
+                <button onclick="initGame('mid')" class="p-6 border-2 border-blue-500 rounded hover:bg-blue-50 transition">
+                    <div class="text-4xl mb-2">💼</div>
+                    <h3 class="font-bold text-blue-900">AHORRADOR</h3>
+                    <p class="text-xs text-gray-500 font-bold">NORMAL ($500k MXN)</p>
+                </button>
+                <button onclick="initGame('low')" class="p-6 border-2 border-red-500 rounded hover:bg-red-50 transition">
+                    <div class="text-4xl mb-2">🎓</div>
+                    <h3 class="font-bold text-red-700">BECARIO</h3>
+                    <p class="text-xs text-gray-500 font-bold">DIFÍCIL ($100k MXN)</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- JUEGO -->
+        <section id="gameSection" class="hidden fade-in w-full">
+            
+            <!-- Info Bar -->
+            <div class="flex justify-between items-center mb-6 bg-white p-4 rounded shadow border-l-4 border-blue-900">
+                <div>
+                    <h2 class="text-xl font-bold text-blue-900"><span id="displayScenarioTitle">...</span> <span class="text-sm font-normal text-gray-500">| <span id="displayName">...</span></span></h2>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-gray-400 uppercase font-bold">Día Operativo</p>
+                    <p class="text-2xl font-bold retro-font text-blue-900" id="displayDay">1 / 7</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- IZQUIERDA -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Periódico -->
+                    <div class="newspaper rounded shadow-lg">
+                        <div class="newspaper-header">
+                            <h3 class="serif-font font-black text-3xl leading-none" id="newsSourceTitle">EL FINANCIERO</h3>
+                        </div>
+                        <div id="newsContent" class="space-y-4"></div>
+                    </div>
+
+                    <!-- Panel de Control -->
+                    <div class="bg-white p-4 rounded shadow border-t-4 border-yellow-500">
+                        <h4 class="font-bold text-gray-800 mb-3 text-sm"><i class="fas fa-briefcase"></i> Mesa de Dinero</h4>
+                        
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <button onclick="handleExpertAction()" id="btnExpert" class="p-2 bg-gray-100 hover:bg-gray-200 rounded text-xs font-bold text-gray-700 border flex flex-col items-center">
+                                <i class="fas fa-user-tie text-lg mb-1 text-blue-800"></i> Expertos
+                            </button>
+                            <button onclick="openLoanModal()" class="p-2 bg-gray-100 hover:bg-gray-200 rounded text-xs font-bold text-gray-700 border flex flex-col items-center">
+                                <i class="fas fa-landmark text-lg mb-1 text-green-700"></i> Préstamo
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                             <button onclick="openBusinessModal()" class="p-2 bg-gray-100 hover:bg-gray-200 rounded text-xs font-bold text-gray-700 border flex flex-col items-center">
+                                <i class="fas fa-building text-lg mb-1 text-purple-700"></i> Emprender
+                            </button>
+                            <button onclick="openHustleModal()" id="btnHustle" class="p-2 bg-yellow-100 hover:bg-yellow-200 rounded text-xs font-bold text-yellow-900 border border-yellow-300 flex flex-col items-center btn-opportunity">
+                                <i class="fas fa-bolt text-lg mb-1 text-yellow-600"></i> Oferta Flash
+                            </button>
+                        </div>
+                        
+                        <div id="statusBadges" class="mt-2 space-y-1"></div>
+
+                        <button onclick="endDay()" class="w-full mt-4 py-3 bg-blue-900 hover:bg-blue-800 text-white font-bold rounded shadow text-sm">
+                            CERRAR DÍA Y GUARDAR
+                        </button>
+                    </div>
+                </div>
+
+                <!-- DERECHA -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Resumen -->
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded shadow text-center" title="Dinero en efectivo">
+                            <p class="text-[10px] uppercase font-bold text-gray-400">Liquidez</p>
+                            <p class="text-lg font-bold text-green-600 font-mono" id="displayCash">...</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow text-center" title="Valor de acciones">
+                            <p class="text-[10px] uppercase font-bold text-gray-400">Activos</p>
+                            <p class="text-lg font-bold text-blue-600 font-mono" id="displayAssets">...</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow text-center border" title="Valor Total Real">
+                            <p class="text-[10px] uppercase font-bold text-gray-500">Patrimonio Neto</p>
+                            <p class="text-xl font-black text-gray-800 font-mono" id="displayNetWorth">...</p>
+                        </div>
+                    </div>
+
+                    <!-- Gráfica -->
+                    <div class="bg-white p-4 rounded shadow h-48 relative"><canvas id="performanceChart"></canvas></div>
+
+                    <!-- Tabla -->
+                    <div class="bg-white rounded shadow overflow-hidden border border-gray-200">
+                        <div class="bg-gray-100 px-4 py-2 border-b flex justify-between items-center">
+                            <h3 class="font-bold text-gray-700 text-sm">Cotizaciones (MXN)</h3>
+                        </div>
+                        <div class="overflow-y-auto max-h-64">
+                            <table class="w-full text-sm text-left text-gray-600">
+                                <thead class="text-xs text-gray-500 uppercase bg-gray-50 sticky top-0">
+                                    <tr>
+                                        <th class="px-4 py-2">Activo</th>
+                                        <th class="px-4 py-2 text-center">Info</th>
+                                        <th class="px-4 py-2 text-right">Precio</th>
+                                        <th class="px-4 py-2 text-center">Posición</th>
+                                        <th class="px-4 py-2 text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="marketTableBody" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REPORTE FINAL -->
+        <section id="finalReportSection" class="hidden fade-in w-full max-w-5xl mx-auto bg-white shadow-2xl p-8 my-8">
+            <div class="border-b-4 border-blue-900 pb-4 mb-6 flex justify-between items-end">
+                <div><h1 class="text-3xl font-serif font-bold text-blue-900">ESTADO DE CUENTA</h1><p class="text-sm text-gray-500">UDAL Simulador</p></div>
+                <div class="text-right"><p class="font-mono text-sm">FOLIO: <span id="finalFolio">...</span></p><p class="font-mono text-sm">FECHA: <span id="finalDate">...</span></p></div>
+            </div>
+            <div class="grid grid-cols-2 gap-8 mb-8">
+                <div><p class="text-lg font-bold" id="reportName">...</p><p class="text-sm">Perfil: <span id="reportScenario">...</span></p></div>
+                <div class="text-right"><p class="text-4xl font-mono font-bold text-blue-900" id="reportFinalBalance">...</p><p class="text-sm font-bold" id="reportROI">...</p></div>
+            </div>
+            <div class="mb-8 border rounded p-4"><table class="w-full text-sm" id="finalPortfolioTable"><thead><tr class="border-b"><th class="text-left">Activo</th><th class="text-right">Cant.</th><th class="text-right">Valor</th></tr></thead><tbody></tbody></table></div>
+            <div class="grid grid-cols-2 gap-6 mb-8 h-48"><div class="border p-2 rounded"><canvas id="finalLineChart"></canvas></div><div class="border p-2 rounded"><canvas id="finalPieChart"></canvas></div></div>
+            <div class="bg-gray-50 border-l-4 border-blue-900 p-4 mb-8"><h3 class="font-bold text-blue-900">Feedback del Analista</h3><p class="text-sm italic" id="analystFeedback">...</p></div>
+            <div class="flex justify-center gap-4 no-print"><button onclick="window.print()" class="btn-udal px-6 py-2 rounded font-bold">Imprimir</button><button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded font-bold">Reiniciar</button></div>
+        </section>
+
+    </main>
+
+    <!-- MODALES -->
+    <!-- EXPERTO -->
+    <div id="expertModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 no-print">
+        <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl">
+            <h3 class="text-xl font-bold text-blue-900 mb-4">Consultar Analista</h3>
+            <div class="space-y-3">
+                <button onclick="buyAdvice(1)" class="w-full flex justify-between p-3 border rounded hover:bg-blue-50 text-left"><div><span class="font-bold">El Pasante</span><div class="text-xs">Barato. A veces acierta.</div></div><span class="font-bold text-green-600">$500</span></button>
+                <button onclick="buyAdvice(2)" class="w-full flex justify-between p-3 border rounded hover:bg-blue-50 text-left"><div><span class="font-bold">Analista Senior</span><div class="text-xs">Confiable.</div></div><span class="font-bold text-blue-600">$3,000</span></button>
+                <button onclick="buyAdvice(3)" class="w-full flex justify-between p-3 border rounded hover:bg-blue-50 text-left"><div><span class="font-bold">Insider</span><div class="text-xs">Información privilegiada.</div></div><span class="font-bold text-purple-600">$10,000</span></button>
+            </div>
+            <button onclick="document.getElementById('expertModal').classList.add('hidden')" class="mt-4 w-full text-xs underline">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- NEGOCIO -->
+    <div id="businessModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 no-print">
+        <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl border-t-4 border-purple-600">
+            <h3 class="text-xl font-bold text-purple-900 mb-2">Incubadora</h3>
+            <p class="text-xs text-gray-600 mb-4">Inversión de capital. Retorno variable (0% - 40%).</p>
+            <div class="mb-4"><label class="text-xs font-bold">Monto:</label><input type="number" id="bizInvestment" class="w-full border p-2 rounded mt-1"></div>
+            <div class="space-y-2 mb-4 text-xs">
+                <label class="flex items-center gap-2"><input type="checkbox" id="upgMarket" value="20000"> Estudio Mercado (+$20k)</label>
+                <label class="flex items-center gap-2"><input type="checkbox" id="upgAnalysis" value="20000"> Análisis Económico (+$20k)</label>
+                <label class="flex items-center gap-2"><input type="checkbox" id="upgMarketing" value="10000"> Marketing (+$10k)</label>
+            </div>
+            <button onclick="startBusiness()" class="w-full bg-purple-700 text-white py-2 rounded font-bold">Lanzar</button>
+            <button onclick="document.getElementById('businessModal').classList.add('hidden')" class="mt-2 w-full text-xs text-gray-500">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- HUSTLE -->
+    <div id="hustleModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 no-print">
+        <div class="bg-yellow-50 rounded-lg w-full max-w-sm p-6 text-center border-2 border-yellow-400">
+            <h3 class="text-xl font-black text-yellow-800 mb-2">⚡ OPORTUNIDAD FLASH</h3>
+            <p class="text-sm font-bold mb-2" id="hustleTitle">...</p>
+            <p class="text-xs text-gray-600 mb-4" id="hustleDesc">...</p>
+            <p class="text-xl font-mono font-bold text-gray-800 mb-4" id="hustleCost">...</p>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="document.getElementById('hustleModal').classList.add('hidden')" class="py-2 bg-gray-200 rounded text-xs font-bold">Ignorar</button>
+                <button onclick="acceptHustle()" class="py-2 bg-yellow-500 text-white rounded text-xs font-bold">¡Invertir!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRESTAMO -->
+    <div id="loanModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 no-print">
+        <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-2xl">
+            <h3 class="text-xl font-bold text-blue-900 mb-4">Crédito Bancario</h3>
+            <div class="space-y-3">
+                <button onclick="takeLoan('azteca')" class="w-full p-3 border rounded hover:bg-gray-50 text-left"><div class="font-bold text-green-700">Banco Azteca</div><div class="text-xs">300k | Tasa 5%</div></button>
+                <button onclick="takeLoan('santander')" class="w-full p-3 border rounded hover:bg-gray-50 text-left"><div class="font-bold text-red-700">Santander</div><div class="text-xs">500k | Tasa 3%</div></button>
+                <button onclick="takeLoan('bbva')" class="w-full p-3 border rounded hover:bg-gray-50 text-left"><div class="font-bold text-blue-700">BBVA</div><div class="text-xs">1M | Tasa 1.5%</div><div class="text-[9px] text-red-500">* Req: $1.2M Patrimonio</div></button>
+            </div>
+            <button onclick="document.getElementById('loanModal').classList.add('hidden')" class="mt-4 w-full text-xs underline">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- OREGON TRAIL END -->
+    <div id="endDayModal" class="fixed inset-0 bg-black/95 hidden items-center justify-center z-50 p-4 no-print font-mono text-green-500">
+        <div class="w-full max-w-lg border-4 border-green-500 p-6 bg-black text-center">
+            <div class="text-4xl mb-4" id="dailyEmoji">😐</div>
+            <h2 class="text-xl font-bold mb-4 uppercase">RESUMEN DEL DÍA</h2>
+            <div class="border-t border-b border-green-900 py-4 my-4 space-y-2 text-sm">
+                <div class="flex justify-between"><span>INICIO:</span> <span id="modalStartVal"></span></div>
+                <div class="flex justify-between"><span>CIERRE:</span> <span id="modalEndVal"></span></div>
+                <div class="flex justify-between font-bold"><span>CAMBIO:</span> <span id="modalChangeVal"></span></div>
+            </div>
+            <div id="dailyNotifications" class="text-xs text-yellow-400 mb-4 space-y-1 text-left"></div>
+            <p class="text-xs italic mb-6 text-green-700" id="dailyFlavorText">...</p>
+            <button onclick="advanceNextDay()" class="oregon-btn w-full">SIGUIENTE DÍA >></button>
+        </div>
+    </div>
+
+    <!-- TRADE & INFO (Generics) -->
+    <div id="tradeModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 no-print"><div class="bg-white p-6 rounded-lg w-80 shadow-xl border-t-4 border-blue-900 relative"><h3 class="text-lg font-bold text-blue-900 mb-1">Orden</h3><p class="text-xs text-gray-500 mb-2">Precio: <span id="tradeAssetPrice" class="text-black font-mono font-bold"></span></p><div class="bg-blue-50 p-3 rounded mb-4 text-xs text-blue-900"><div class="flex justify-between"><span>Tienes:</span> <b id="tradeOwnedQty"></b></div><div class="flex justify-between"><span>Valen:</span> <b id="tradeOwnedVal"></b></div></div><div class="flex gap-2 mb-4"><button onclick="setTradeMode('buy')" id="btnBuy" class="flex-1 py-1 rounded text-xs font-bold bg-blue-900 text-white">COMPRAR</button><button onclick="setTradeMode('sell')" id="btnSell" class="flex-1 py-1 rounded text-xs font-bold bg-gray-200">VENDER</button></div><input type="number" id="tradeInput" class="w-full border p-2 rounded mb-4 text-right font-mono" placeholder="Monto"><div class="flex gap-2"><button onclick="document.getElementById('tradeModal').classList.add('hidden')" class="flex-1 py-2 text-xs border rounded">Cancelar</button><button onclick="executeTrade()" class="flex-1 py-2 text-xs bg-green-600 text-white rounded font-bold">Ejecutar</button></div></div></div>
+    
+    <div id="infoModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4 no-print"><div class="bg-white rounded-lg w-full max-w-sm p-6 shadow-2xl border-t-4 border-blue-900"><h3 class="text-lg font-bold text-blue-900" id="infoTitle"></h3><p class="text-xs text-gray-400 mb-3" id="infoType"></p><p class="text-sm text-gray-700 mb-4 leading-relaxed" id="infoDesc"></p><div class="bg-yellow-50 p-3 rounded border border-yellow-200 text-xs italic text-yellow-800" id="infoTip"></div><button onclick="document.getElementById('infoModal').classList.add('hidden')" class="mt-4 w-full py-2 bg-gray-200 text-gray-700 rounded text-xs font-bold">Cerrar</button></div></div>
+
+<script>
+const MAX_DAYS = 7;
+const ASSETS = [
+    {id:'cetes', name:'CETES 28', type:'Bono Gub.', base:10, risk:'Nulo', desc:'Certificados de la Tesorería. Deuda del gobierno federal. La inversión más segura en México.', tip:'Perfecto para estacionar dinero sin riesgo.'},
+    {id:'usd', name:'Dólar USD', type:'Divisa', base:19.50, risk:'Bajo', desc:'Moneda de reserva mundial. Activo de refugio en tiempos de incertidumbre.', tip:'Sube cuando el peso o la economía local caen.'},
+    {id:'bimbo', name:'BIMBO', type:'Acción MX', base:75, risk:'Bajo', desc:'Panificadora más grande del mundo. Acción defensiva: la gente siempre come pan.', tip:'Estabilidad y dividendos, poco crecimiento explosivo.'},
+    {id:'ipc', name:'IPC México', type:'Índice', base:54000, risk:'Medio', desc:'Índice principal de la Bolsa Mexicana de Valores (35 empresas).', tip:'Refleja la salud general de la economía mexicana.'},
+    {id:'spx', name:'S&P 500', type:'Índice US', base:9200, risk:'Medio', desc:'Las 500 empresas más grandes de EE.UU. El estándar de oro de inversión.', tip:'Históricamente siempre sube a largo plazo.'},
+    {id:'amzn', name:'Amazon', type:'Acción US', base:3100, risk:'Medio', desc:'Líder en e-commerce y servicios en la nube.', tip:'Suele subir fuerte en temporadas de ventas.'},
+    {id:'googl', name:'Google', type:'Acción US', base:2800, risk:'Medio', desc:'Monopolio de búsquedas y publicidad digital.', tip:'Vaca lechera de efectivo con riesgo regulatorio.'},
+    {id:'nvda', name:'NVIDIA', type:'Acción US', base:1800, risk:'Alto', desc:'Líder en chips de Inteligencia Artificial.', tip:'Muy volátil. Puede hacerte rico o pobre en una semana.'},
+    {id:'tsla', name:'Tesla', type:'Acción US', base:3500, risk:'Muy Alto', desc:'Vehículos eléctricos y robótica. Se mueve por emociones.', tip:'Más volátil que una criptomoneda a veces.'},
+    {id:'pemex', name:'Bonos PEMEX', type:'Bono Corp.', base:95, risk:'Alto', desc:'Deuda de la petrolera estatal. Paga alto rendimiento por riesgo de impago.', tip:'Alto riesgo, alto retorno. ¿Confías en el gobierno?'},
+    {id:'btc', name:'Bitcoin', type:'Cripto', base:1200000, risk:'Extremo', desc:'Oro digital descentralizado.', tip:'Solo invierte dinero que estés dispuesto a perder.'}
+];
+
+const NEWS_FEED = [
+    { source: "El Financiero", title: "Inicia la semana bursátil.", body: "Mercados abren con cautela ante decisiones de la Fed. Sector consumo muestra fortaleza." },
+    { source: "Bloomberg", title: "Rumores de regulación Tech en la UE.", body: "La Unión Europea prepara multas antimonopolio. NVIDIA y Google podrían sufrir volatilidad." },
+    { source: "El Economista", title: "Inflación mexicana repunta al 6%.", body: "Malas noticias. Banxico podría subir tasas, haciendo atractivos a los CETES." },
+    { source: "Breaking News", title: "¡DESPLOME EN WALL STREET!", body: "Fraude contable en sector chips contagia pánico. Venta masiva de riesgo. Oro sube." },
+    { source: "Reuters", title: "Cazadores de ofertas entran.", body: "Tras el crash, fondos compran barato. Se espera rebote técnico en tecnológicas." },
+    { source: "CoinDesk", title: "Bitcoin rompe resistencias.", body: "Capital especulativo huye de bancos hacia cripto. Volumen histórico de compra." },
+    { source: "Financial Times", title: "Cierre de año fiscal.", body: "Rebalanceo de portafolios. Se espera poca volatilidad para la foto final." }
+];
+
+const PRICE_FLOW = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1.002, 1.01, 1.005, 1.01, 1.02, 1.03, 1.01, 1.05, 1.02, 0.99, 1.05],
+    [1.004, 1.02, 0.99, 0.98, 0.95, 0.96, 0.98, 1.02, 0.95, 0.98, 0.90],
+    [1.006, 1.05, 0.98, 0.90, 0.85, 0.80, 0.85, 0.70, 0.75, 0.90, 0.60],
+    [1.008, 1.04, 1.00, 0.92, 0.88, 0.85, 0.88, 0.75, 0.80, 0.92, 0.70],
+    [1.010, 1.03, 1.02, 0.95, 0.92, 0.95, 0.92, 0.85, 0.95, 0.95, 1.20],
+    [1.012, 1.02, 1.03, 0.97, 0.95, 0.98, 0.95, 0.90, 1.05, 0.97, 1.30]
+];
+
+const HUSTLES = [
+    { title: "Contenedor Electrónico", desc: "Mercancía 'Gris' sin aduana. Riesgo de decomiso.", cost: 50000, duration: 1 },
+    { title: "Boletos Concierto", desc: "Reventa evento masivo sold-out.", cost: 20000, duration: 2 },
+    { title: "Préstamo Puente", desc: "Capital para proveedor urgente.", cost: 80000, duration: 1 },
+    { title: "Colección NFT", desc: "Arte digital especulativo.", cost: 15000, duration: 2 }
+];
+
+let state = { name: "", cash: 0, day: 1, portfolio: {}, history: [], scenarioTitle: "", loan: {active: false, amount: 0, rate: 0}, pendingHustles: [], activeBusiness: null, expertConsulted: false };
+ASSETS.forEach(a => state.portfolio[a.id] = 0);
+let chartInstance = null;
+
+// --- INIT ---
+function initGame(type) {
+    const name = document.getElementById('playerName').value.trim();
+    if(!name) return alert("Ingresa un nombre.");
+    let cash = 100000, title = "BECARIO";
+    if(type === 'high') { cash = 1000000; title = "MAGNATE"; }
+    if(type === 'mid') { cash = 500000; title = "AHORRADOR"; }
+    state.name = name; state.cash = cash; state.scenarioTitle = title;
+    state.history = [{day:0, net:cash}];
+    document.getElementById('introSection').classList.add('hidden');
+    document.getElementById('gameSection').classList.remove('hidden');
+    renderDashboard(); initChart();
+}
+
+// --- CORE ---
+function renderDashboard() {
+    document.getElementById('displayScenarioTitle').innerText = state.scenarioTitle;
+    document.getElementById('displayName').innerText = state.name;
+    document.getElementById('displayDay').innerText = `${state.day} / ${MAX_DAYS}`;
+    const prices = getCurrentPrices();
+    let assetsVal = 0; ASSETS.forEach(a => assetsVal += state.portfolio[a.id] * prices[a.id]);
+    const net = state.cash + assetsVal - (state.loan.active ? state.loan.amount : 0);
+    document.getElementById('displayCash').innerText = fmt(state.cash);
+    document.getElementById('displayAssets').innerText = fmt(assetsVal);
+    document.getElementById('displayNetWorth').innerText = fmt(net);
+    
+    // Status Badges
+    const badgeContainer = document.getElementById('statusBadges'); badgeContainer.innerHTML = '';
+    if(state.loan.active) badgeContainer.innerHTML += `<div class="bg-red-100 text-red-800 text-[10px] p-2 rounded border border-red-200 font-bold mb-1">DEUDA: ${fmt(state.loan.amount)} <button onclick="payLoan()" class="underline ml-2">PAGAR</button></div>`;
+    if(state.activeBusiness) badgeContainer.innerHTML += `<div class="bg-purple-100 text-purple-800 text-[10px] p-2 rounded border border-purple-200 font-bold">NEGOCIO: ${(state.activeBusiness.chance*100).toFixed(0)}% Éxito</div>`;
+
+    // Expert Button
+    const btnExp = document.getElementById('btnExpert');
+    if(state.expertConsulted) {
+        btnExp.classList.replace('text-gray-700', 'text-green-700');
+        btnExp.classList.replace('bg-gray-100', 'bg-green-100');
+        btnExp.innerHTML = `<i class="fas fa-check-circle text-lg mb-1"></i> Ver Consejo`;
+    } else {
+        btnExp.classList.replace('text-green-700', 'text-gray-700');
+        btnExp.classList.replace('bg-green-100', 'bg-gray-100');
+        btnExp.innerHTML = `<i class="fas fa-user-tie text-lg mb-1 text-blue-900"></i> Expertos`;
+    }
+
+    const news = NEWS_FEED[state.day - 1];
+    document.getElementById('newsSourceTitle').innerText = news.source;
+    document.getElementById('newsContent').innerHTML = `<h4 class="font-bold mb-2">${news.title}</h4><p class="text-sm font-serif">${news.body}</p>`;
+
+    const tbody = document.getElementById('marketTableBody'); tbody.innerHTML = '';
+    ASSETS.forEach(a => {
+        const p = prices[a.id];
+        let trend = "-";
+        if(state.day > 1) {
+            const prev = a.base * PRICE_FLOW[state.day-2][ASSETS.indexOf(a)];
+            const pct = ((p - prev)/prev)*100;
+            trend = pct >= 0 ? `<span class="text-green-600">▲ ${pct.toFixed(1)}%</span>` : `<span class="text-red-600">▼ ${pct.toFixed(1)}%</span>`;
+        }
+        tbody.innerHTML += `<tr class="border-b hover:bg-gray-50"><td class="px-4 py-2 font-bold text-xs">${a.name}</td><td class="text-center"><button onclick="showInfo('${a.id}')" class="text-[10px] bg-blue-100 text-blue-800 px-2 rounded">Ficha</button></td><td class="text-right font-mono text-xs">${fmt(p)}<br><span class="text-[9px]">${trend}</span></td><td class="text-center font-mono text-xs">${state.portfolio[a.id].toFixed(4)}</td><td class="text-center"><button onclick="openTrade('${a.id}')" class="bg-blue-900 text-white px-3 py-1 rounded text-[10px]">Operar</button></td></tr>`;
+    });
+}
+
+function getCurrentPrices() { const p = {}; const m = PRICE_FLOW[state.day - 1]; ASSETS.forEach((a, i) => p[a.id] = a.base * m[i]); return p; }
+function fmt(n) { return "$" + n.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2}); }
+
+// --- EXPERT FIX ---
+function handleExpertAction() {
+    if(state.expertConsulted) {
+        // Show already bought advice
+        let hint = "Mercado lateral.";
+        if(state.day < MAX_DAYS) {
+            if(state.day === 3) hint = "Se ven nubes negras en el sector tecnológico. Vende riesgo.";
+            else if(state.day === 4) hint = "Es momento de comprar barato. El rebote viene.";
+            else hint = "Mantén posiciones estables. No hagas movimientos bruscos.";
+        }
+        alert(`CONSEJO GUARDADO:\n\n"${hint}"`);
+    } else {
+        document.getElementById('expertModal').classList.remove('hidden');
+        document.getElementById('expertModal').classList.add('flex');
+    }
+}
+function buyAdvice(tier) {
+    let cost = tier === 1 ? 500 : (tier === 2 ? 3000 : 10000);
+    if(state.cash < cost) return alert("Sin fondos");
+    state.cash -= cost;
+    state.expertConsulted = true;
+    document.getElementById('expertModal').classList.add('hidden');
+    renderDashboard();
+    handleExpertAction(); // Show hint immediately
+}
+
+// --- END DAY FIX ---
+function endDay() {
+    if(!confirm("¿Cerrar día?")) return;
+    const prices = getCurrentPrices();
+    let assetsVal = 0; ASSETS.forEach(a => assetsVal += state.portfolio[a.id] * prices[a.id]);
+    const currentNet = state.cash + assetsVal - (state.loan.active ? state.loan.amount : 0);
+    if(state.loan.active) state.cash -= (state.loan.amount * state.loan.rate);
+    state.history.push({ day: state.day, net: currentNet });
+
+    // Resolve Hustles
+    let notifications = [];
+    if(state.activeBusiness && Math.random() < state.activeBusiness.chance) {
+        const p = state.activeBusiness.invest * 0.4; state.cash += p; notifications.push(`Negocio: +${fmt(p)}`);
+    }
+    let pending = [];
+    state.pendingHustles.forEach(h => {
+        if(h.resolveDay === state.day + 1) {
+            const success = Math.random() > 0.5;
+            if(success) { state.cash += h.invested * 1.5; notifications.push(`Flash: ${h.title} ÉXITO`); }
+            else { notifications.push(`Flash: ${h.title} FALLÓ`); }
+        } else pending.push(h);
+    });
+    state.pendingHustles = pending;
+
+    // Show Modal
+    const prevNet = state.history[state.history.length-2].net;
+    const change = currentNet - prevNet;
+    document.getElementById('dailyEmoji').innerText = change >= 0 ? "📈" : "📉";
+    document.getElementById('modalStartVal').innerText = fmt(prevNet);
+    document.getElementById('modalEndVal').innerText = fmt(currentNet);
+    document.getElementById('modalChangeVal').innerText = fmt(change);
+    document.getElementById('dailyNotifications').innerHTML = notifications.length ? notifications.join('<br>') : "Sin novedades extra.";
+    document.getElementById('dailyFlavorText').innerText = change >= 0 ? "El mercado te sonríe." : "Día difícil en la oficina.";
+    
+    document.getElementById('endDayModal').classList.remove('hidden');
+    document.getElementById('endDayModal').classList.add('flex');
+}
+function advanceNextDay() {
+    document.getElementById('endDayModal').classList.add('hidden');
+    document.getElementById('endDayModal').classList.remove('flex');
+    if(state.day >= MAX_DAYS) generateFinalReport();
+    else { state.day++; state.expertConsulted = false; renderDashboard(); updateChart(); }
+}
+
+// --- OTHER MODALS ---
+function openLoanModal() { document.getElementById('loanModal').classList.remove('hidden'); document.getElementById('loanModal').classList.add('flex'); }
+function takeLoan(bank) {
+    if(state.loan.active) return alert("Ya tienes deuda");
+    let amt=0, rate=0;
+    if(bank==='azteca'){amt=300000;rate=0.05;} else if(bank==='santander'){amt=500000;rate=0.03;} else {
+        const prices = getCurrentPrices(); let assetsVal = 0; ASSETS.forEach(a => assetsVal += state.portfolio[a.id] * prices[a.id]);
+        if((state.cash+assetsVal)<1200000) return alert("Rechazado"); amt=1000000; rate=0.015;
+    }
+    state.loan = {active:true, amount:amt, rate:rate}; state.cash+=amt; 
+    document.getElementById('loanModal').classList.add('hidden'); renderDashboard();
+}
+function payLoan() { if(state.cash >= state.loan.amount) { state.cash -= state.loan.amount; state.loan = {active:false, amount:0, rate:0}; renderDashboard(); } else alert("Sin fondos"); }
+function openHustleModal() { const h = HUSTLES[Math.floor(Math.random()*HUSTLES.length)]; document.getElementById('hustleTitle').innerText=h.title; document.getElementById('hustleDesc').innerText=h.desc; document.getElementById('hustleCost').innerText=fmt(h.cost); document.getElementById('hustleModal').dataset.cost=h.cost; document.getElementById('hustleModal').dataset.title=h.title; document.getElementById('hustleModal').dataset.dur=h.duration; document.getElementById('hustleModal').classList.remove('hidden'); document.getElementById('hustleModal').classList.add('flex'); }
+function acceptHustle() {
+    const cost = parseFloat(document.getElementById('hustleModal').dataset.cost);
+    if(state.cash < cost) return alert("Sin fondos");
+    state.cash -= cost;
+    state.pendingHustles.push({ resolveDay: state.day + parseInt(document.getElementById('hustleModal').dataset.dur), invested: cost, title: document.getElementById('hustleModal').dataset.title });
+    document.getElementById('hustleModal').classList.add('hidden'); renderDashboard();
+}
+function openBusinessModal() { document.getElementById('businessModal').classList.remove('hidden'); document.getElementById('businessModal').classList.add('flex'); }
+function startBusiness() {
+    const amt = parseFloat(document.getElementById('bizInvestment').value);
+    if(!amt || amt <= 0) return alert("Monto inválido");
+    let cost = amt; let chance = 0.4;
+    if(document.getElementById('upgMarket').checked) {cost+=20000; chance+=0.2;}
+    if(document.getElementById('upgAnalysis').checked) {cost+=20000; chance+=0.2;}
+    if(document.getElementById('upgMarketing').checked) {cost+=10000; chance+=0.15;}
+    if(state.cash < cost) return alert("Sin fondos");
+    state.cash -= cost; state.activeBusiness = {invest:amt, chance: Math.min(chance, 0.95)};
+    document.getElementById('businessModal').classList.add('hidden'); renderDashboard();
+}
+
+// --- TRADE ---
+let tradeTarget = null; let tradeMode = 'buy';
+function openTrade(id) {
+    tradeTarget = ASSETS.find(a => a.id === id); tradeMode = 'buy';
+    const p = getCurrentPrices()[id]; const own = state.portfolio[id];
+    document.getElementById('tradeModal').classList.remove('hidden'); document.getElementById('tradeModal').classList.add('flex');
+    document.getElementById('tradeAssetName').innerText = tradeTarget.name;
+    document.getElementById('tradePrice').innerText = fmt(p);
+    document.getElementById('tradeOwned').innerText = own.toFixed(4);
+    document.getElementById('tradeInput').value = '';
+    setTradeMode('buy');
+}
+function setTradeMode(m) {
+    tradeMode = m;
+    const btnBuy = document.getElementById('btnBuy'); const btnSell = document.getElementById('btnSell');
+    if(m==='buy'){ btnBuy.className="flex-1 py-2 text-xs font-bold bg-blue-900 text-white rounded"; btnSell.className="flex-1 py-2 text-xs font-bold bg-gray-200 text-gray-600 rounded"; }
+    else { btnSell.className="flex-1 py-2 text-xs font-bold bg-blue-900 text-white rounded"; btnBuy.className="flex-1 py-2 text-xs font-bold bg-gray-200 text-gray-600 rounded"; }
+}
+function closeTradeModal() { document.getElementById('tradeModal').classList.add('hidden'); document.getElementById('tradeModal').classList.remove('flex'); }
+function executeTrade() {
+    const amt = parseFloat(document.getElementById('tradeInput').value);
+    if(!amt || amt <= 0) return alert("Monto inválido");
+    const p = getCurrentPrices()[tradeTarget.id];
+    if(tradeMode === 'buy') {
+        if(amt > state.cash) return alert("Sin fondos");
+        state.cash -= amt; state.portfolio[tradeTarget.id] += amt/p;
+    } else {
+        const val = state.portfolio[tradeTarget.id] * p;
+        if(amt > val + 1) return alert("Activos insuficientes");
+        state.cash += amt; state.portfolio[tradeTarget.id] -= amt/p;
+    }
+    closeTradeModal(); renderDashboard();
+}
+
+// --- CHARTS & HELPERS ---
+function showInfo(id) {
+    const a = ASSETS.find(x => x.id === id);
+    document.getElementById('infoTitle').innerText = a.name; document.getElementById('infoDesc').innerText = a.desc; document.getElementById('infoType').innerText = a.type; document.getElementById('infoTip').innerText = a.tip;
+    document.getElementById('infoModal').classList.remove('hidden'); document.getElementById('infoModal').classList.add('flex');
+}
+function initChart() {
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    chartInstance = new Chart(ctx, { type: 'line', data: { labels: ['Inicio'], datasets: [{ label: 'Patrimonio', data: [state.history[0].net], borderColor: '#002855', tension: 0.1 }] }, options: { responsive: true, maintainAspectRatio: false } });
+}
+function updateChart() {
+    chartInstance.data.labels.push(`D${state.day}`);
+    chartInstance.data.datasets[0].data.push(state.history[state.history.length-1].net);
+    chartInstance.update();
+}
+function generateFinalReport() {
+    document.getElementById('gameSection').classList.add('hidden'); document.getElementById('finalReportSection').classList.remove('hidden');
+    const prices = getCurrentPrices();
+    let assetsVal = 0; ASSETS.forEach(a => assetsVal += state.portfolio[a.id] * prices[a.id]);
+    const finalNet = state.cash + assetsVal - (state.loan.active ? state.loan.amount : 0);
+    const startCash = state.history[0].net;
+    const roi = ((finalNet - startCash) / startCash) * 100;
+    document.getElementById('finalFolio').innerText = Math.floor(Math.random()*999999);
+    document.getElementById('finalDate').innerText = new Date().toLocaleDateString();
+    document.getElementById('reportName').innerText = state.name;
+    document.getElementById('reportScenario').innerText = state.scenarioTitle;
+    document.getElementById('reportFinalBalance').innerText = fmt(finalNet);
+    document.getElementById('reportROI').innerText = `${roi.toFixed(2)}% ROI`;
+    document.getElementById('analystFeedback').innerText = roi > 0 ? "Buen trabajo. Rendimiento positivo." : "Se requiere mejorar gestión de riesgo.";
+    
+    const tbody = document.querySelector('#finalPortfolioTable tbody');
+    tbody.innerHTML = '';
+    if(state.cash > 10) tbody.innerHTML += `<tr class="border-b"><td class="py-1">Efectivo</td><td class="text-right">--</td><td class="text-right font-mono">${fmt(state.cash)}</td></tr>`;
+    ASSETS.forEach(a => { if(state.portfolio[a.id] > 0.01) tbody.innerHTML += `<tr class="border-b"><td class="py-1">${a.name}</td><td class="text-right">${state.portfolio[a.id].toFixed(4)}</td><td class="text-right font-mono">${fmt(state.portfolio[a.id]*prices[a.id])}</td></tr>`; });
+
+    const ctxL = document.getElementById('finalLineChart').getContext('2d');
+    new Chart(ctxL, { type: 'line', data: { labels: state.history.map(h => h.day === 0 ? 'Ini' : `D${h.day}`), datasets: [{ label: 'Valor', data: state.history.map(h => h.net), borderColor: '#a51c30' }] } });
+    const ctxP = document.getElementById('finalPieChart').getContext('2d');
+    const data = [], labels = [];
+    if(state.cash > 100) { labels.push('Efectivo'); data.push(state.cash); }
+    ASSETS.forEach(a => { const v = state.portfolio[a.id] * prices[a.id]; if(v > 100) { labels.push(a.id); data.push(v); } });
+    new Chart(ctxP, { type: 'doughnut', data: { labels, datasets: [{ data, backgroundColor: ['#002855','#a51c30','#10b981','#f59e0b'] }] } });
+}
+</script>
+</body>
+</html>
